@@ -67,4 +67,28 @@
     </style>
 </head>
 <body>
-    <div class="
+    <div class="container">
+        <h1>🔑 Acesso Privado</h1>
+
+        <p id="expiration-alert">Seu tempo de acesso de 24 horas esgotou. Por favor, faça login novamente com seu token e CPF.</p>
+
+        <p>Acesso exclusivo. Preencha seus dados:</p>
+        
+        <input type="text" id="cpfInput" placeholder="CPF (Ex: 000.000.000-00)" maxlength="14" required>
+        <input type="text" id="tokenInput" placeholder="Digite seu token de acesso" required>
+        <button id="loginButton" onclick="checkToken()">Acessar Aulas</button>
+        
+        <p id="message"></p>
+    </div>
+    
+    <script src="script.js"></script>
+
+    <script>
+        // Lógica para exibir a mensagem de expiração na URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('expired') === 'true') {
+            document.getElementById('expiration-alert').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
