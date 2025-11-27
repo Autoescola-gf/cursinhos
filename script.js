@@ -1,286 +1,187 @@
-// script.js
-const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/d2cbxsw23rkjz'; // 🚨 EDITE AQUI
-const ACCESS_KEY = 'vimeo_access_granted';
-const EXPIRATION_KEY = 'access_expires_at';
-const CPF_KEY = 'vimeo_user_cpf';
-const DURATION_HOURS = 24;
-
-
-// Funções utilitárias (mantidas do código anterior)
-function formatCPF(cpf) {
-    cpf = cpf.replace(/[^\d]/g, '').substring(0, 11);
-    if (cpf.length > 9) {
-        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-    }
-    return cpf;
-}
-window.onload = function() {
-    const cpfInput = document.getElementById('cpfInput');
-    if (cpfInput) {
-        cpfInput.addEventListener('input', (e) => {
-            e.target.value = formatCPF(e.target.value);
-        });
-    }
-    checkAccess();
-};
-
 // =======================================================
-// LÓGICA DE LOGIN (CHAMADA À API DO SHEETDB)
+// ARQUIVO: script.js
+// LÓGICA DE SEGURANÇA E REGISTRO DE PRESENÇA
 // =======================================================
 
-async function checkToken() {
-    const tokenInput = document.getElementById('tokenInput').value.trim().toUpperCase();
-    const cpfInput = document.getElementById('cpfInput').value.trim();
-    const messageElement = document.getElementById('message');
-    const loginButton = document.getElementById('loginButton');
+// 🚨 IMPORTANTE: Substitua 'YOUR_SHEETDB_PRESENCE_URL' pelo URL real da sua API SheetDB para a planilha de Presença.
+const SHEETDB_PRESENCE_URL = 'https://sheetdb.io/api/v1/d2cbxsw23rkjz'; 
+const EMAIL_STORAGE_KEY = 'loggedInUserEmail';
+const PRESENCE_DATE_KEY = 'lastPresenceDate'; // Chave para armazenar a data da última presença no localStorage
+const SESSION_KEY = 'isAuthenticated'; // Chave de sessão para controle de login
 
-    messageElement.textContent = '';
-    messageElement.style.color = 'red';
-    
-    if (cpfInput.length !== 14 || !tokenInput) {
-        messageElement.textContent = 'Por favor, preencha o Token e o CPF corretamente.';
-        return;
-    }
+// =======================================================
+// 1. FUNÇÕES DE UTILIDADE E AUXILIARES
+// =======================================================
 
-    loginButton.disabled = true;
-    messageElement.textContent = 'Verificando dados...';
-    messageElement.style.color = 'gray';
-
-    try {
-        // 1. Busca o Token e CPF na planilha (Sheetdb)
-        // Busca a linha onde o token e o cpf coincidem. A API do Sheetdb faz o filtro:
-        const searchUrl = `${SHEETDB_API_URL}/search?token=${tokenInput}&cpf=${cpfInput}`;
-        const response = await fetch(searchUrl);
-        const data = await response.json();
-
-        if (!data || data.length === 0 || data.length > 1) {
-            messageElement.textContent = 'Token ou CPF inválido. Tente novamente.';
-            return;
-        }
-
-        const alunoData = data[0];
-        const agora = Date.now();
-        const expiracaoSalva = parseInt(alunoData.expiracao_ms) || 0;
-        
-        let novaExpiracao;
-        let statusMensagem;
-
-        // 2. Lógica do Timer
-        if (agora < expiracaoSalva) {
-            // Acesso ainda válido
-            statusMensagem = 'Acesso já ativo. Redirecionando...';
-            novaExpiracao = expiracaoSalva;
-        } else {
-            // Acesso expirado ou novo acesso: Renovação por 24 horas
-            novaExpiracao = agora + (DURATION_HOURS * 60 * 60 * 1000);
-            
-            // 3. Atualiza a Planilha com a nova data de expiração (requer PATCH/PUT)
-            const updateUrl = `${SHEETDB_API_URL}/token/${tokenInput}`;
-            
-            await fetch(updateUrl, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    data: { expiracao_ms: novaExpiracao }
-                })
-            });
-            
-            statusMensagem = `Acesso renovado por ${DURATION_HOURS} horas! Redirecionando...`;
-        }
-
-        // 4. Salva o acesso e a nova expiração no localStorage
-        localStorage.setItem(ACCESS_KEY, 'true');
-        localStorage.setItem(EXPIRATION_KEY, novaExpiracao);
-        localStorage.setItem(CPF_KEY, cpfInput);
-
-        messageElement.textContent = statusMensagem;
-        messageElement.style.color = 'green';
-        
-        setTimeout(() => {
-            window.location.href = 'videos.html';
-        }, 500);
-
-    } catch (error) {
-        console.error("Erro ao comunicar com o SheetDB:", error);
-        messageElement.textContent = 'Erro de comunicação. Verifique a URL da API ou o status do SheetDB.';
-    } finally {
-        loginButton.disabled = false;
-    }
+/**
+ * Retorna a data atual no formato YYYY-MM-DD para uso como chave de comparação.
+ * @returns {string} Data formatada.
+ */
+function getCurrentDateKey() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
-
 // =======================================================
-// LÓGICA DE PROTEÇÃO, TIMER E NAVEGAÇÃO (VIDEOS.HTML)
+// 2. FUNÇÕES DE AUTENTICAÇÃO E SEGURANÇA
+// (Assumindo que o login ocorreu em index.html e salvou o email e a sessão)
 // =======================================================
 
-// A função showLesson deve ser mantida do código anterior
-
+/**
+ * Verifica se o usuário tem acesso (se está logado).
+ * Se não estiver, redireciona para a página de login.
+ */
 function checkAccess() {
-    if (window.location.pathname.endsWith('videos.html') || window.location.pathname.endsWith('videos.html/')) {
-        const hasAccess = localStorage.getItem(ACCESS_KEY) === 'true';
-        const expirationTime = localStorage.getItem(EXPIRATION_KEY);
-
-        if (!hasAccess || !expirationTime) {
-            window.location.href = 'index.html?expired=no_access';
-            return false;
-        }
-
-        // Verifica se o tempo expirou
-        if (Date.now() > parseInt(expirationTime)) {
-            logout(); 
-            window.location.href = 'index.html?expired=true';
-            return false;
-        }
-        
-        // Exibe a primeira aula (a função showLesson deve estar em videos.html)
-        if(document.getElementById('aula1')) {
-            showLesson('aula1');
-        }
-        
-        return true;
+    // Verifica tanto a chave de sessão quanto o email
+    if (sessionStorage.getItem(SESSION_KEY) !== 'true' || !sessionStorage.getItem(EMAIL_STORAGE_KEY)) {
+        alert('Acesso negado. Por favor, faça login.');
+        window.location.href = 'index.html';
     }
-    return true; 
 }
 
-
+/**
+ * Encerra a sessão do usuário e redireciona para a página de login.
+ */
 function logout() {
-    localStorage.removeItem(ACCESS_KEY);
-    localStorage.removeItem(EXPIRATION_KEY);
-    localStorage.removeItem(CPF_KEY); 
+    sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(EMAIL_STORAGE_KEY);
+    // Não remove o localStorage de Presença, para que o usuário não possa marcar novamente no dia.
     window.location.href = 'index.html';
 }
 
-// Função auxiliar para formatar uma data como AAAA-MM-DD
-function getTodayDateString() {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Mês começa em 0
-    const dd = String(today.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
+// =======================================================
+// 3. FUNÇÕES DE NAVEGAÇÃO
+// =======================================================
+
+/**
+ * Exibe a aula selecionada e atualiza o estado dos botões.
+ * @param {string} lessonId O ID da div da aula a ser mostrada (e.g., 'aula1').
+ */
+function showLesson(lessonId) {
+    const allLessons = document.querySelectorAll('.aula-container');
+    allLessons.forEach(lesson => lesson.style.display = 'none');
+
+    const allButtons = document.querySelectorAll('.nav-buttons button');
+    allButtons.forEach(button => button.classList.remove('active'));
+
+    const currentLesson = document.getElementById(lessonId);
+    if (currentLesson) {
+        currentLesson.style.display = 'block';
+    }
+
+    const currentButton = document.getElementById(`btn-${lessonId}`);
+    if (currentButton) {
+        currentButton.classList.add('active');
+    }
 }
 
 // =======================================================
-// FUNÇÃO DE PRESENÇA
+// 4. FUNÇÕES DE REGISTRO DE PRESENÇA
 // =======================================================
 
-async function marcarPresenca() {
-    const token = localStorage.getItem('vimeo_access_granted');
-    const cpf = localStorage.getItem(CPF_KEY);
+/**
+ * Verifica o estado da presença diária no carregamento da página.
+ */
+function verificarStatusPresenca() {
+    const todayKey = getCurrentDateKey();
+    const lastPresenceDate = localStorage.getItem(PRESENCE_DATE_KEY);
     const presencaButton = document.getElementById('presencaButton');
     const presencaMessage = document.getElementById('presencaMessage');
-    const todayString = getTodayDateString();
 
-    presencaButton.disabled = true;
-    presencaMessage.textContent = 'Registrando...';
-
-    if (!token || !cpf) {
-        presencaMessage.textContent = 'Erro: Faça login primeiro.';
+    if (lastPresenceDate === todayKey) {
+        presencaButton.disabled = true;
+        presencaButton.textContent = 'Presença de Hoje Já Registrada ✅';
+        presencaMessage.style.color = '#28a745';
+        presencaMessage.textContent = `Você registrou sua presença hoje (${todayKey}).`;
+    } else {
         presencaButton.disabled = false;
+        presencaButton.textContent = 'Marcar Presença de Hoje';
+        presencaMessage.style.color = '#000000';
+        presencaMessage.textContent = 'Clique para registrar sua presença e frequência no curso.';
+    }
+}
+
+/**
+ * Registra a presença do usuário na planilha via SheetDB.
+ */
+async function marcarPresenca() {
+    const presencaButton = document.getElementById('presencaButton');
+    const presencaMessage = document.getElementById('presencaMessage');
+    
+    // Desabilita o botão para evitar cliques duplos
+    presencaButton.disabled = true;
+    presencaButton.textContent = 'Registrando...';
+    presencaMessage.textContent = 'Aguarde, enviando dados para o servidor...';
+    presencaMessage.style.color = '#0077B5';
+
+    const userEmail = sessionStorage.getItem(EMAIL_STORAGE_KEY);
+    const todayKey = getCurrentDateKey();
+
+    // Re-checa no caso de alguém tentar burlar o 'verificarStatusPresenca'
+    const lastPresenceDate = localStorage.getItem(PRESENCE_DATE_KEY);
+    if (lastPresenceDate === todayKey) {
+        verificarStatusPresenca(); // Restaura o estado de "Já Registrada"
         return;
     }
 
+    // Cria o objeto de dados para o SheetDB
+    const dataToSend = {
+        'data': {
+            'Email': userEmail, // Coluna 'Email' na planilha
+            'Data': todayKey,   // Coluna 'Data' na planilha
+            'HoraRegistro': new Date().toLocaleTimeString('pt-BR') // Opcional: Para maior precisão
+        }
+    };
+
     try {
-        // 1. Busca os dados atuais do aluno (para ver a última data)
-        const searchUrl = `${SHEETDB_API_URL}/search?token=${token}&cpf=${cpf}`;
-        const response = await fetch(searchUrl);
-        const data = await response.json();
-
-        if (!data || data.length === 0) {
-            presencaMessage.textContent = 'Erro: Aluno não encontrado na base.';
-            presencaButton.disabled = false;
-            return;
-        }
-
-        const alunoData = data[0];
-        const ultimaPresenca = alunoData.ultima_presenca;
-        
-        // 2. Verifica se a presença já foi marcada hoje
-        if (ultimaPresenca === todayString) {
-            presencaMessage.textContent = `✅ Presença de hoje (${todayString}) já registrada.`;
-            presencaMessage.style.color = 'green';
-            presencaButton.disabled = false;
-            return;
-        }
-
-        // 3. Marca a presença (Atualiza o Sheetdb com a data de hoje)
-        const updateUrl = `${SHEETDB_API_URL}/token/${token}`;
-        
-        await fetch(updateUrl, {
-            method: 'PATCH',
+        const response = await fetch(SHEETDB_PRESENCE_URL, {
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                data: { ultima_presenca: todayString }
-            })
+            body: JSON.stringify(dataToSend)
         });
 
-        presencaMessage.textContent = `✅ Presença de hoje (${todayString}) registrada com sucesso!`;
-        presencaMessage.style.color = 'green';
+        const result = await response.json();
 
-    } catch (error) {
-        console.error("Erro ao marcar presença:", error);
-        presencaMessage.textContent = '❌ Erro ao registrar. Tente novamente.';
-    } finally {
-        presencaButton.disabled = false;
-    }
-}
-
-// =======================================================
-// ATUALIZAÇÃO: CHECK ACCESS
-// =======================================================
-
-// A função checkAccess deve ser modificada para chamar a lógica de presença ao entrar na página,
-// para mostrar o status do dia.
-
-// Substitua a função checkAccess existente por esta (no seu script.js):
-/*
-async function checkAccess() {
-    // ... (Mantém a lógica de verificação de hasAccess e expiração de 24h) ...
-    
-    // Se o acesso for válido, exibe a primeira aula
-    if(document.getElementById('aula1')) {
-        showLesson('aula1');
-        // NOVO: Verifica o status da presença ao entrar na página
-        if (window.location.pathname.endsWith('videos.html') || window.location.pathname.endsWith('videos.html/')) {
-            await verificarStatusPresenca(); // Chama a função que verifica a presença
-        }
-    }
-    return true; 
-}
-*/
-async function verificarStatusPresenca() {
-    const token = localStorage.getItem('vimeo_access_granted');
-    const cpf = localStorage.getItem(CPF_KEY);
-    const presencaButton = document.getElementById('presencaButton');
-    const presencaMessage = document.getElementById('presencaMessage');
-    const todayString = getTodayDateString();
-    
-    // Mostra uma mensagem de carregamento inicial
-    presencaMessage.textContent = 'Verificando presença...';
-    
-    if (!token || !cpf) return; // Não faz nada se não estiver logado
-
-    try {
-        const searchUrl = `${SHEETDB_API_URL}/search?token=${token}&cpf=${cpf}`;
-        const response = await fetch(searchUrl);
-        const data = await response.json();
-        
-        if (data && data.length > 0 && data[0].ultima_presenca === todayString) {
-            presencaMessage.textContent = `✅ Presença de hoje (${todayString}) já registrada.`;
-            presencaMessage.style.color = 'green';
-            presencaButton.disabled = true;
+        if (response.ok && result.created) {
+            // Sucesso! Atualiza o localStorage para evitar múltiplos registros
+            localStorage.setItem(PRESENCE_DATE_KEY, todayKey);
+            
+            presencaMessage.textContent = 'Presença registrada com sucesso! Data: ' + todayKey;
+            presencaMessage.style.color = '#28a745';
+            presencaButton.textContent = 'Presença de Hoje Já Registrada ✅';
+            
         } else {
-            presencaMessage.textContent = '❌ Presença de hoje pendente. Clique no botão acima!';
-            presencaMessage.style.color = 'red';
-            presencaButton.disabled = false;
+            throw new Error(`Erro ao registrar presença: ${result.message || response.statusText}`);
         }
-
     } catch (error) {
-        presencaMessage.textContent = 'Erro ao verificar status de presença.';
+        console.error('Erro no registro de presença:', error);
+        
+        presencaMessage.textContent = `Falha ao registrar. Erro: ${error.message}. Tente novamente.`;
+        presencaMessage.style.color = '#dc3545';
         presencaButton.disabled = false;
+        presencaButton.textContent = 'Tentar Registrar Presença Novamente';
     }
 }
 
+// =======================================================
+// 5. INICIALIZAÇÃO DA PÁGINA
+// =======================================================
+
+/**
+ * Função principal que inicializa o estado da página ao carregar.
+ */
+function initializePage() {
+    checkAccess();
+    verificarStatusPresenca();
+    
+    // Exibe a primeira aula por padrão ao carregar
+    showLesson('aula1'); 
+}
+
+// Chama a função de inicialização assim que o DOM estiver carregado
+window.onload = initializePage;
