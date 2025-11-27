@@ -4,7 +4,7 @@
 // =======================================================
 
 // 🚨 IMPORTANTE: Verifique se este URL é o CORRETO fornecido pelo Sheetdb.io
-const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/d2cbxsw23rkjz'; 
+const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/d2cbxsw23rkjz';
 
 // Chaves de localStorage para o Timer de Acesso (24h)
 const ACCESS_KEY = 'vimeo_access_granted';
@@ -14,10 +14,10 @@ const TOKEN_KEY = 'vimeo_user_token';
 const DURATION_HOURS = 24;
 
 // Chave de localStorage para a Presença Diária
-const PRESENCE_DATE_KEY = 'lastPresenceDate'; 
+const PRESENCE_DATE_KEY = 'lastPresenceDate';
 
 // Variáveis para armazenar o ID dos intervalos dos contadores
-let countdownPresenceInterval = null; 
+let countdownPresenceInterval = null;
 let countdownTokenInterval = null;
 
 // =======================================================
@@ -47,18 +47,36 @@ function getCurrentDateKey() {
 }
 
 /**
+ * Retorna a data e hora atuais formatadas (ex: 2025-11-27 13:05:48)
+ * para uso no registro de log (timestamp).
+ */
+function getCurrentTimestamp() {
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+/**
  * Calcula o tempo em milissegundos restante até a meia-noite (00:00:00) do dia seguinte.
  */
 function calcularTempoParaMeiaNoite() {
     const agora = new Date();
     const proximaMeiaNoite = new Date(agora);
-    
+
     // Define o tempo para 00:00:00.000 do dia seguinte
     proximaMeiaNoite.setDate(agora.getDate() + 1);
-    proximaMeiaNoite.setHours(0, 0, 0, 0); 
-    
+    proximaMeiaNoite.setHours(0, 0, 0, 0);
+
     const tempoRestante = proximaMeiaNoite.getTime() - agora.getTime();
-    
+
     return Math.max(0, tempoRestante);
 }
 
@@ -86,14 +104,14 @@ function formatarTempoRestante(milissegundos) {
 async function checkToken() {
     const tokenInput = document.getElementById('tokenInput').value.trim().toUpperCase();
     // Garante que o CPF digitado está formatado antes da busca
-    const cpfInput = formatCPF(document.getElementById('cpfInput').value.trim()); 
-    
+    const cpfInput = formatCPF(document.getElementById('cpfInput').value.trim());
+
     const messageElement = document.getElementById('message');
     const loginButton = document.getElementById('loginButton');
 
     messageElement.textContent = '';
     messageElement.style.color = 'red';
-    
+
     if (cpfInput.length !== 14 || !tokenInput) {
         messageElement.textContent = 'Por favor, preencha o Token e o CPF corretamente.';
         return;
@@ -117,7 +135,7 @@ async function checkToken() {
         const alunoData = data[0];
         const agora = Date.now();
         const expiracaoSalva = parseInt(alunoData.expiracao_ms) || 0;
-        
+
         let novaExpiracao;
         let statusMensagem;
 
@@ -129,10 +147,10 @@ async function checkToken() {
         } else {
             // Acesso expirado ou novo: Renovação por 24 horas
             novaExpiracao = agora + (DURATION_HOURS * 60 * 60 * 1000);
-            
+
             // 3. Atualiza a Planilha com a nova data de expiração
             const updateUrl = `${SHEETDB_API_URL}/token/${tokenInput}`;
-            
+
             await fetch(updateUrl, {
                 method: 'PATCH',
                 headers: {
@@ -142,7 +160,7 @@ async function checkToken() {
                     data: { expiracao_ms: novaExpiracao }
                 })
             });
-            
+
             statusMensagem = `Acesso renovado por ${DURATION_HOURS} horas! Redirecionando...`;
         }
 
@@ -150,11 +168,11 @@ async function checkToken() {
         localStorage.setItem(ACCESS_KEY, 'true');
         localStorage.setItem(EXPIRATION_KEY, novaExpiracao);
         localStorage.setItem(CPF_KEY, cpfInput);
-        localStorage.setItem(TOKEN_KEY, tokenInput); 
+        localStorage.setItem(TOKEN_KEY, tokenInput);
 
         messageElement.textContent = statusMensagem;
         messageElement.style.color = 'green';
-        
+
         setTimeout(() => {
             window.location.href = 'videos.html';
         }, 500);
@@ -190,15 +208,15 @@ function checkAccess() {
         window.location.href = 'index.html?expired=true';
         return false;
     }
-    
+
     // Se o acesso for válido, exibe a primeira aula e inicia os contadores
     if(document.getElementById('aula1')) {
         showLesson('aula1');
-        verificarStatusPresenca(); 
+        verificarStatusPresenca();
         iniciarContadorExpiracao(); // <-- Novo contador de expiração de token
     }
-    
-    return true; 
+
+    return true;
 }
 
 /**
@@ -207,9 +225,9 @@ function checkAccess() {
 function logout() {
     localStorage.removeItem(ACCESS_KEY);
     localStorage.removeItem(EXPIRATION_KEY);
-    localStorage.removeItem(CPF_KEY); 
+    localStorage.removeItem(CPF_KEY);
     localStorage.removeItem(TOKEN_KEY);
-    
+
     // Limpa os contadores ativos
     if (countdownPresenceInterval !== null) {
         clearInterval(countdownPresenceInterval);
@@ -219,7 +237,7 @@ function logout() {
         clearInterval(countdownTokenInterval);
         countdownTokenInterval = null;
     }
-    
+
     window.location.href = 'index.html';
 }
 
@@ -238,28 +256,28 @@ function iniciarContadorExpiracao() {
     }
 
     const expirationTimeMs = parseInt(localStorage.getItem(EXPIRATION_KEY));
-    const displayElement = document.getElementById('tokenExpirationDisplay'); 
-    
+    const displayElement = document.getElementById('tokenExpirationDisplay');
+
     if (!displayElement) return;
 
     // Se não houver tempo de expiração ou já tiver expirado
     if (!expirationTimeMs || (expirationTimeMs - Date.now()) <= 0) {
         displayElement.textContent = '❌ Sessão expirada. Faça login novamente.';
         displayElement.style.color = 'red';
-        return; 
+        return;
     }
 
     // Função para atualizar o contador a cada segundo
     const atualizarContador = () => {
         const agora = Date.now();
         const tempoRestante = expirationTimeMs - agora;
-        
+
         if (tempoRestante <= 0) {
-            clearInterval(countdownTokenInterval); 
+            clearInterval(countdownTokenInterval);
             countdownTokenInterval = null;
             displayElement.textContent = '❌ Seu acesso expirou!';
             // Chama a função de segurança para redirecionar se o token expirar
-            checkAccess(); 
+            checkAccess();
             return;
         }
 
@@ -296,25 +314,25 @@ function verificarStatusPresenca() {
         // Presença já registrada hoje: Inicia o contador
         presencaButton.disabled = true;
         presencaButton.textContent = 'Presença de Hoje Já Registrada ✅';
-        
+
         // Função para atualizar o contador
         const atualizarContador = () => {
             const tempoRestante = calcularTempoParaMeiaNoite();
-            
+
             if (tempoRestante <= 0) {
                 // Chegou à meia-noite, habilita a presença e limpa o intervalo
                 clearInterval(countdownPresenceInterval);
                 countdownPresenceInterval = null;
                 // Força a re-verificação, que agora detectará um novo dia e habilitará o botão
-                verificarStatusPresenca(); 
+                verificarStatusPresenca();
                 return;
             }
 
             const tempoFormatado = formatarTempoRestante(tempoRestante);
-            presencaMessage.style.color = '#901090'; // Laranja
+            presencaMessage.style.color = '#901090'; // Roxo
             // presencaMessage.innerHTML = `⏰ Próxima prsença liberada em: ${tempoFormatado}`;
         };
-        
+
         // Executa imediatamente e depois a cada segundo
         atualizarContador();
         countdownPresenceInterval = setInterval(atualizarContador, 1000);
@@ -330,28 +348,29 @@ function verificarStatusPresenca() {
 
 
 /**
- * Registra a presença do usuário na planilha via SheetDB.
+ * Registra a presença do usuário na planilha via SheetDB, incluindo o timestamp exato do clique.
  */
 async function marcarPresenca() {
     const presencaButton = document.getElementById('presencaButton');
     const presencaMessage = document.getElementById('presencaMessage');
-    
+
     presencaButton.disabled = true;
     presencaButton.textContent = 'Registrando...';
     presencaMessage.textContent = 'Aguarde, enviando dados para o servidor...';
     presencaMessage.style.color = '#0077B5';
 
     const token = localStorage.getItem(TOKEN_KEY);
-    const cpf = localStorage.getItem(CPF_KEY); 
+    const cpf = localStorage.getItem(CPF_KEY);
 
     const todayKey = getCurrentDateKey();
+    const currentTimestamp = getCurrentTimestamp(); // <-- Captura a data e hora do clique!
 
     const lastPresenceDate = localStorage.getItem(PRESENCE_DATE_KEY);
     if (lastPresenceDate === todayKey) {
-        verificarStatusPresenca(); 
+        verificarStatusPresenca();
         return;
     }
-    
+
     if (!token || !cpf) {
         presencaMessage.textContent = 'Erro: Falha de autenticação. Tente fazer login novamente.';
         presencaMessage.style.color = '#dc3545';
@@ -361,19 +380,21 @@ async function marcarPresenca() {
     }
 
     try {
-        // 1. Busca o aluno para obter os dados atuais
+        // 1. Busca o aluno para obter os dados atuais (Passo opcional, mas mantido)
         const searchUrl = `${SHEETDB_API_URL}/search?token=${token}`;
         const response = await fetch(searchUrl);
         const data = await response.json();
-        
+
         if (!data || data.length === 0) {
             throw new Error("Aluno não encontrado na base de dados (SheetDB)");
         }
-        
-        // 2. Cria o objeto de dados para ATUALIZAR a linha existente com a data de hoje
+
+        // 2. Cria o objeto de dados para ATUALIZAR a linha existente com a data e hora (timestamp)
         const dataToUpdate = {
             'data': {
-                'ultima_presenca': todayKey, 
+                'ultima_presenca': todayKey,
+                // NOVO: Adiciona o timestamp completo com hora e data
+                'hora_registro': currentTimestamp
             }
         };
 
@@ -393,19 +414,18 @@ async function marcarPresenca() {
         if (updateResponse.ok) {
             // Sucesso! Atualiza o localStorage para evitar múltiplos registros
             localStorage.setItem(PRESENCE_DATE_KEY, todayKey);
-            
+
             // 3. Inicia o contador para o próximo dia
             verificarStatusPresenca();
-            
+
             presencaMessage.style.color = '#901090';
-            presencaMessage.textContent = '✅ Presença registrada com sucesso!';
-            
+            presencaMessage.textContent = `✅ Presença registrada com sucesso! ${currentTimestamp}`; // Exibe o timestamp no feedback
         } else {
             throw new Error(`Erro ao registrar presença: ${result.message || updateResponse.statusText}`);
         }
     } catch (error) {
         console.error('Erro no registro de presença:', error);
-        
+
         presencaMessage.textContent = `Falha ao registrar. Verifique sua conexão. Erro: ${error.message}.`;
         presencaMessage.style.color = '#dc3545';
         presencaButton.disabled = false;
@@ -456,7 +476,7 @@ function initializePage() {
     if (window.location.pathname.endsWith('videos.html') || window.location.pathname.endsWith('videos.html/')) {
         checkAccess();
     }
-    
+
     // Lógica específica para a página de login (index.html)
     else if (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/')) {
         // Nada a fazer no login além de formatar o CPF
@@ -465,5 +485,3 @@ function initializePage() {
 
 // Chama a função de inicialização assim que o DOM estiver carregado
 window.onload = initializePage;
-
-
