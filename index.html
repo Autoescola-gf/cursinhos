@@ -56,7 +56,6 @@
             color: red;
             font-weight: bold;
         }
-        /* Novo estilo para a mensagem de expiração */
         #expiration-alert {
             color: darkorange;
             font-weight: bold;
@@ -64,7 +63,7 @@
             padding: 10px;
             border: 1px solid darkorange;
             border-radius: 4px;
-            display: none; /* Oculta por padrão */
+            display: none; 
         }
     </style>
 </head>
@@ -72,9 +71,11 @@
     <div class="container">
         <h1>🔑 Acesso Privado</h1>
 
-        <p id="expiration-alert">Seu tempo de acesso de 24 horas esgotou. O token não pode ser reutilizado.</p>
+        <p id="expiration-alert">Seu tempo de acesso de 24 horas esgotou. Por favor, faça login novamente com seu token e CPF.</p>
 
-        <p>Insira seu token único para acessar o material de aula.</p>
+        <p>Acesso exclusivo. Preencha seus dados:</p>
+        
+        <input type="text" id="cpfInput" placeholder="CPF (Ex: 000.000.000-00)" maxlength="14" required>
         
         <input type="text" id="tokenInput" placeholder="Digite seu token de acesso" required>
         <button onclick="checkToken()">Acessar Aulas</button>
