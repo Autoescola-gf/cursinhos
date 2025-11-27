@@ -3,15 +3,18 @@
 // LÓGICA DE SEGURANÇA E REGISTRO DE PRESENÇA (GOOGLE SHEETS)
 // =======================================================
 
-// 🚨 IMPORTANTE: Verifique se este URL é o CORRETO (Planilha Principal com status do aluno)
+// 🚨 IMPORTANTE: Planilha Principal com status do aluno (Endpoint d2cbxsw23rkjz)
 const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/d2cbxsw23rkjz'; 
-const PRESENCE_LOG_API_URL = 'https://sheetdb.io/api/v1/vyslff80veuxt';
+
+// 🚨 NOVO: URL para a Planilha/Aba de Histórico de LOGS. (Endpoint 35dq0moqkjvfo)
+const PRESENCE_LOG_API_URL = 'https://sheetdb.io/api/v1/vyslff80veuxt'; 
+
 // Chaves de localStorage para o Timer de Acesso (24h)
 const ACCESS_KEY = 'vimeo_access_granted';
 const EXPIRATION_KEY = 'access_expires_at';
 const CPF_KEY = 'vimeo_user_cpf';
 const TOKEN_KEY = 'vimeo_user_token';
-// NOVO: Chave para armazenar o nome do aluno
+// Chave para armazenar o nome do aluno
 const NAME_KEY = 'vimeo_user_name';
 const DURATION_HOURS = 24;
 
@@ -128,13 +131,14 @@ async function checkToken() {
         const response = await fetch(searchUrl);
         const data = await response.json();
 
+        // Se retornar 0 ou mais de 1 registro, falha!
         if (!data || data.length === 0 || data.length > 1) {
             messageElement.textContent = 'Erro: Token ou CPF inválido. Aluno não encontrado na base.';
             return;
         }
 
         const alunoData = data[0];
-        // NOVO: Captura o nome do aluno da coluna 'nome_aluno' (ajuste se sua coluna tiver outro nome)
+        // Captura o nome do aluno da coluna 'nome_aluno'
         const alunoNome = alunoData.nome_aluno || 'Aluno Não Nomeado'; 
         
         const agora = Date.now();
@@ -150,7 +154,7 @@ async function checkToken() {
         } else {
             novaExpiracao = agora + (DURATION_HOURS * 60 * 60 * 1000);
 
-            // 3. Atualiza a Planilha com a nova data de expiração
+            // 3. Atualiza a Planilha com a nova data de expiração (PATCH)
             const updateUrl = `${SHEETDB_API_URL}/token/${tokenInput}`;
 
             await fetch(updateUrl, {
@@ -171,7 +175,7 @@ async function checkToken() {
         localStorage.setItem(EXPIRATION_KEY, novaExpiracao);
         localStorage.setItem(CPF_KEY, cpfInput);
         localStorage.setItem(TOKEN_KEY, tokenInput);
-        // NOVO: Salva o nome no localStorage
+        // Salva o nome no localStorage
         localStorage.setItem(NAME_KEY, alunoNome);
 
         messageElement.textContent = statusMensagem;
@@ -356,7 +360,7 @@ async function marcarPresenca() {
 
     const token = localStorage.getItem(TOKEN_KEY);
     const cpf = localStorage.getItem(CPF_KEY);
-    // NOVO: Captura o nome do aluno
+    // Captura o nome do aluno
     const nome = localStorage.getItem(NAME_KEY); 
 
     const todayKey = getCurrentDateKey();
@@ -382,8 +386,9 @@ async function marcarPresenca() {
         const response = await fetch(searchUrl);
         const data = await response.json();
 
-        if (!data || data.length === 0) {
-            throw new Error("Aluno não encontrado na base de dados (SheetDB)");
+        // Se a busca falhar ou retornar mais de 1 (TOKEN DUPLICADO na planilha), o sistema falha aqui.
+        if (!data || data.length === 0 || data.length > 1) {
+            throw new Error("Aluno não encontrado ou Token duplicado na base de dados (SheetDB)");
         }
 
         const currentTimestamp = getCurrentTimestamp();
@@ -396,7 +401,7 @@ async function marcarPresenca() {
             'data': {
                 'ultima_presenca': todayKey,
                 'hora_registro': currentTimestamp, 
-                // NOVO: Adiciona o nome na Planilha Principal (para correção/atualização)
+                // Adiciona o nome na Planilha Principal (para correção/atualização)
                 'nome_aluno': nome 
             }
         };
@@ -423,7 +428,7 @@ async function marcarPresenca() {
                 'data': {
                     'token': token,
                     'cpf': cpf,
-                    // NOVO: Adiciona o nome no Log Histórico
+                    // Adiciona o nome no Log Histórico
                     'nome_aluno': nome, 
                     'data_registro': todayKey, 
                     'hora_registro': currentTimestamp 
@@ -445,7 +450,7 @@ async function marcarPresenca() {
             // Sucesso! Atualiza o localStorage para evitar múltiplos registros no mesmo dia
             localStorage.setItem(PRESENCE_DATE_KEY, todayKey);
             
-            // 4. Finalização do Processo (MANTIDO)
+            // 4. Finalização do Processo
             verificarStatusPresenca();
             
             presencaMessage.style.color = '#901090';
@@ -508,6 +513,3 @@ function initializePage() {
 
 // Chama a função de inicialização assim que o DOM estiver carregado
 window.onload = initializePage;
-
-
-
