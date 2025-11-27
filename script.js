@@ -151,3 +151,136 @@ function logout() {
     localStorage.removeItem(CPF_KEY); 
     window.location.href = 'index.html';
 }
+
+// Função auxiliar para formatar uma data como AAAA-MM-DD
+function getTodayDateString() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Mês começa em 0
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+}
+
+// =======================================================
+// FUNÇÃO DE PRESENÇA
+// =======================================================
+
+async function marcarPresenca() {
+    const token = localStorage.getItem('vimeo_access_granted');
+    const cpf = localStorage.getItem(CPF_KEY);
+    const presencaButton = document.getElementById('presencaButton');
+    const presencaMessage = document.getElementById('presencaMessage');
+    const todayString = getTodayDateString();
+
+    presencaButton.disabled = true;
+    presencaMessage.textContent = 'Registrando...';
+
+    if (!token || !cpf) {
+        presencaMessage.textContent = 'Erro: Faça login primeiro.';
+        presencaButton.disabled = false;
+        return;
+    }
+
+    try {
+        // 1. Busca os dados atuais do aluno (para ver a última data)
+        const searchUrl = `${SHEETDB_API_URL}/search?token=${token}&cpf=${cpf}`;
+        const response = await fetch(searchUrl);
+        const data = await response.json();
+
+        if (!data || data.length === 0) {
+            presencaMessage.textContent = 'Erro: Aluno não encontrado na base.';
+            presencaButton.disabled = false;
+            return;
+        }
+
+        const alunoData = data[0];
+        const ultimaPresenca = alunoData.ultima_presenca;
+        
+        // 2. Verifica se a presença já foi marcada hoje
+        if (ultimaPresenca === todayString) {
+            presencaMessage.textContent = `✅ Presença de hoje (${todayString}) já registrada.`;
+            presencaMessage.style.color = 'green';
+            presencaButton.disabled = false;
+            return;
+        }
+
+        // 3. Marca a presença (Atualiza o Sheetdb com a data de hoje)
+        const updateUrl = `${SHEETDB_API_URL}/token/${token}`;
+        
+        await fetch(updateUrl, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                data: { ultima_presenca: todayString }
+            })
+        });
+
+        presencaMessage.textContent = `✅ Presença de hoje (${todayString}) registrada com sucesso!`;
+        presencaMessage.style.color = 'green';
+
+    } catch (error) {
+        console.error("Erro ao marcar presença:", error);
+        presencaMessage.textContent = '❌ Erro ao registrar. Tente novamente.';
+    } finally {
+        presencaButton.disabled = false;
+    }
+}
+
+// =======================================================
+// ATUALIZAÇÃO: CHECK ACCESS
+// =======================================================
+
+// A função checkAccess deve ser modificada para chamar a lógica de presença ao entrar na página,
+// para mostrar o status do dia.
+
+// Substitua a função checkAccess existente por esta (no seu script.js):
+/*
+async function checkAccess() {
+    // ... (Mantém a lógica de verificação de hasAccess e expiração de 24h) ...
+    
+    // Se o acesso for válido, exibe a primeira aula
+    if(document.getElementById('aula1')) {
+        showLesson('aula1');
+        // NOVO: Verifica o status da presença ao entrar na página
+        if (window.location.pathname.endsWith('videos.html') || window.location.pathname.endsWith('videos.html/')) {
+            await verificarStatusPresenca(); // Chama a função que verifica a presença
+        }
+    }
+    return true; 
+}
+*/
+async function verificarStatusPresenca() {
+    const token = localStorage.getItem('vimeo_access_granted');
+    const cpf = localStorage.getItem(CPF_KEY);
+    const presencaButton = document.getElementById('presencaButton');
+    const presencaMessage = document.getElementById('presencaMessage');
+    const todayString = getTodayDateString();
+    
+    // Mostra uma mensagem de carregamento inicial
+    presencaMessage.textContent = 'Verificando presença...';
+    
+    if (!token || !cpf) return; // Não faz nada se não estiver logado
+
+    try {
+        const searchUrl = `${SHEETDB_API_URL}/search?token=${token}&cpf=${cpf}`;
+        const response = await fetch(searchUrl);
+        const data = await response.json();
+        
+        if (data && data.length > 0 && data[0].ultima_presenca === todayString) {
+            presencaMessage.textContent = `✅ Presença de hoje (${todayString}) já registrada.`;
+            presencaMessage.style.color = 'green';
+            presencaButton.disabled = true;
+        } else {
+            presencaMessage.textContent = '❌ Presença de hoje pendente. Clique no botão acima!';
+            presencaMessage.style.color = 'red';
+            presencaButton.disabled = false;
+        }
+
+    } catch (error) {
+        presencaMessage.textContent = 'Erro ao verificar status de presença.';
+        presencaButton.disabled = false;
+    }
+}
+
