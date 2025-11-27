@@ -13,21 +13,54 @@
         h1 {
             text-align: center;
             color: #0077B5;
+            margin-bottom: 20px;
         }
-        .video-container {
-            max-width: 800px;
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        .nav-buttons button {
+            background-color: #0077B5;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .nav-buttons button:hover {
+            background-color: #005f90;
+        }
+        .nav-buttons button.active {
+            background-color: #1a1a1a; /* Cor para o botão da aula atual */
+            border: 2px solid #ffcc00;
+        }
+        
+        /* Container principal de exibição do vídeo */
+        .video-content-wrapper {
+            max-width: 900px;
             margin: 20px auto;
             background: white;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+
+        /* Container de cada aula (que será exibido/ocultado) */
+        .aula-container {
+            display: none; /* Inicia oculto, será exibido pelo JS */
+        }
+        
         .vimeo-embed {
             position: relative;
             padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
             height: 0;
             overflow: hidden;
-            margin-bottom: 20px;
+            margin-top: 15px;
         }
         .vimeo-embed iframe {
             position: absolute;
@@ -37,11 +70,12 @@
             height: 100%;
             border: 0;
         }
+        
         /* Estilo para o botão de sair */
         #logoutButton {
             display: block;
-            margin: 20px auto;
-            background-color: #dc3545; /* Cor de Perigo/Sair */
+            margin: 0 auto 20px auto;
+            background-color: #dc3545;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -57,22 +91,7 @@
 </head>
 <body>
     <button id="logoutButton" onclick="logout()">Sair / Encerrar Sessão</button>
-    <h1>🎓 Módulos do Curso Exclusivo</h1>
+    <h1>🎓 Conteúdo Exclusivo | Minhas Aulas</h1>
 
-    <div class="video-container">
-        <h2>Aula 1: Introdução ao Assunto</h2>
-        <div class="vimeo-embed">
-            <iframe src="https://player.vimeo.com/video/SEU_ID_DO_VIDEO_AQUI?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
-    </div>
-    
-    <div class="video-container">
-        <h2>Aula 2: Tópico Avançado</h2>
-        <div class="vimeo-embed">
-            <iframe src="https://player.vimeo.com/video/OUTRO_ID_DO_VIDEO_AQUI?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
-    </div>
-    
-    <script src="script.js"></script>
-</body>
-</html>
+    <div class="nav-buttons">
+        <button id="btn-aula1" onclick="show
