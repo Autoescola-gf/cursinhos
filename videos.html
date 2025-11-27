@@ -127,10 +127,6 @@
     <button id="logoutButton" onclick="logout()">Sair / Encerrar Sessão</button>
     <h1>🎓 Conteúdo Exclusivo | Selecione uma aula para assistir</h1>
     
-    <div style="text-align: center; margin-bottom: 15px;">
-        <span id="tokenExpirationDisplay" style="font-weight: bold; font-size: 1.1em;"></span> 
-    </div>
-    
     <div class="nav-buttons">
         <button id="btn-aula1" onclick="showLesson('aula1')">Aula 1: Sinalização</button>
         <button id="btn-aula2" onclick="showLesson('aula2')">Aula 2: Sinalização</button>
@@ -165,7 +161,11 @@
             <button id="presencaButton" onclick="marcarPresenca()">Marcar Presença de Hoje</button>
             <p id="presencaMessage" style="margin-top: 10px; font-weight: bold;"></p>
         </div>
-        
+
+        <div style="text-align: center; margin-bottom: 15px;">
+            <span id="tokenExpirationDisplay" style="font-weight: bold; font-size: 1.1em;"></span> 
+        </div>
+    
         </div>
 
     <script src="script.js"></script>
@@ -195,6 +195,7 @@
     </script>
 </body>
 </html>
+
 
 
 
