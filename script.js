@@ -16,8 +16,9 @@ const DURATION_HOURS = 24;
 // Chave de localStorage para a Presença Diária
 const PRESENCE_DATE_KEY = 'lastPresenceDate'; 
 
-// Variável para armazenar o ID do intervalo do contador regressivo
-let countdownInterval = null; 
+// Variáveis para armazenar o ID dos intervalos dos contadores
+let countdownPresenceInterval = null; 
+let countdownTokenInterval = null;
 
 // =======================================================
 // 1. FUNÇÕES DE UTILIDADE E AUXILIARES
@@ -52,9 +53,9 @@ function calcularTempoParaMeiaNoite() {
     const agora = new Date();
     const proximaMeiaNoite = new Date(agora);
     
-    // Define o tempo para 00:00:00 do dia seguinte
+    // Define o tempo para 00:00:00.000 do dia seguinte
     proximaMeiaNoite.setDate(agora.getDate() + 1);
-    proximaMeiaNoite.setHours(0, 0, 0, 0); // 00:00:00.000
+    proximaMeiaNoite.setHours(0, 0, 0, 0); 
     
     const tempoRestante = proximaMeiaNoite.getTime() - agora.getTime();
     
@@ -104,7 +105,6 @@ async function checkToken() {
 
     try {
         // 1. Busca na planilha pelo Token e CPF
-        // Sheetdb filtra a busca exatamente pelo par token/cpf
         const searchUrl = `${SHEETDB_API_URL}/search?token=${tokenInput}&cpf=${cpfInput}`;
         const response = await fetch(searchUrl);
         const data = await response.json();
@@ -116,7 +116,6 @@ async function checkToken() {
 
         const alunoData = data[0];
         const agora = Date.now();
-        // A planilha armazena a expiração como string, converte para número
         const expiracaoSalva = parseInt(alunoData.expiracao_ms) || 0;
         
         let novaExpiracao;
@@ -132,7 +131,6 @@ async function checkToken() {
             novaExpiracao = agora + (DURATION_HOURS * 60 * 60 * 1000);
             
             // 3. Atualiza a Planilha com a nova data de expiração
-            // Assume que o token é único e usa ele como chave de atualização no Sheetdb
             const updateUrl = `${SHEETDB_API_URL}/token/${tokenInput}`;
             
             await fetch(updateUrl, {
@@ -152,7 +150,7 @@ async function checkToken() {
         localStorage.setItem(ACCESS_KEY, 'true');
         localStorage.setItem(EXPIRATION_KEY, novaExpiracao);
         localStorage.setItem(CPF_KEY, cpfInput);
-        localStorage.setItem(TOKEN_KEY, tokenInput); // Salva o token para uso na presença
+        localStorage.setItem(TOKEN_KEY, tokenInput); 
 
         messageElement.textContent = statusMensagem;
         messageElement.style.color = 'green';
@@ -193,10 +191,11 @@ function checkAccess() {
         return false;
     }
     
-    // Se o acesso for válido, exibe a primeira aula e verifica a presença
+    // Se o acesso for válido, exibe a primeira aula e inicia os contadores
     if(document.getElementById('aula1')) {
         showLesson('aula1');
-        verificarStatusPresenca(); // Checa o status da presença ao entrar
+        verificarStatusPresenca(); 
+        iniciarContadorExpiracao(); // <-- Novo contador de expiração de token
     }
     
     return true; 
@@ -210,28 +209,82 @@ function logout() {
     localStorage.removeItem(EXPIRATION_KEY);
     localStorage.removeItem(CPF_KEY); 
     localStorage.removeItem(TOKEN_KEY);
-    // Limpa o contador, se houver
-    if (countdownInterval !== null) {
-        clearInterval(countdownInterval);
-        countdownInterval = null;
+    
+    // Limpa os contadores ativos
+    if (countdownPresenceInterval !== null) {
+        clearInterval(countdownPresenceInterval);
+        countdownPresenceInterval = null;
     }
-    // Presença Diária (PRESENCE_DATE_KEY) é mantida para que a marcação diária não possa ser repetida.
+    if (countdownTokenInterval !== null) {
+        clearInterval(countdownTokenInterval);
+        countdownTokenInterval = null;
+    }
+    
     window.location.href = 'index.html';
+}
+
+// =======================================================
+// 4. CONTADOR DE EXPIRAÇÃO DE TOKEN (24h)
+// =======================================================
+
+/**
+ * Inicia um contador regressivo para exibir o tempo restante de acesso (24h).
+ */
+function iniciarContadorExpiracao() {
+    // Limpa qualquer contador anterior para evitar sobreposição
+    if (countdownTokenInterval !== null) {
+        clearInterval(countdownTokenInterval);
+        countdownTokenInterval = null;
+    }
+
+    const expirationTimeMs = parseInt(localStorage.getItem(EXPIRATION_KEY));
+    const displayElement = document.getElementById('tokenExpirationDisplay'); 
+    
+    if (!displayElement) return;
+
+    // Se não houver tempo de expiração ou já tiver expirado
+    if (!expirationTimeMs || (expirationTimeMs - Date.now()) <= 0) {
+        displayElement.textContent = '❌ Sessão expirada. Faça login novamente.';
+        displayElement.style.color = 'red';
+        return; 
+    }
+
+    // Função para atualizar o contador a cada segundo
+    const atualizarContador = () => {
+        const agora = Date.now();
+        const tempoRestante = expirationTimeMs - agora;
+        
+        if (tempoRestante <= 0) {
+            clearInterval(countdownTokenInterval); 
+            countdownTokenInterval = null;
+            displayElement.textContent = '❌ Seu acesso expirou!';
+            // Chama a função de segurança para redirecionar se o token expirar
+            checkAccess(); 
+            return;
+        }
+
+        displayElement.style.color = '#0077B5'; // Azul
+        displayElement.textContent = `⏳ Seu acesso expira em: ${formatarTempoRestante(tempoRestante)}`;
+    };
+
+    // Executa imediatamente e depois a cada segundo
+    atualizarContador();
+    countdownTokenInterval = setInterval(atualizarContador, 1000);
 }
 
 
 // =======================================================
-// 4. REGISTRO DE PRESENÇA (Para videos.html)
+// 5. REGISTRO DE PRESENÇA (Para videos.html)
 // =======================================================
 
 /**
- * Verifica o estado da presença diária (Lida do localStorage) e configura o contador.
+ * Verifica o estado da presença diária (Lida do localStorage) e configura o contador até a meia-noite.
  */
 function verificarStatusPresenca() {
     // 1. Limpa qualquer contador anterior para evitar sobreposição
-    if (countdownInterval !== null) {
-        clearInterval(countdownInterval);
-        countdownInterval = null;
+    if (countdownPresenceInterval !== null) {
+        clearInterval(countdownPresenceInterval);
+        countdownPresenceInterval = null;
     }
 
     const todayKey = getCurrentDateKey();
@@ -250,23 +303,21 @@ function verificarStatusPresenca() {
             
             if (tempoRestante <= 0) {
                 // Chegou à meia-noite, habilita a presença e limpa o intervalo
-                clearInterval(countdownInterval);
-                countdownInterval = null;
-                // A data do localStorage é mantida (YYYY-MM-DD), mas o novo dia já permite o registro
-                
-                // Força a re-verificação para atualizar o status e habilitar o botão
+                clearInterval(countdownPresenceInterval);
+                countdownPresenceInterval = null;
+                // Força a re-verificação, que agora detectará um novo dia e habilitará o botão
                 verificarStatusPresenca(); 
                 return;
             }
 
             const tempoFormatado = formatarTempoRestante(tempoRestante);
             presencaMessage.style.color = '#FFA500'; // Laranja
-            presencaMessage.textContent = `⏰ **Próxima marcação liberada em:** ${tempoFormatado} (amanhã)`;
+            presencaMessage.innerHTML = `⏰ **Próxima marcação liberada em:** ${tempoFormatado} (amanhã)`;
         };
         
         // Executa imediatamente e depois a cada segundo
         atualizarContador();
-        countdownInterval = setInterval(atualizarContador, 1000);
+        countdownPresenceInterval = setInterval(atualizarContador, 1000);
 
     } else {
         // Presença ainda não registrada hoje: Habilita o botão
@@ -291,4 +342,126 @@ async function marcarPresenca() {
     presencaMessage.style.color = '#0077B5';
 
     const token = localStorage.getItem(TOKEN_KEY);
-    const cpf = localStorage.getItem(CPF_KEY); // Usamos o CPF como identificador secundário
+    const cpf = localStorage.getItem(CPF_KEY); 
+
+    const todayKey = getCurrentDateKey();
+
+    const lastPresenceDate = localStorage.getItem(PRESENCE_DATE_KEY);
+    if (lastPresenceDate === todayKey) {
+        verificarStatusPresenca(); 
+        return;
+    }
+    
+    if (!token || !cpf) {
+        presencaMessage.textContent = 'Erro: Falha de autenticação. Tente fazer login novamente.';
+        presencaMessage.style.color = '#dc3545';
+        presencaButton.disabled = false;
+        presencaButton.textContent = 'Marcar Presença de Hoje';
+        return;
+    }
+
+    try {
+        // 1. Busca o aluno para obter os dados atuais
+        const searchUrl = `${SHEETDB_API_URL}/search?token=${token}`;
+        const response = await fetch(searchUrl);
+        const data = await response.json();
+        
+        if (!data || data.length === 0) {
+            throw new Error("Aluno não encontrado na base de dados (SheetDB)");
+        }
+        
+        // 2. Cria o objeto de dados para ATUALIZAR a linha existente com a data de hoje
+        const dataToUpdate = {
+            'data': {
+                'ultima_presenca': todayKey, 
+            }
+        };
+
+        // Usa o token como chave para garantir que a linha correta seja atualizada (PATCH)
+        const updateUrl = `${SHEETDB_API_URL}/token/${token}`;
+
+        const updateResponse = await fetch(updateUrl, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dataToUpdate)
+        });
+
+        const result = await updateResponse.json();
+
+        if (updateResponse.ok) {
+            // Sucesso! Atualiza o localStorage para evitar múltiplos registros
+            localStorage.setItem(PRESENCE_DATE_KEY, todayKey);
+            
+            // 3. Inicia o contador para o próximo dia
+            verificarStatusPresenca();
+            
+            presencaMessage.style.color = '#28a745';
+            presencaMessage.textContent = '✅ Presença registrada com sucesso! O contador de espera foi iniciado.';
+            
+        } else {
+            throw new Error(`Erro ao registrar presença: ${result.message || updateResponse.statusText}`);
+        }
+    } catch (error) {
+        console.error('Erro no registro de presença:', error);
+        
+        presencaMessage.textContent = `Falha ao registrar. Verifique sua conexão. Erro: ${error.message}.`;
+        presencaMessage.style.color = '#dc3545';
+        presencaButton.disabled = false;
+        presencaButton.textContent = 'Tentar Registrar Presença Novamente';
+    }
+}
+
+// =======================================================
+// 6. FUNÇÕES DE NAVEGAÇÃO
+// =======================================================
+
+// A função showLesson deve ser definida aqui para que o HTML possa chamá-la.
+function showLesson(lessonId) {
+    const allLessons = document.querySelectorAll('.aula-container');
+    allLessons.forEach(lesson => lesson.style.display = 'none');
+
+    const allButtons = document.querySelectorAll('.nav-buttons button');
+    allButtons.forEach(button => button.classList.remove('active'));
+
+    const currentLesson = document.getElementById(lessonId);
+    if (currentLesson) {
+        currentLesson.style.display = 'block';
+    }
+
+    const currentButton = document.getElementById(`btn-${lessonId}`);
+    if (currentButton) {
+        currentButton.classList.add('active');
+    }
+}
+
+// =======================================================
+// 7. INICIALIZAÇÃO DA PÁGINA
+// =======================================================
+
+/**
+ * Função principal que inicializa o estado da página ao carregar.
+ */
+function initializePage() {
+    // Adiciona o formatador de CPF ao campo de input na página de login
+    const cpfInput = document.getElementById('cpfInput');
+    if (cpfInput) {
+        cpfInput.addEventListener('input', (e) => {
+            e.target.value = formatCPF(e.target.value);
+        });
+    }
+
+    // Lógica específica para a página de aulas (videos.html)
+    if (window.location.pathname.endsWith('videos.html') || window.location.pathname.endsWith('videos.html/')) {
+        checkAccess();
+    }
+    
+    // Lógica específica para a página de login (index.html)
+    else if (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/')) {
+        // Nada a fazer no login além de formatar o CPF
+    }
+}
+
+// Chama a função de inicialização assim que o DOM estiver carregado
+window.onload = initializePage;
