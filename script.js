@@ -16,6 +16,9 @@ const DURATION_HOURS = 24;
 // Chave de localStorage para a Presença Diária
 const PRESENCE_DATE_KEY = 'lastPresenceDate'; 
 
+// Variável para armazenar o ID do intervalo do contador regressivo
+let countdownInterval = null; 
+
 // =======================================================
 // 1. FUNÇÕES DE UTILIDADE E AUXILIARES
 // =======================================================
@@ -40,6 +43,36 @@ function getCurrentDateKey() {
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+}
+
+/**
+ * Calcula o tempo em milissegundos restante até a meia-noite (00:00:00) do dia seguinte.
+ */
+function calcularTempoParaMeiaNoite() {
+    const agora = new Date();
+    const proximaMeiaNoite = new Date(agora);
+    
+    // Define o tempo para 00:00:00 do dia seguinte
+    proximaMeiaNoite.setDate(agora.getDate() + 1);
+    proximaMeiaNoite.setHours(0, 0, 0, 0); // 00:00:00.000
+    
+    const tempoRestante = proximaMeiaNoite.getTime() - agora.getTime();
+    
+    return Math.max(0, tempoRestante);
+}
+
+/**
+ * Formata o tempo restante em horas, minutos e segundos.
+ */
+function formatarTempoRestante(milissegundos) {
+    const totalSegundos = Math.floor(milissegundos / 1000);
+    const horas = Math.floor(totalSegundos / 3600);
+    const minutos = Math.floor((totalSegundos % 3600) / 60);
+    const segundos = totalSegundos % 60;
+
+    const pad = (num) => String(num).padStart(2, '0');
+
+    return `${pad(horas)}h ${pad(minutos)}m ${pad(segundos)}s`;
 }
 
 // =======================================================
@@ -77,7 +110,6 @@ async function checkToken() {
         const data = await response.json();
 
         if (!data || data.length === 0 || data.length > 1) {
-            // Este é o ponto que estava falhando antes. Significa que o par Token/CPF não foi encontrado.
             messageElement.textContent = 'Erro: Token ou CPF inválido. Aluno não encontrado na base.';
             return;
         }
@@ -164,7 +196,7 @@ function checkAccess() {
     // Se o acesso for válido, exibe a primeira aula e verifica a presença
     if(document.getElementById('aula1')) {
         showLesson('aula1');
-        verificarStatusPresenca(); // NOVO: Checa o status da presença ao entrar
+        verificarStatusPresenca(); // Checa o status da presença ao entrar
     }
     
     return true; 
@@ -178,6 +210,11 @@ function logout() {
     localStorage.removeItem(EXPIRATION_KEY);
     localStorage.removeItem(CPF_KEY); 
     localStorage.removeItem(TOKEN_KEY);
+    // Limpa o contador, se houver
+    if (countdownInterval !== null) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+    }
     // Presença Diária (PRESENCE_DATE_KEY) é mantida para que a marcação diária não possa ser repetida.
     window.location.href = 'index.html';
 }
@@ -188,26 +225,58 @@ function logout() {
 // =======================================================
 
 /**
- * Verifica o estado da presença diária (Lida do localStorage).
+ * Verifica o estado da presença diária (Lida do localStorage) e configura o contador.
  */
 function verificarStatusPresenca() {
+    // 1. Limpa qualquer contador anterior para evitar sobreposição
+    if (countdownInterval !== null) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+    }
+
     const todayKey = getCurrentDateKey();
     const lastPresenceDate = localStorage.getItem(PRESENCE_DATE_KEY);
     const presencaButton = document.getElementById('presencaButton');
     const presencaMessage = document.getElementById('presencaMessage');
 
     if (lastPresenceDate === todayKey) {
+        // Presença já registrada hoje: Inicia o contador
         presencaButton.disabled = true;
         presencaButton.textContent = 'Presença de Hoje Já Registrada ✅';
-        presencaMessage.style.color = '#28a745';
-        presencaMessage.textContent = `Você registrou sua presença hoje (${todayKey}).`;
+        
+        // Função para atualizar o contador
+        const atualizarContador = () => {
+            const tempoRestante = calcularTempoParaMeiaNoite();
+            
+            if (tempoRestante <= 0) {
+                // Chegou à meia-noite, habilita a presença e limpa o intervalo
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+                // A data do localStorage é mantida (YYYY-MM-DD), mas o novo dia já permite o registro
+                
+                // Força a re-verificação para atualizar o status e habilitar o botão
+                verificarStatusPresenca(); 
+                return;
+            }
+
+            const tempoFormatado = formatarTempoRestante(tempoRestante);
+            presencaMessage.style.color = '#FFA500'; // Laranja
+            presencaMessage.textContent = `⏰ **Próxima marcação liberada em:** ${tempoFormatado} (amanhã)`;
+        };
+        
+        // Executa imediatamente e depois a cada segundo
+        atualizarContador();
+        countdownInterval = setInterval(atualizarContador, 1000);
+
     } else {
+        // Presença ainda não registrada hoje: Habilita o botão
         presencaButton.disabled = false;
         presencaButton.textContent = 'Marcar Presença de Hoje';
         presencaMessage.style.color = '#000000';
         presencaMessage.textContent = 'Clique para registrar sua presença e frequência no curso.';
     }
 }
+
 
 /**
  * Registra a presença do usuário na planilha via SheetDB.
@@ -223,130 +292,3 @@ async function marcarPresenca() {
 
     const token = localStorage.getItem(TOKEN_KEY);
     const cpf = localStorage.getItem(CPF_KEY); // Usamos o CPF como identificador secundário
-
-    const todayKey = getCurrentDateKey();
-
-    // Re-checa para evitar cliques duplos enquanto a requisição está em andamento
-    const lastPresenceDate = localStorage.getItem(PRESENCE_DATE_KEY);
-    if (lastPresenceDate === todayKey) {
-        verificarStatusPresenca(); 
-        return;
-    }
-    
-    // Se o token ou cpf não estiverem salvos, o usuário não está logado
-    if (!token || !cpf) {
-        presencaMessage.textContent = 'Erro: Falha de autenticação. Tente fazer login novamente.';
-        presencaMessage.style.color = '#dc3545';
-        presencaButton.disabled = false;
-        presencaButton.textContent = 'Marcar Presença de Hoje';
-        return;
-    }
-
-    try {
-        // 1. Busca o aluno para obter os dados atuais
-        const searchUrl = `${SHEETDB_API_URL}/search?token=${token}`;
-        const response = await fetch(searchUrl);
-        const data = await response.json();
-        
-        if (!data || data.length === 0) {
-            throw new Error("Aluno não encontrado na base de dados (SheetDB)");
-        }
-        
-        // 2. Cria o objeto de dados para ATUALIZAR a linha existente com a data de hoje
-        const dataToUpdate = {
-            'data': {
-                'ultima_presenca': todayKey, 
-                // Você pode adicionar um contador ou registro de hora se quiser
-            }
-        };
-
-        // Usa o token como chave para garantir que a linha correta seja atualizada (PATCH)
-        const updateUrl = `${SHEETDB_API_URL}/token/${token}`;
-
-        const updateResponse = await fetch(updateUrl, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dataToUpdate)
-        });
-
-        const result = await updateResponse.json();
-
-        if (updateResponse.ok) {
-            // Sucesso! Atualiza o localStorage para evitar múltiplos registros
-            localStorage.setItem(PRESENCE_DATE_KEY, todayKey);
-            
-            presencaMessage.textContent = 'Presença registrada com sucesso! Data: ' + todayKey;
-            presencaMessage.style.color = '#28a745';
-            presencaButton.textContent = 'Presença de Hoje Já Registrada ✅';
-            
-        } else {
-             // Se o Sheetdb falhar, mas a requisição retornar status OK, a mensagem de erro estará em 'result'
-            throw new Error(`Erro ao registrar presença: ${result.message || updateResponse.statusText}`);
-        }
-    } catch (error) {
-        console.error('Erro no registro de presença:', error);
-        
-        presencaMessage.textContent = `Falha ao registrar. Verifique sua conexão. Erro: ${error.message}.`;
-        presencaMessage.style.color = '#dc3545';
-        presencaButton.disabled = false;
-        presencaButton.textContent = 'Tentar Registrar Presença Novamente';
-    }
-}
-
-// =======================================================
-// 5. FUNÇÕES DE NAVEGAÇÃO
-// =======================================================
-
-// Nota: A função showLesson deve ser definida no HTML, mas incluí ela aqui para o caso de ter sido esquecida.
-// Se ela for definida no HTML, esta versão será ignorada, mas garante que o código não quebre.
-if (typeof showLesson === 'undefined') {
-    function showLesson(lessonId) {
-        const allLessons = document.querySelectorAll('.aula-container');
-        allLessons.forEach(lesson => lesson.style.display = 'none');
-
-        const allButtons = document.querySelectorAll('.nav-buttons button');
-        allButtons.forEach(button => button.classList.remove('active'));
-
-        const currentLesson = document.getElementById(lessonId);
-        if (currentLesson) {
-            currentLesson.style.display = 'block';
-        }
-
-        const currentButton = document.getElementById(`btn-${lessonId}`);
-        if (currentButton) {
-            currentButton.classList.add('active');
-        }
-    }
-}
-
-// =======================================================
-// 6. INICIALIZAÇÃO DA PÁGINA
-// =======================================================
-
-/**
- * Função principal que inicializa o estado da página ao carregar.
- */
-function initializePage() {
-    // Adiciona o formatador de CPF ao campo de input na página de login
-    const cpfInput = document.getElementById('cpfInput');
-    if (cpfInput) {
-        cpfInput.addEventListener('input', (e) => {
-            e.target.value = formatCPF(e.target.value);
-        });
-    }
-
-    // Lógica específica para a página de aulas (videos.html)
-    if (window.location.pathname.endsWith('videos.html') || window.location.pathname.endsWith('videos.html/')) {
-        checkAccess();
-    }
-    
-    // Lógica específica para a página de login (index.html)
-    else if (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/')) {
-        // Se a página for a de login, não faz nada além de formatar o CPF
-    }
-}
-
-// Chama a função de inicialização assim que o DOM estiver carregado
-window.onload = initializePage;
