@@ -6,8 +6,7 @@
 // 🚨 IMPORTANTE: Planilha Principal com status do aluno (Endpoint d2cbxsw23rkjz)
 const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/d2cbxsw23rkjz'; 
 
-// 🚨 NOVO: URL para a Planilha/Aba de Histórico de LOGS. (Endpoint 35dq0moqkjvfo)
-const PRESENCE_LOG_API_URL = 'https://sheetdb.io/api/v1/vyslff80veuxt'; 
+// A constante PRESENCE_LOG_API_URL foi removida conforme solicitado.
 
 // Chaves de localStorage para o Timer de Acesso (24h)
 const ACCESS_KEY = 'vimeo_access_granted';
@@ -347,7 +346,7 @@ function verificarStatusPresenca() {
 
 
 /**
- * Registra a presença do usuário na planilha via SheetDB, realizando PATCH (Status) e POST (Histórico).
+ * Registra a presença do usuário na planilha via SheetDB, realizando apenas o PATCH na Planilha Principal.
  */
 async function marcarPresenca() {
     const presencaButton = document.getElementById('presencaButton');
@@ -360,7 +359,6 @@ async function marcarPresenca() {
 
     const token = localStorage.getItem(TOKEN_KEY);
     const cpf = localStorage.getItem(CPF_KEY);
-    // Captura o nome do aluno
     const nome = localStorage.getItem(NAME_KEY); 
 
     const todayKey = getCurrentDateKey();
@@ -371,7 +369,6 @@ async function marcarPresenca() {
         return;
     }
 
-    // Adiciona verificação do nome
     if (!token || !cpf || !nome) { 
         presencaMessage.textContent = 'Erro: Falha de autenticação. Tente fazer login novamente.';
         presencaMessage.style.color = '#dc3545';
@@ -381,12 +378,11 @@ async function marcarPresenca() {
     }
 
     try {
-        // 1. Busca o aluno para obter os dados atuais (Passo opcional, mas mantido)
+        // 1. Busca o aluno para obter os dados atuais (Confirma que o token existe e não está duplicado)
         const searchUrl = `${SHEETDB_API_URL}/search?token=${token}`;
         const response = await fetch(searchUrl);
         const data = await response.json();
 
-        // Se a busca falhar ou retornar mais de 1 (TOKEN DUPLICADO na planilha), o sistema falha aqui.
         if (!data || data.length === 0 || data.length > 1) {
             throw new Error("Aluno não encontrado ou Token duplicado na base de dados (SheetDB)");
         }
@@ -394,14 +390,13 @@ async function marcarPresenca() {
         const currentTimestamp = getCurrentTimestamp();
 
         // =============================================================
-        // PASSO 2: ATUALIZA A PLANILHA PRINCIPAL (PATCH)
+        // PASSO 2: ATUALIZA A PLANILHA PRINCIPAL (PATCH) - Mantido
         // Isso é NECESSÁRIO para o bloqueio de UMA presença por dia.
         // =============================================================
         const dataToUpdate = {
             'data': {
                 'ultima_presenca': todayKey,
                 'hora_registro': currentTimestamp, 
-                // Adiciona o nome na Planilha Principal (para correção/atualização)
                 'nome_aluno': nome 
             }
         };
@@ -420,43 +415,17 @@ async function marcarPresenca() {
 
         if (updateResponse.ok) {
             
-            // =============================================================
-            // PASSO 3: INSERE UM NOVO LOG NA PLANILHA DE HISTÓRICO (POST)
-            // Isso CRIA uma nova linha para o registro de presença, preservando o histórico.
-            // =============================================================
-            const dataToLog = {
-                'data': {
-                    'token': token,
-                    'cpf': cpf,
-                    // Adiciona o nome no Log Histórico
-                    'nome_aluno': nome, 
-                    'data_registro': todayKey, 
-                    'hora_registro': currentTimestamp 
-                }
-            };
-            
-            const logResponse = await fetch(PRESENCE_LOG_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dataToLog)
-            });
-
-            if (!logResponse.ok) {
-                console.warn('Alerta: Falha ao registrar log de presença na planilha de LOG histórico.');
-            }
-
             // Sucesso! Atualiza o localStorage para evitar múltiplos registros no mesmo dia
             localStorage.setItem(PRESENCE_DATE_KEY, todayKey);
             
-            // 4. Finalização do Processo
+            // 3. Finalização do Processo
             verificarStatusPresenca();
             
             presencaMessage.style.color = '#901090';
             presencaMessage.textContent = `✅ Presença registrada com sucesso! ${currentTimestamp}`;
             
         } else {
+            // Ocorreu um erro na atualização do status (PATCH)
             throw new Error(`Erro ao registrar presença: ${result.message || updateResponse.statusText}`);
         }
     } catch (error) {
