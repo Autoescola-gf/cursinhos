@@ -8,7 +8,7 @@ const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/d2cbxsw23rkjz';
 
 // 🚨 NOVO: URL para a Planilha/Aba de Histórico de LOGS.
 // VOCÊ PRECISA SUBSTITUIR ESTE ENDPOINT pela URL de API da sua planilha de LOG.
-const PRESENCE_LOG_API_URL = 'https://sheetdb.io/api/v1/SUA_NOVA_URL_DE_LOG_AQUI'; 
+const PRESENCE_LOG_API_URL = 'https://sheetdb.io/api/v1/35dq0moqkjvfo'; 
 
 // Chaves de localStorage para o Timer de Acesso (24h)
 const ACCESS_KEY = 'vimeo_access_granted';
@@ -512,3 +512,4 @@ function initializePage() {
 
 // Chama a função de inicialização assim que o DOM estiver carregado
 window.onload = initializePage;
+
