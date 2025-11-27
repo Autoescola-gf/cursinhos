@@ -1,6 +1,4 @@
 // 🚨 PASSO 1: EDITE ESTA LISTA DE TOKENS!
-// Coloque aqui os tokens únicos que você distribuirá para seus alunos.
-// Use letras, números e talvez hífens. Ex: 'ALUNO-VIP-123', 'A1B2C3D4'
 const VALID_TOKENS = [
     'SEUTOKEN1',
     'SEUTOKEN2',
@@ -9,7 +7,6 @@ const VALID_TOKENS = [
     // Adicione mais tokens aqui
 ];
 
-// Chave usada para armazenar o status de login no navegador.
 const ACCESS_KEY = 'vimeo_access_granted';
 
 
@@ -18,58 +15,86 @@ const ACCESS_KEY = 'vimeo_access_granted';
 // =======================================================
 
 function checkToken() {
-    // Verifica se estamos na página de login antes de tentar obter o elemento
     if (document.getElementById('tokenInput')) {
         const tokenInput = document.getElementById('tokenInput').value.trim().toUpperCase();
         const messageElement = document.getElementById('message');
 
         if (VALID_TOKENS.includes(tokenInput)) {
-            // Token válido: Concede acesso e redireciona
             localStorage.setItem(ACCESS_KEY, 'true');
             messageElement.textContent = 'Acesso concedido! Redirecionando...';
             messageElement.style.color = 'green';
             
-            // Redireciona após um pequeno atraso para exibir a mensagem de sucesso
             setTimeout(() => {
                 window.location.href = 'videos.html';
             }, 500);
 
         } else {
-            // Token inválido
             messageElement.textContent = 'Token inválido ou expirado. Tente novamente.';
             messageElement.style.color = 'red';
-            localStorage.removeItem(ACCESS_KEY); // Garante que não haja acesso residual
+            localStorage.removeItem(ACCESS_KEY);
         }
     }
 }
 
 
 // =======================================================
-// LÓGICA DE PROTEÇÃO (Usada em videos.html)
+// LÓGICA DE PROTEÇÃO E NAVEGAÇÃO (Usada em videos.html)
 // =======================================================
+
+// Função que controla a exibição das aulas
+function showLesson(lessonId) {
+    // 1. Oculta todos os containers de aula
+    const allLessons = document.querySelectorAll('.aula-container');
+    allLessons.forEach(lesson => {
+        lesson.style.display = 'none';
+    });
+
+    // 2. Remove o estado 'active' de todos os botões
+    const allButtons = document.querySelectorAll('.nav-buttons button');
+    allButtons.forEach(button => {
+        button.classList.remove('active');
+    });
+
+    // 3. Exibe a aula solicitada
+    const currentLesson = document.getElementById(lessonId);
+    if (currentLesson) {
+        currentLesson.style.display = 'block';
+    }
+
+    // 4. Marca o botão como ativo
+    const currentButton = document.getElementById(`btn-${lessonId}`);
+    if (currentButton) {
+        currentButton.classList.add('active');
+    }
+}
+
 
 // Função que verifica se o usuário tem a chave de acesso no localStorage.
 function checkAccess() {
-    // Executa apenas se estiver na página de vídeos.html
     if (window.location.pathname.endsWith('videos.html') || window.location.pathname.endsWith('videos.html/')) {
         const hasAccess = localStorage.getItem(ACCESS_KEY) === 'true';
 
         if (!hasAccess) {
-            // Sem a chave de acesso, redireciona para a página de login.
             window.location.href = 'index.html';
             return false;
         }
+        
+        // ** NOVO: Exibe a primeira aula ao carregar a página **
+        // Se a aula1 existir, ela será mostrada por padrão
+        if(document.getElementById('aula1')) {
+            showLesson('aula1');
+        }
+        
         return true;
     }
-    return true; // Se não for a página de vídeos, não faz nada
+    return true; 
 }
 
 
-// Função para o botão "Sair"
 function logout() {
-    localStorage.removeItem(ACCESS_KEY); // Remove a chave de acesso
-    window.location.href = 'index.html'; // Redireciona para o login
+    localStorage.removeItem(ACCESS_KEY);
+    window.location.href = 'index.html';
 }
 
-// Garante que a verificação de acesso ocorra assim que a página é carregada (em videos.html)
+// Garante que a verificação de acesso ocorra assim que a página é carregada
 window.onload = checkAccess;
