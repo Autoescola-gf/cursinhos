@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">AUTO ESCOLA GUARDA - CURSINHO</title>
+    <title>Acesso ao Cursinho - Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,288 +16,139 @@
             background-color: #2c3e50;
             color: #ecf0f1;
             padding: 20px;
-            text-align: center;
         }
-        .page-container {
-            max-width: 800px;
-            width: 100%;
-            margin-bottom: 40px;
-        }
-        .video-block {
+        .login-box {
             background-color: #34495e;
-            padding: 30px;
+            padding: 40px;
             border-radius: 12px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
         }
         h1 {
             color: #f1c40f;
-            border-bottom: 2px solid #f1c40f;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             font-size: 1.8em;
         }
-        /* Estilos dos botões de navegação */
-        .button-container {
-            margin-bottom: 25px;
-            border-bottom: 1px solid #4a6784;
-            padding-bottom: 15px;
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            font-weight: bold;
         }
-        .course-button {
-            padding: 10px 20px;
-            margin: 0 10px;
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #5d7d9a;
+            border-radius: 5px;
+            background-color: #4a6784;
+            color: #ecf0f1;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #f1c40f;
+            color: #2c3e50;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 1.1em;
             transition: background-color 0.3s;
         }
-        .course-button.active {
-            background-color: #f1c40f;
-            color: #2c3e50;
+        button:hover:not(:disabled) {
+            background-color: #f39c12;
         }
-        .course-button:not(.active) {
+        button:disabled {
             background-color: #5d7d9a;
-            color: #ecf0f1;
-        }
-        .course-button.locked {
-            background-color: #95a5a6;
             cursor: not-allowed;
-            opacity: 0.6;
         }
-        /* Estilos de Timer/Expiração */
-        .alerta-restante {
-            background-color: #f39c12; 
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .alerta-bloqueio {
-            background-color: #e74c3c; 
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 1.2em;
-        }
-        .hidden {
-            display: none;
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    
-    <div class="page-container" id="courseContent">
-        <p id="welcomeMessage" style="font-size: 1.1em; color: #3498db; margin-bottom: 30px;">Carregando...</p>
-
-        <div class="button-container">
-            <!-- Os botões de curso serão criados dinamicamente no JS -->
-        </div>
-
-        <!-- Conteúdo do Curso 1 -->
-        <div id="course1" class="video-block hidden" data-storage-key="local_acesso_c1">
-            <h1 id="title1">AULA 01: SINALIZAÇÃO</h1>
-            <div id="statusMessage1" class="alerta-bloqueio hidden">Verificando acesso...</div>
-            <div id="areaTimer1" class="hidden">
-                <p class="alerta-restante" id="tempoRestanteMensagem1">O vídeo será removido...</p>
-                <iframe 
-                    src="https://player.vimeo.com/video/1140876472?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" 
-                    width="100%" 
-                    height="450" 
-                    frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture" 
-                    allowfullscreen>
-                </iframe>
-            </div>
-        </div>
-
-        <!-- Conteúdo do Curso 2 -->
-        <div id="course2" class="video-block hidden" data-storage-key="local_acesso_c2">
-            <h1 id="title2">AULA 02: SINALIZAÇÃO</h1>
-            <div id="statusMessage2" class="alerta-bloqueio hidden">Verificando acesso...</div>
-            <div id="areaTimer2" class="hidden">
-                <p class="alerta-restante" id="tempoRestanteMensagem2">O vídeo será removido...</p>
-                <iframe 
-                    src="https://player.vimeo.com/video/1140903162?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" 
-                    width="100%" 
-                    height="450" 
-                    frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture" 
-                    allowfullscreen>
-                </iframe>
-            </div>
-        </div>
+    <div class="login-box">
+        <h1>Acesso Exclusivo</h1>
+        <p>Insira seu código de aluno para liberar o acesso ao curso.</p>
         
+        <form id="loginForm">
+            <label for="uniqueCode">Código de Acesso Único:</label>
+            <input type="text" id="uniqueCode" required>
+            <button type="submit" id="loginButton">Entrar</button>
+        </form>
+        
+        <div id="message" style="color: #e74c3c;"></div>
     </div>
 
     <script>
-        // Substitua pela URL da sua Implementação do Google Apps Script (Passo B.5)
+        // Substitua pela URL da sua Implementação do Google Apps Script (CRÍTICO)
         const API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbymohmJpFhCd7VpzX8D5H0B2AtRB-7ynD23RinjiyVAaulUQknbJ36D1smKcORvaE5KmQ/exec'; 
 
-        // === CONFIGURAÇÃO GLOBAL ===
-        const COURSES = [
-            { id: 'course1', name: 'Aula 1: Sinalização', storageKey: 'local_acesso_c1' },
-            { id: 'course2', name: 'Aula 2: Direção Defensiva', storageKey: 'local_acesso_c2' }
-            // Adicione mais cursos aqui, lembrando de adicioná-los também no Google Sheets
-        ];
-        
-        const TEMPO_LIMITE_VISUALIZACAO_SEGUNDOS = 300; // 5 minutos
-        const TEMPO_LIMITE_VISUALIZACAO_MS = TEMPO_LIMITE_VISUALIZACAO_SEGUNDOS * 1000;
-        
-        let intervaloContador = null;
-        let activeCourseId = null; // Rastreia o curso ativo
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
 
-        const pad = (num) => String(num).padStart(2, '0');
+            const code = document.getElementById('uniqueCode').value.trim();
+            const messageDiv = document.getElementById('message');
+            const loginButton = document.getElementById('loginButton');
 
-        // --- 1. FUNÇÃO DE CONTROLE DE SESSÃO ---
-        function checkSession() {
-            const token = localStorage.getItem('sessionToken');
-            const userName = localStorage.getItem('userName');
-            
-            if (!token || !userName) {
-                // Se não há token, redireciona para o login de forma segura
-                window.location.href = './login.html'; 
-                return false;
+            if (!code) {
+                messageDiv.textContent = 'Por favor, insira seu código.';
+                return;
             }
-            
-            document.getElementById('welcomeMessage').textContent = `Olá, ${userName}! Escolha uma aula:`;
-            document.title = `CURSINHO - ${userName}`;
-            return token;
-        }
 
-        // --- 2. GERAÇÃO DINÂMICA DE BOTÕES ---
-        function renderButtons() {
-            const container = document.querySelector('.button-container');
-            container.innerHTML = ''; // Limpa botões antigos
+            loginButton.disabled = true;
+            loginButton.textContent = 'Verificando...';
+            messageDiv.textContent = '';
 
-            COURSES.forEach(course => {
-                const button = document.createElement('button');
-                button.className = 'course-button';
-                button.textContent = course.name;
-                button.setAttribute('data-course-id', course.id);
-                button.onclick = () => showCourse(course.id);
-                container.appendChild(button);
-                
-                // Crie o bloco do vídeo se ainda não existir (útil se você usar um template)
-                if (!document.getElementById(course.id)) {
-                    // Se estiver usando o HTML estático fornecido, isso não é necessário.
-                }
-            });
-        }
-
-        // --- 3. LÓGICA DO TIMER LOCAL DE 5 MINUTOS ---
-        function initializeLocalTimer(courseId, storageKey) {
-            if (intervaloContador) clearInterval(intervaloContador);
-            
-            const areaDoVideo = document.getElementById('areaTimer' + courseId.slice(-1));
-            const statusMessage = document.getElementById('statusMessage' + courseId.slice(-1));
-            const mensagemTempoRestante = document.getElementById('tempoRestanteMensagem' + courseId.slice(-1));
-            
-            // O Apps Script deu permissão, então este é o primeiro acesso OU uma re-liberação.
-            // Zera o timer local para 5 minutos
-            localStorage.setItem(storageKey, Date.now()); 
-            
-            areaDoVideo.classList.remove('hidden');
-            statusMessage.classList.add('hidden');
-            
-            let inicioVisualizacao = parseInt(localStorage.getItem(storageKey));
-
-            intervaloContador = setInterval(function() {
-                const agora = Date.now();
-                const decorrido = agora - inicioVisualizacao;
-                let restanteMS = TEMPO_LIMITE_VISUALIZACAO_MS - decorrido;
-                
-                if (restanteMS <= 0) {
-                    areaDoVideo.classList.add('hidden');
-                    statusMessage.classList.remove('hidden');
-                    statusMessage.innerHTML = '<strong>Tempo esgotado!</strong> O acesso de 5 minutos expirou. Volte em 24h.';
-                    clearInterval(intervaloContador);
-                } else {
-                    let totalSeconds = Math.floor(restanteMS / 1000);
-                    const hours = Math.floor(totalSeconds / 3600);
-                    totalSeconds %= 3600;
-                    const minutes = Math.floor(totalSeconds / 60);
-                    const seconds = totalSeconds % 60;
-                    
-                    const timeFormat = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-
-                    mensagemTempoRestante.innerHTML = `Disponível por: ${timeFormat}`; 
-                }
-            }, 1000);
-        }
-
-        // --- 4. FUNÇÃO DE NAVEGAÇÃO E CHECAGEM VIA API (doGet) ---
-        async function showCourse(courseId) {
-            const token = localStorage.getItem('sessionToken');
-            
-            const allCourses = document.querySelectorAll('.video-block');
-            const allButtons = document.querySelectorAll('.course-button');
-            const selectedCourse = document.getElementById(courseId);
-            const statusMessage = document.getElementById('statusMessage' + courseId.slice(-1));
-            
-            // 1. Limpeza e Exibição do Curso Selecionado
-            allCourses.forEach(course => course.classList.add('hidden'));
-            if (intervaloContador) clearInterval(intervaloContador);
-            
-            selectedCourse.classList.remove('hidden');
-            statusMessage.classList.remove('hidden');
-            statusMessage.innerHTML = 'Verificando regras de acesso (24h)...';
-            document.getElementById('areaTimer' + courseId.slice(-1)).classList.add('hidden');
-
-
-            // 2. Ativação do Botão
-            allButtons.forEach(button => {
-                button.classList.remove('active');
-                if (button.getAttribute('data-course-id') === courseId) {
-                    button.classList.add('active');
-                }
-            });
-            
-            // 3. Checagem do Acesso no Apps Script (Regra de 24h)
             try {
-                const response = await fetch(`${API_ENDPOINT}?token=${encodeURIComponent(token)}&courseId=${courseId}`, {
-                    method: 'GET'
+                // Tenta fazer o login com o código (doPost)
+                // Usamos o GET parameter ?code=... mas o método é POST para a requisição ser tratada pelo doPost
+                const response = await fetch(`${API_ENDPOINT}?code=${encodeURIComponent(code)}`, {
+                    method: 'POST'
                 });
 
+                if (!response.ok) {
+                    // Se a resposta HTTP não for 200, é um erro de conexão/servidor
+                    console.error('Erro de Servidor HTTP:', response.status);
+                    messageDiv.style.color = '#e74c3c';
+                    messageDiv.textContent = `Erro ${response.status}: Falha na comunicação com o servidor.`;
+                    return; 
+                }
+
                 const result = await response.json();
-                
-                if (result.status === 'error') {
-                    // FIX: Usa "./login.html" para garantir que o link de login funcione
-                    statusMessage.innerHTML = `Erro: ${result.message}. <a href="./login.html" style="color:white; text-decoration:underline;">Faça login novamente</a>.`;
-                } else if (result.accessGranted) {
-                    // Acesso liberado pelo servidor (24h se passaram ou é o primeiro acesso)
-                    statusMessage.innerHTML = 'Acesso liberado! 5 minutos de visualização iniciados.';
-                    initializeLocalTimer(courseId, selectedCourse.getAttribute('data-storage-key'));
+
+                if (result.status === 'success') {
+                    // Login bem-sucedido.
+                    localStorage.setItem('sessionToken', result.token);
+                    localStorage.setItem('userName', result.name);
+                    
+                    messageDiv.style.color = '#2ecc71';
+                    messageDiv.textContent = `Bem-vindo(a), ${result.name}! Redirecionando...`;
+                    
+                    // Redireciona para a página principal dos cursos de forma segura
+                    setTimeout(() => {
+                        window.location.href = './index.html'; 
+                    }, 1500);
+                    
                 } else {
-                    // Bloqueado, menos de 24h se passaram
-                    const remainingMS = result.timeRemainingMS;
-                    let totalSeconds = Math.floor(remainingMS / 1000);
-                    
-                    const hours = Math.floor(totalSeconds / 3600);
-                    totalSeconds %= 3600;
-                    const minutes = Math.floor(totalSeconds / 60);
-                    const seconds = totalSeconds % 60;
-                    
-                    const timeFormat = `${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
-                    
-                    statusMessage.innerHTML = `<strong>Bloqueado.</strong> Tente novamente em: ${timeFormat}.`;
+                    messageDiv.style.color = '#e74c3c';
+                    messageDiv.textContent = result.message || 'Erro de autenticação.';
                 }
             } catch (error) {
-                console.error('Erro de comunicação:', error);
-                statusMessage.innerHTML = 'Erro de conexão com o banco de dados. Verifique sua URL da API.';
-            }
-        }
-
-        // --- 5. INICIALIZAÇÃO DA PÁGINA ---
-        document.addEventListener('DOMContentLoaded', function() {
-            const token = checkSession();
-            renderButtons();
-            
-            if (token) {
-                // Inicia no primeiro curso se a sessão for válida
-                showCourse(COURSES[0].id); 
+                console.error('ERRO FATAL DE CONEXÃO:', error);
+                messageDiv.style.color = '#e74c3c';
+                messageDiv.textContent = 'ERRO AO CONECTAR: Verifique o Console (F12) e a URL da sua API.';
+            } finally {
+                loginButton.disabled = false;
+                loginButton.textContent = 'Entrar';
             }
         });
     </script>
 </body>
-
 </html>
