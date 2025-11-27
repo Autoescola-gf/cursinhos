@@ -397,7 +397,7 @@ async function marcarPresenca() {
             // 3. Inicia o contador para o próximo dia
             verificarStatusPresenca();
             
-            presencaMessage.style.color = '#28a745';
+            presencaMessage.style.color = '#901090';
             presencaMessage.textContent = '✅ Presença registrada com sucesso!';
             
         } else {
@@ -465,4 +465,5 @@ function initializePage() {
 
 // Chama a função de inicialização assim que o DOM estiver carregado
 window.onload = initializePage;
+
 
