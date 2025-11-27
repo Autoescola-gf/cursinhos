@@ -311,8 +311,8 @@ function verificarStatusPresenca() {
             }
 
             const tempoFormatado = formatarTempoRestante(tempoRestante);
-            presencaMessage.style.color = '#FFA500'; // Laranja
-            presencaMessage.innerHTML = `⏰ **Próxima marcação liberada em:** ${tempoFormatado} (amanhã)`;
+            presencaMessage.style.color = '#901090'; // Laranja
+            // presencaMessage.innerHTML = `⏰ Próxima prsença liberada em: ${tempoFormatado}`;
         };
         
         // Executa imediatamente e depois a cada segundo
@@ -398,7 +398,7 @@ async function marcarPresenca() {
             verificarStatusPresenca();
             
             presencaMessage.style.color = '#28a745';
-            presencaMessage.textContent = '✅ Presença registrada com sucesso! O contador de espera foi iniciado.';
+            presencaMessage.textContent = '✅ Presença registrada com sucesso!';
             
         } else {
             throw new Error(`Erro ao registrar presença: ${result.message || updateResponse.statusText}`);
@@ -465,3 +465,4 @@ function initializePage() {
 
 // Chama a função de inicialização assim que o DOM estiver carregado
 window.onload = initializePage;
+
