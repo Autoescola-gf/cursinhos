@@ -36,11 +36,10 @@
             background-color: #005f90;
         }
         .nav-buttons button.active {
-            background-color: #1a1a1a; /* Cor para o botão da aula atual */
+            background-color: #1a1a1a; 
             border: 2px solid #ffcc00;
         }
         
-        /* Container principal de exibição do vídeo */
         .video-content-wrapper {
             max-width: 900px;
             margin: 20px auto;
@@ -50,14 +49,13 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Container de cada aula (que será exibido/ocultado) */
         .aula-container {
-            display: none; /* Inicia oculto, será exibido pelo JS */
+            display: none; 
         }
         
         .vimeo-embed {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            padding-bottom: 56.25%; 
             height: 0;
             overflow: hidden;
             margin-top: 15px;
@@ -71,7 +69,6 @@
             border: 0;
         }
         
-        /* Estilo para o botão de sair */
         #logoutButton {
             display: block;
             margin: 0 auto 20px auto;
@@ -97,7 +94,7 @@
         <button id="btn-aula1" onclick="showLesson('aula1')">Aula 1: Introdução</button>
         <button id="btn-aula2" onclick="showLesson('aula2')">Aula 2: Tópico Avançado</button>
         <button id="btn-aula3" onclick="showLesson('aula3')">Aula 3: Conclusão</button>
-        </div>
+    </div>
 
     <div class="video-content-wrapper">
         
@@ -111,19 +108,39 @@
         <div id="aula2" class="aula-container">
             <h2>Aula 2: Tópico Avançado</h2>
             <div class="vimeo-embed">
-                <iframe src="https://player.vimeo.com/video/ID_VIDEO_2_AQUI?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                 <iframe src="https://player.vimeo.com/video/ID_VIDEO_2_AQUI?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
         
         <div id="aula3" class="aula-container">
             <h2>Aula 3: Conclusão do Módulo</h2>
             <div class="vimeo-embed">
-                <iframe src="https://player.vimeo.com/video/ID_VIDEO_3_AQUI?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                 <iframe src="https://player.vimeo.com/video/ID_VIDEO_3_AQUI?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
         
         </div>
 
     <script src="script.js"></script>
+    <script>
+        // Esta é a função showLesson que é chamada pelos botões e pelo script.js
+        function showLesson(lessonId) {
+            const allLessons = document.querySelectorAll('.aula-container');
+            allLessons.forEach(lesson => lesson.style.display = 'none');
+
+            const allButtons = document.querySelectorAll('.nav-buttons button');
+            allButtons.forEach(button => button.classList.remove('active'));
+
+            const currentLesson = document.getElementById(lessonId);
+            if (currentLesson) {
+                currentLesson.style.display = 'block';
+            }
+
+            const currentButton = document.getElementById(`btn-${lessonId}`);
+            if (currentButton) {
+                currentButton.classList.add('active');
+            }
+        }
+    </script>
 </body>
 </html>
