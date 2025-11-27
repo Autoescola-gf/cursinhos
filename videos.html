@@ -15,69 +15,21 @@
             color: #0077B5;
             margin-bottom: 20px;
         }
-        <div style="text-align: center; margin-bottom: 30px;">
-        <h3>Registro de Presença Diária</h3>
-        <button id="presencaButton" onclick="marcarPresenca()">Marcar Presença de Hoje</button>
-        <p id="presencaMessage" style="margin-top: 10px; font-weight: bold;"></p>
-        </div>
-        .nav-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-        .nav-buttons button {
-            background-color: #0077B5;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s, transform 0.1s;
-        }
-        .nav-buttons button:hover {
-            background-color: #005f90;
-        }
-        .nav-buttons button.active {
-            background-color: #1a1a1a; 
-            border: 2px solid #ffcc00;
-        }
         
-        .video-content-wrapper {
-            max-width: 900px;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
+        /* Estilos para o Botão de Presença */
+        .presenca-container {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
-
-        .aula-container {
-            display: none; 
-        }
-        
-        .vimeo-embed {
-            position: relative;
-            padding-bottom: 56.25%; 
-            height: 0;
-            overflow: hidden;
-            margin-top: 15px;
-        }
-        .vimeo-embed iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-        
-        #logoutButton {
-            display: block;
-            margin: 0 auto 20px auto;
-            background-color: #dc3545;
+        #presencaButton {
+            background-color: #28a745; /* Cor Verde para Ação Positiva */
             color: white;
             padding: 10px 20px;
             border: none;
@@ -86,67 +38,11 @@
             font-size: 16px;
             transition: background-color 0.3s;
         }
-        #logoutButton:hover {
-            background-color: #c82333;
+        #presencaButton:hover:not(:disabled) {
+            background-color: #218838;
         }
-    </style>
-</head>
-<body>
-    <button id="logoutButton" onclick="logout()">Sair / Encerrar Sessão</button>
-    <h1>🎓 Conteúdo Exclusivo | Minhas Aulas</h1>
-
-    <div class="nav-buttons">
-        <button id="btn-aula1" onclick="showLesson('aula1')">Aula 1: Introdução</button>
-        <button id="btn-aula2" onclick="showLesson('aula2')">Aula 2: Tópico Avançado</button>
-        <button id="btn-aula3" onclick="showLesson('aula3')">Aula 3: Conclusão</button>
-    </div>
-
-    <div class="video-content-wrapper">
-        
-        <div id="aula1" class="aula-container">
-            <h2>Aula 1: Introdução ao Assunto</h2>
-            <div class="vimeo-embed">
-                <iframe src="https://player.vimeo.com/video/ID_VIDEO_1_AQUI?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
-        </div>
-        
-        <div id="aula2" class="aula-container">
-            <h2>Aula 2: Tópico Avançado</h2>
-            <div class="vimeo-embed">
-                 <iframe src="https://player.vimeo.com/video/ID_VIDEO_2_AQUI?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
-        </div>
-        
-        <div id="aula3" class="aula-container">
-            <h2>Aula 3: Conclusão do Módulo</h2>
-            <div class="vimeo-embed">
-                 <iframe src="https://player.vimeo.com/video/ID_VIDEO_3_AQUI?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
-        </div>
-        
-        </div>
-
-    <script src="script.js"></script>
-    <script>
-        // Esta é a função showLesson que é chamada pelos botões e pelo script.js
-        function showLesson(lessonId) {
-            const allLessons = document.querySelectorAll('.aula-container');
-            allLessons.forEach(lesson => lesson.style.display = 'none');
-
-            const allButtons = document.querySelectorAll('.nav-buttons button');
-            allButtons.forEach(button => button.classList.remove('active'));
-
-            const currentLesson = document.getElementById(lessonId);
-            if (currentLesson) {
-                currentLesson.style.display = 'block';
-            }
-
-            const currentButton = document.getElementById(`btn-${lessonId}`);
-            if (currentButton) {
-                currentButton.classList.add('active');
-            }
+        #presencaButton:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
         }
-    </script>
-</body>
-</html>
-
+        #presencaMessage
