@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acesso às Aulas | Insira seu Token</title>
     <style>
+        /* ... Estilos CSS (mantidos do código anterior) ... */
         body {
             font-family: sans-serif;
             display: flex;
@@ -33,11 +34,11 @@
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+            box-sizing: border-box; 
             font-size: 16px;
         }
         button {
-            background-color: #0077B5; /* Cor do Vimeo */
+            background-color: #0077B5;
             color: white;
             padding: 10px 15px;
             border: none;
@@ -55,11 +56,24 @@
             color: red;
             font-weight: bold;
         }
+        /* Novo estilo para a mensagem de expiração */
+        #expiration-alert {
+            color: darkorange;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid darkorange;
+            border-radius: 4px;
+            display: none; /* Oculta por padrão */
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🔑 Acesso Privado</h1>
+
+        <p id="expiration-alert">Seu tempo de acesso de 24 horas esgotou. O token não pode ser reutilizado.</p>
+
         <p>Insira seu token único para acessar o material de aula.</p>
         
         <input type="text" id="tokenInput" placeholder="Digite seu token de acesso" required>
@@ -69,5 +83,13 @@
     </div>
     
     <script src="script.js"></script>
+
+    <script>
+        // Lógica para exibir a mensagem de expiração na URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('expired') === 'true') {
+            document.getElementById('expiration-alert').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
