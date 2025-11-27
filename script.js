@@ -8,13 +8,15 @@ const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/d2cbxsw23rkjz';
 
 // 🚨 NOVO: URL para a Planilha/Aba de Histórico de LOGS.
 // VOCÊ PRECISA SUBSTITUIR ESTE ENDPOINT pela URL de API da sua planilha de LOG.
-const PRESENCE_LOG_API_URL = 'https://sheetdb.io/api/v1/35dq0moqkjvfo'; 
+const PRESENCE_LOG_API_URL = 'https://sheetdb.io/api/v1/SUA_NOVA_URL_DE_LOG_AQUI'; 
 
 // Chaves de localStorage para o Timer de Acesso (24h)
 const ACCESS_KEY = 'vimeo_access_granted';
 const EXPIRATION_KEY = 'access_expires_at';
 const CPF_KEY = 'vimeo_user_cpf';
 const TOKEN_KEY = 'vimeo_user_token';
+// NOVO: Chave para armazenar o nome do aluno
+const NAME_KEY = 'vimeo_user_name';
 const DURATION_HOURS = 24;
 
 // Chave de localStorage para a Presença Diária
@@ -107,7 +109,6 @@ function formatarTempoRestante(milissegundos) {
  */
 async function checkToken() {
     const tokenInput = document.getElementById('tokenInput').value.trim().toUpperCase();
-    // Garante que o CPF digitado está formatado antes da busca
     const cpfInput = formatCPF(document.getElementById('cpfInput').value.trim());
 
     const messageElement = document.getElementById('message');
@@ -137,6 +138,9 @@ async function checkToken() {
         }
 
         const alunoData = data[0];
+        // NOVO: Captura o nome do aluno da coluna 'nome_aluno' (ajuste se sua coluna tiver outro nome)
+        const alunoNome = alunoData.nome_aluno || 'Aluno Não Nomeado'; 
+        
         const agora = Date.now();
         const expiracaoSalva = parseInt(alunoData.expiracao_ms) || 0;
 
@@ -145,11 +149,9 @@ async function checkToken() {
 
         // 2. Lógica do Timer (24h)
         if (agora < expiracaoSalva) {
-            // Acesso ainda válido
             statusMensagem = 'Acesso já ativo. Redirecionando...';
             novaExpiracao = expiracaoSalva;
         } else {
-            // Acesso expirado ou novo: Renovação por 24 horas
             novaExpiracao = agora + (DURATION_HOURS * 60 * 60 * 1000);
 
             // 3. Atualiza a Planilha com a nova data de expiração
@@ -173,6 +175,8 @@ async function checkToken() {
         localStorage.setItem(EXPIRATION_KEY, novaExpiracao);
         localStorage.setItem(CPF_KEY, cpfInput);
         localStorage.setItem(TOKEN_KEY, tokenInput);
+        // NOVO: Salva o nome no localStorage
+        localStorage.setItem(NAME_KEY, alunoNome);
 
         messageElement.textContent = statusMensagem;
         messageElement.style.color = 'green';
@@ -217,7 +221,7 @@ function checkAccess() {
     if(document.getElementById('aula1')) {
         showLesson('aula1');
         verificarStatusPresenca();
-        iniciarContadorExpiracao(); // <-- Novo contador de expiração de token
+        iniciarContadorExpiracao(); 
     }
 
     return true;
@@ -231,6 +235,7 @@ function logout() {
     localStorage.removeItem(EXPIRATION_KEY);
     localStorage.removeItem(CPF_KEY);
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(NAME_KEY); // Remove o nome
 
     // Limpa os contadores ativos
     if (countdownPresenceInterval !== null) {
@@ -280,7 +285,6 @@ function iniciarContadorExpiracao() {
             clearInterval(countdownTokenInterval);
             countdownTokenInterval = null;
             displayElement.textContent = '❌ Seu acesso expirou!';
-            // Chama a função de segurança para redirecionar se o token expirar
             checkAccess();
             return;
         }
@@ -289,7 +293,6 @@ function iniciarContadorExpiracao() {
         displayElement.textContent = `⏳ Seu acesso expira em: ${formatarTempoRestante(tempoRestante)}`;
     };
 
-    // Executa imediatamente e depois a cada segundo
     atualizarContador();
     countdownTokenInterval = setInterval(atualizarContador, 1000);
 }
@@ -303,7 +306,6 @@ function iniciarContadorExpiracao() {
  * Verifica o estado da presença diária (Lida do localStorage) e configura o contador até a meia-noite.
  */
 function verificarStatusPresenca() {
-    // 1. Limpa qualquer contador anterior para evitar sobreposição
     if (countdownPresenceInterval !== null) {
         clearInterval(countdownPresenceInterval);
         countdownPresenceInterval = null;
@@ -315,34 +317,27 @@ function verificarStatusPresenca() {
     const presencaMessage = document.getElementById('presencaMessage');
 
     if (lastPresenceDate === todayKey) {
-        // Presença já registrada hoje: Inicia o contador
         presencaButton.disabled = true;
         presencaButton.textContent = 'Presença de Hoje Já Registrada ✅';
 
-        // Função para atualizar o contador
         const atualizarContador = () => {
             const tempoRestante = calcularTempoParaMeiaNoite();
 
             if (tempoRestante <= 0) {
-                // Chegou à meia-noite, habilita a presença e limpa o intervalo
                 clearInterval(countdownPresenceInterval);
                 countdownPresenceInterval = null;
-                // Força a re-verificação, que agora detectará um novo dia e habilitará o botão
                 verificarStatusPresenca();
                 return;
             }
 
             const tempoFormatado = formatarTempoRestante(tempoRestante);
             presencaMessage.style.color = '#901090'; // Roxo
-            // presencaMessage.innerHTML = `⏰ Próxima prsença liberada em: ${tempoFormatado}`;
         };
 
-        // Executa imediatamente e depois a cada segundo
         atualizarContador();
         countdownPresenceInterval = setInterval(atualizarContador, 1000);
 
     } else {
-        // Presença ainda não registrada hoje: Habilita o botão
         presencaButton.disabled = false;
         presencaButton.textContent = 'Marcar Presença de Hoje';
         presencaMessage.style.color = '#000000';
@@ -365,6 +360,8 @@ async function marcarPresenca() {
 
     const token = localStorage.getItem(TOKEN_KEY);
     const cpf = localStorage.getItem(CPF_KEY);
+    // NOVO: Captura o nome do aluno
+    const nome = localStorage.getItem(NAME_KEY); 
 
     const todayKey = getCurrentDateKey();
     
@@ -374,7 +371,8 @@ async function marcarPresenca() {
         return;
     }
 
-    if (!token || !cpf) {
+    // Adiciona verificação do nome
+    if (!token || !cpf || !nome) { 
         presencaMessage.textContent = 'Erro: Falha de autenticação. Tente fazer login novamente.';
         presencaMessage.style.color = '#dc3545';
         presencaButton.disabled = false;
@@ -383,25 +381,27 @@ async function marcarPresenca() {
     }
 
     try {
-        // 1. Busca o aluno para obter os dados atuais (MANTIDO)
+        // 1. Busca o aluno para obter os dados atuais (Passo opcional, mas mantido)
         const searchUrl = `${SHEETDB_API_URL}/search?token=${token}`;
         const response = await fetch(searchUrl);
         const data = await response.json();
-        
+
         if (!data || data.length === 0) {
             throw new Error("Aluno não encontrado na base de dados (SheetDB)");
         }
-        
+
         const currentTimestamp = getCurrentTimestamp();
 
         // =============================================================
         // PASSO 2: ATUALIZA A PLANILHA PRINCIPAL (PATCH)
-        // Atualiza 'ultima_presenca' e 'hora_registro' no aluno para manter o bloqueio diário.
+        // Isso é NECESSÁRIO para o bloqueio de UMA presença por dia.
         // =============================================================
         const dataToUpdate = {
             'data': {
                 'ultima_presenca': todayKey,
-                'hora_registro': currentTimestamp 
+                'hora_registro': currentTimestamp, 
+                // NOVO: Adiciona o nome na Planilha Principal (para correção/atualização)
+                'nome_aluno': nome 
             }
         };
 
@@ -421,12 +421,14 @@ async function marcarPresenca() {
             
             // =============================================================
             // PASSO 3: INSERE UM NOVO LOG NA PLANILHA DE HISTÓRICO (POST)
-            // Cria uma nova linha para registrar o evento histórico.
+            // Isso CRIA uma nova linha para o registro de presença, preservando o histórico.
             // =============================================================
             const dataToLog = {
                 'data': {
                     'token': token,
                     'cpf': cpf,
+                    // NOVO: Adiciona o nome no Log Histórico
+                    'nome_aluno': nome, 
                     'data_registro': todayKey, 
                     'hora_registro': currentTimestamp 
                 }
@@ -441,7 +443,6 @@ async function marcarPresenca() {
             });
 
             if (!logResponse.ok) {
-                // Aviso, mas não trava o processo
                 console.warn('Alerta: Falha ao registrar log de presença na planilha de LOG histórico.');
             }
 
@@ -459,7 +460,7 @@ async function marcarPresenca() {
         }
     } catch (error) {
         console.error('Erro no registro de presença:', error);
-        
+
         presencaMessage.textContent = `Falha ao registrar. Verifique sua conexão. Erro: ${error.message}.`;
         presencaMessage.style.color = '#dc3545';
         presencaButton.disabled = false;
@@ -471,7 +472,6 @@ async function marcarPresenca() {
 // 6. FUNÇÕES DE NAVEGAÇÃO
 // =======================================================
 
-// A função showLesson deve ser definida aqui para que o HTML possa chamá-la.
 function showLesson(lessonId) {
     const allLessons = document.querySelectorAll('.aula-container');
     allLessons.forEach(lesson => lesson.style.display = 'none');
@@ -498,7 +498,6 @@ function showLesson(lessonId) {
  * Função principal que inicializa o estado da página ao carregar.
  */
 function initializePage() {
-    // Adiciona o formatador de CPF ao campo de input na página de login
     const cpfInput = document.getElementById('cpfInput');
     if (cpfInput) {
         cpfInput.addEventListener('input', (e) => {
@@ -506,14 +505,8 @@ function initializePage() {
         });
     }
 
-    // Lógica específica para a página de aulas (videos.html)
     if (window.location.pathname.endsWith('videos.html') || window.location.pathname.endsWith('videos.html/')) {
         checkAccess();
-    }
-
-    // Lógica específica para a página de login (index.html)
-    else if (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/')) {
-        // Nada a fazer no login além de formatar o CPF
     }
 }
 
