@@ -3,8 +3,12 @@
 // LÓGICA DE SEGURANÇA E REGISTRO DE PRESENÇA (GOOGLE SHEETS)
 // =======================================================
 
-// 🚨 IMPORTANTE: Verifique se este URL é o CORRETO fornecido pelo Sheetdb.io
-const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/d2cbxsw23rkjz';
+// 🚨 IMPORTANTE: Verifique se este URL é o CORRETO (Planilha Principal com status do aluno)
+const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/d2cbxsw23rkjz'; 
+
+// 🚨 NOVO: URL para a Planilha/Aba de Histórico de LOGS.
+// VOCÊ PRECISA SUBSTITUIR ESTE ENDPOINT pela URL de API da sua planilha de LOG.
+const PRESENCE_LOG_API_URL = 'https://sheetdb.io/api/v1/35dq0moqkjvfo'; 
 
 // Chaves de localStorage para o Timer de Acesso (24h)
 const ACCESS_KEY = 'vimeo_access_granted';
@@ -348,7 +352,7 @@ function verificarStatusPresenca() {
 
 
 /**
- * Registra a presença do usuário na planilha via SheetDB, incluindo o timestamp exato do clique.
+ * Registra a presença do usuário na planilha via SheetDB, realizando PATCH (Status) e POST (Histórico).
  */
 async function marcarPresenca() {
     const presencaButton = document.getElementById('presencaButton');
@@ -363,8 +367,7 @@ async function marcarPresenca() {
     const cpf = localStorage.getItem(CPF_KEY);
 
     const todayKey = getCurrentDateKey();
-    const currentTimestamp = getCurrentTimestamp(); // <-- Captura a data e hora do clique!
-
+    
     const lastPresenceDate = localStorage.getItem(PRESENCE_DATE_KEY);
     if (lastPresenceDate === todayKey) {
         verificarStatusPresenca();
@@ -380,25 +383,28 @@ async function marcarPresenca() {
     }
 
     try {
-        // 1. Busca o aluno para obter os dados atuais (Passo opcional, mas mantido)
+        // 1. Busca o aluno para obter os dados atuais (MANTIDO)
         const searchUrl = `${SHEETDB_API_URL}/search?token=${token}`;
         const response = await fetch(searchUrl);
         const data = await response.json();
-
+        
         if (!data || data.length === 0) {
             throw new Error("Aluno não encontrado na base de dados (SheetDB)");
         }
+        
+        const currentTimestamp = getCurrentTimestamp();
 
-        // 2. Cria o objeto de dados para ATUALIZAR a linha existente com a data e hora (timestamp)
+        // =============================================================
+        // PASSO 2: ATUALIZA A PLANILHA PRINCIPAL (PATCH)
+        // Atualiza 'ultima_presenca' e 'hora_registro' no aluno para manter o bloqueio diário.
+        // =============================================================
         const dataToUpdate = {
             'data': {
                 'ultima_presenca': todayKey,
-                // NOVO: Adiciona o timestamp completo com hora e data
-                'hora_registro': currentTimestamp
+                'hora_registro': currentTimestamp 
             }
         };
 
-        // Usa o token como chave para garantir que a linha correta seja atualizada (PATCH)
         const updateUrl = `${SHEETDB_API_URL}/token/${token}`;
 
         const updateResponse = await fetch(updateUrl, {
@@ -412,20 +418,48 @@ async function marcarPresenca() {
         const result = await updateResponse.json();
 
         if (updateResponse.ok) {
-            // Sucesso! Atualiza o localStorage para evitar múltiplos registros
+            
+            // =============================================================
+            // PASSO 3: INSERE UM NOVO LOG NA PLANILHA DE HISTÓRICO (POST)
+            // Cria uma nova linha para registrar o evento histórico.
+            // =============================================================
+            const dataToLog = {
+                'data': {
+                    'token': token,
+                    'cpf': cpf,
+                    'data_registro': todayKey, 
+                    'hora_registro': currentTimestamp 
+                }
+            };
+            
+            const logResponse = await fetch(PRESENCE_LOG_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataToLog)
+            });
+
+            if (!logResponse.ok) {
+                // Aviso, mas não trava o processo
+                console.warn('Alerta: Falha ao registrar log de presença na planilha de LOG histórico.');
+            }
+
+            // Sucesso! Atualiza o localStorage para evitar múltiplos registros no mesmo dia
             localStorage.setItem(PRESENCE_DATE_KEY, todayKey);
-
-            // 3. Inicia o contador para o próximo dia
+            
+            // 4. Finalização do Processo (MANTIDO)
             verificarStatusPresenca();
-
+            
             presencaMessage.style.color = '#901090';
-            presencaMessage.textContent = `✅ Presença registrada com sucesso! ${currentTimestamp}`; // Exibe o timestamp no feedback
+            presencaMessage.textContent = `✅ Presença registrada com sucesso! ${currentTimestamp}`;
+            
         } else {
             throw new Error(`Erro ao registrar presença: ${result.message || updateResponse.statusText}`);
         }
     } catch (error) {
         console.error('Erro no registro de presença:', error);
-
+        
         presencaMessage.textContent = `Falha ao registrar. Verifique sua conexão. Erro: ${error.message}.`;
         presencaMessage.style.color = '#dc3545';
         presencaButton.disabled = false;
