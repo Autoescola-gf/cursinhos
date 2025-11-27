@@ -1,46 +1,76 @@
 // 🚨 PASSO 1: EDITE ESTA LISTA DE TOKENS!
-// CÓDIGOS ÚNICOS QUE VOCÊ VAI DISTRIBUIR.
+// CÓDIGOS que você distribuirá. Eles funcionam como senhas.
 const VALID_TOKENS = [
-    'SEUTOKEN1',
-    'SEUTOKEN2',
-    'EXEMPLO-DO-ALUNO-VIP',
-    'CODIGO-DE-TESTE-42'
+    'ALUNO123',
+    'AULAVIP99',
+    'CODIGO-DE-TESTE'
     // Adicione mais tokens aqui
 ];
 
 // Chaves usadas para armazenar dados no navegador
 const ACCESS_KEY = 'vimeo_access_granted';
 const EXPIRATION_KEY = 'access_expires_at';
-const USED_TOKENS_KEY = 'consumed_tokens';
+const CPF_KEY = 'vimeo_user_cpf'; // Chave para armazenar o CPF do usuário
 const DURATION_HOURS = 24; // Duração do acesso em horas
-
 
 // =======================================================
 // LÓGICA DE LOGIN (Usada em index.html)
 // =======================================================
 
+function formatCPF(cpf) {
+    // Remove tudo que não for dígito e garante apenas 11 caracteres
+    cpf = cpf.replace(/[^\d]/g, '').substring(0, 11);
+    // Aplica a máscara: XXX.XXX.XXX-XX
+    if (cpf.length > 9) {
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+    return cpf;
+}
+
+// Event listener para formatar o CPF enquanto o usuário digita
+window.onload = function() {
+    const cpfInput = document.getElementById('cpfInput');
+    if (cpfInput) {
+        // Aplica a verificação de acesso ao carregar a página (para videos.html)
+        checkAccess(); 
+        
+        cpfInput.addEventListener('input', (e) => {
+            e.target.value = formatCPF(e.target.value);
+        });
+    } else {
+        // Se não for a página de login, apenas executa a verificação
+        checkAccess(); 
+    }
+};
+
+
 function checkToken() {
     if (document.getElementById('tokenInput')) {
         const tokenInput = document.getElementById('tokenInput').value.trim().toUpperCase();
+        const cpfInput = document.getElementById('cpfInput').value.trim();
         const messageElement = document.getElementById('message');
 
-        // Puxa a lista de tokens já usados do armazenamento local
-        let usedTokens = JSON.parse(localStorage.getItem(USED_TOKENS_KEY)) || [];
+        // Limpa mensagens anteriores
+        messageElement.textContent = '';
+        messageElement.style.color = 'red';
+        
+        // Validação básica do CPF
+        if (cpfInput.length !== 14) {
+            messageElement.textContent = 'Por favor, insira um CPF válido (11 dígitos).';
+            return;
+        }
 
-        // Verifica se o token é válido E se ainda não foi usado (simulação)
-        if (VALID_TOKENS.includes(tokenInput) && !usedTokens.includes(tokenInput)) {
+        // 1. Verifica se o token é válido
+        if (VALID_TOKENS.includes(tokenInput)) {
             
-            // 1. Calcula o tempo de expiração (agora + 24 horas)
+            // 2. Calcula o tempo de expiração (agora + 24 horas)
             const expirationTime = Date.now() + (DURATION_HOURS * 60 * 60 * 1000);
             
-            // 2. Armazena o acesso e a expiração
+            // 3. Armazena o acesso, o CPF e a expiração
             localStorage.setItem(ACCESS_KEY, 'true');
             localStorage.setItem(EXPIRATION_KEY, expirationTime);
-
-            // 3. Adiciona o token à lista de tokens usados (simulação de uso único)
-            usedTokens.push(tokenInput);
-            localStorage.setItem(USED_TOKENS_KEY, JSON.stringify(usedTokens));
-
+            localStorage.setItem(CPF_KEY, cpfInput); // Salva o CPF vinculado
+            
             messageElement.textContent = `Acesso concedido por ${DURATION_HOURS} horas! Redirecionando...`;
             messageElement.style.color = 'green';
             
@@ -48,14 +78,9 @@ function checkToken() {
                 window.location.href = 'videos.html';
             }, 500);
 
-        } else if (usedTokens.includes(tokenInput)) {
-             // Token já usado
-            messageElement.textContent = 'Este token já foi utilizado e expirou. Por favor, solicite um novo acesso.';
-            messageElement.style.color = 'red';
         } else {
             // Token inválido
-            messageElement.textContent = 'Token inválido. Tente novamente.';
-            messageElement.style.color = 'red';
+            messageElement.textContent = 'Token ou CPF inválido. Tente novamente.';
             localStorage.removeItem(ACCESS_KEY);
         }
     }
@@ -85,23 +110,22 @@ function showLesson(lessonId) {
     }
 }
 
-
 // Função que verifica acesso e validade do timer
 function checkAccess() {
     if (window.location.pathname.endsWith('videos.html') || window.location.pathname.endsWith('videos.html/')) {
         const hasAccess = localStorage.getItem(ACCESS_KEY) === 'true';
         const expirationTime = localStorage.getItem(EXPIRATION_KEY);
+        const userCPF = localStorage.getItem(CPF_KEY); // Obtém o CPF salvo
 
-        // Se o acesso ou o tempo de expiração não existirem, redireciona
-        if (!hasAccess || !expirationTime) {
+        // Se o acesso, expiração ou CPF não existirem, redireciona
+        if (!hasAccess || !expirationTime || !userCPF) {
             window.location.href = 'index.html?expired=no_access';
             return false;
         }
 
-        // Verifica se o tempo expirou
+        // 🚨 Verificação do Timer
         if (Date.now() > parseInt(expirationTime)) {
             logout(); // Limpa as chaves e redireciona
-            // Adiciona um parâmetro na URL para exibir mensagem de expiração na tela de login
             window.location.href = 'index.html?expired=true';
             return false;
         }
@@ -118,11 +142,10 @@ function checkAccess() {
 
 
 function logout() {
-    // Remove as chaves de acesso e expiração
+    // Remove as chaves de acesso e expiração (mantém o CPF no caso de querer fazer tracking)
     localStorage.removeItem(ACCESS_KEY);
     localStorage.removeItem(EXPIRATION_KEY);
-    // IMPORTANTE: Mantém a chave USED_TOKENS_KEY para simular uso único
+    // Remove o CPF também para forçar um novo login completo se o usuário sair.
+    localStorage.removeItem(CPF_KEY); 
     window.location.href = 'index.html';
 }
-
-// Garante que a ver
