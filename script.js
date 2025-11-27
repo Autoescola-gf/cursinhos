@@ -1,151 +1,69 @@
-// 🚨 PASSO 1: EDITE ESTA LISTA DE TOKENS!
-// CÓDIGOS que você distribuirá. Eles funcionam como senhas.
-const VALID_TOKENS = [
-    'ALUNO123',
-    'AULAVIP99',
-    'CODIGO-DE-TESTE'
-    // Adicione mais tokens aqui
-];
+// index.js na sua pasta /functions
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 
-// Chaves usadas para armazenar dados no navegador
-const ACCESS_KEY = 'vimeo_access_granted';
-const EXPIRATION_KEY = 'access_expires_at';
-const CPF_KEY = 'vimeo_user_cpf'; // Chave para armazenar o CPF do usuário
-const DURATION_HOURS = 24; // Duração do acesso em horas
+// Inicializa o Admin SDK para acessar o Firestore
+admin.initializeApp();
+const db = admin.firestore();
 
-// =======================================================
-// LÓGICA DE LOGIN (Usada em index.html)
-// =======================================================
+// Duração do acesso em milissegundos (24 horas)
+const DURATION_MS = 24 * 60 * 60 * 1000;
 
-function formatCPF(cpf) {
-    // Remove tudo que não for dígito e garante apenas 11 caracteres
-    cpf = cpf.replace(/[^\d]/g, '').substring(0, 11);
-    // Aplica a máscara: XXX.XXX.XXX-XX
-    if (cpf.length > 9) {
-        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+/**
+ * Função de back-end para verificar o token e CPF, e gerenciar o timer de 24h.
+ * Chamada pelo front-end (index.html).
+ */
+exports.verificarAcesso = functions.https.onCall(async (data, context) => {
+    // 1. Recebe os dados
+    const { token, cpf } = data; 
+    
+    if (!token || !cpf) {
+        return { status: 'error', message: 'Token e CPF são obrigatórios.' };
     }
-    return cpf;
-}
+    
+    // 2. Tenta buscar o token no Firestore (o ID do documento é o token)
+    const docRef = db.collection('alunos').doc(token.toUpperCase());
+    const doc = await docRef.get();
 
-// Event listener para formatar o CPF enquanto o usuário digita
-window.onload = function() {
-    const cpfInput = document.getElementById('cpfInput');
-    if (cpfInput) {
-        // Aplica a verificação de acesso ao carregar a página (para videos.html)
-        checkAccess(); 
-        
-        cpfInput.addEventListener('input', (e) => {
-            e.target.value = formatCPF(e.target.value);
-        });
+    if (!doc.exists) {
+        return { status: 'error', message: 'Token inválido.' };
+    }
+
+    const alunoData = doc.data();
+    const cpfLimpo = cpf.replace(/[^\d]/g, ''); // Remove formatação do CPF
+
+    // 3. Verifica se o CPF fornecido corresponde ao CPF cadastrado
+    if (alunoData.cpf.replace(/[^\d]/g, '') !== cpfLimpo) {
+        return { status: 'error', message: 'Token e CPF não combinam.' };
+    }
+
+    // 4. Verifica a expiração
+    const agora = new Date();
+    // Converte o campo Firestore (Timestamp) para objeto Date
+    const expiraEm = alunoData.acessoExpiracao ? alunoData.acessoExpiracao.toDate() : new Date(0);
+
+    let statusMensagem = '';
+    let novaExpiracao;
+
+    if (agora < expiraEm) {
+        // Acesso ainda válido
+        statusMensagem = 'Acesso ativo. Você já está logado.';
+        novaExpiracao = expiraEm; // Mantém a data de expiração existente
     } else {
-        // Se não for a página de login, apenas executa a verificação
-        checkAccess(); 
-    }
-};
-
-
-function checkToken() {
-    if (document.getElementById('tokenInput')) {
-        const tokenInput = document.getElementById('tokenInput').value.trim().toUpperCase();
-        const cpfInput = document.getElementById('cpfInput').value.trim();
-        const messageElement = document.getElementById('message');
-
-        // Limpa mensagens anteriores
-        messageElement.textContent = '';
-        messageElement.style.color = 'red';
+        // Acesso expirado ou nunca usado: Renovação por 24 horas
+        novaExpiracao = new Date(agora.getTime() + DURATION_MS);
         
-        // Validação básica do CPF
-        if (cpfInput.length !== 14) {
-            messageElement.textContent = 'Por favor, insira um CPF válido (11 dígitos).';
-            return;
-        }
-
-        // 1. Verifica se o token é válido
-        if (VALID_TOKENS.includes(tokenInput)) {
-            
-            // 2. Calcula o tempo de expiração (agora + 24 horas)
-            const expirationTime = Date.now() + (DURATION_HOURS * 60 * 60 * 1000);
-            
-            // 3. Armazena o acesso, o CPF e a expiração
-            localStorage.setItem(ACCESS_KEY, 'true');
-            localStorage.setItem(EXPIRATION_KEY, expirationTime);
-            localStorage.setItem(CPF_KEY, cpfInput); // Salva o CPF vinculado
-            
-            messageElement.textContent = `Acesso concedido por ${DURATION_HOURS} horas! Redirecionando...`;
-            messageElement.style.color = 'green';
-            
-            setTimeout(() => {
-                window.location.href = 'videos.html';
-            }, 500);
-
-        } else {
-            // Token inválido
-            messageElement.textContent = 'Token ou CPF inválido. Tente novamente.';
-            localStorage.removeItem(ACCESS_KEY);
-        }
-    }
-}
-
-
-// =======================================================
-// LÓGICA DE PROTEÇÃO, TIMER E NAVEGAÇÃO (Usada em videos.html)
-// =======================================================
-
-// Função que controla a exibição das aulas (mantida do código anterior)
-function showLesson(lessonId) {
-    const allLessons = document.querySelectorAll('.aula-container');
-    allLessons.forEach(lesson => lesson.style.display = 'none');
-
-    const allButtons = document.querySelectorAll('.nav-buttons button');
-    allButtons.forEach(button => button.classList.remove('active'));
-
-    const currentLesson = document.getElementById(lessonId);
-    if (currentLesson) {
-        currentLesson.style.display = 'block';
+        // Atualiza o Firestore com a nova data de expiração
+        await docRef.update({
+            acessoExpiracao: novaExpiracao
+        });
+        statusMensagem = `Acesso renovado por ${DURATION_MS / 1000 / 60 / 60} horas.`;
     }
 
-    const currentButton = document.getElementById(`btn-${lessonId}`);
-    if (currentButton) {
-        currentButton.classList.add('active');
-    }
-}
-
-// Função que verifica acesso e validade do timer
-function checkAccess() {
-    if (window.location.pathname.endsWith('videos.html') || window.location.pathname.endsWith('videos.html/')) {
-        const hasAccess = localStorage.getItem(ACCESS_KEY) === 'true';
-        const expirationTime = localStorage.getItem(EXPIRATION_KEY);
-        const userCPF = localStorage.getItem(CPF_KEY); // Obtém o CPF salvo
-
-        // Se o acesso, expiração ou CPF não existirem, redireciona
-        if (!hasAccess || !expirationTime || !userCPF) {
-            window.location.href = 'index.html?expired=no_access';
-            return false;
-        }
-
-        // 🚨 Verificação do Timer
-        if (Date.now() > parseInt(expirationTime)) {
-            logout(); // Limpa as chaves e redireciona
-            window.location.href = 'index.html?expired=true';
-            return false;
-        }
-        
-        // Se o acesso for válido, exibe a primeira aula
-        if(document.getElementById('aula1')) {
-            showLesson('aula1');
-        }
-        
-        return true;
-    }
-    return true; 
-}
-
-
-function logout() {
-    // Remove as chaves de acesso e expiração (mantém o CPF no caso de querer fazer tracking)
-    localStorage.removeItem(ACCESS_KEY);
-    localStorage.removeItem(EXPIRATION_KEY);
-    // Remove o CPF também para forçar um novo login completo se o usuário sair.
-    localStorage.removeItem(CPF_KEY); 
-    window.location.href = 'index.html';
-}
+    // 5. Retorna o sucesso e a data/hora de expiração para o front-end
+    return { 
+        status: 'success', 
+        message: statusMensagem,
+        expiracao: novaExpiracao.getTime() // Retorna como milissegundos para o front-end
+    };
+});
