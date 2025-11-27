@@ -3,156 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acesso ao Cursinho - Login</title>
+    <title>Minhas Aulas | Conteúdo Exclusivo</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #2c3e50;
-            color: #ecf0f1;
+            font-family: sans-serif;
+            background-color: #f4f4f9;
             padding: 20px;
         }
-        .login-box {
-            background-color: #34495e;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
         h1 {
-            color: #f1c40f;
-            margin-bottom: 25px;
-            font-size: 1.8em;
+            text-align: center;
+            color: #0077B5;
         }
-        label {
-            display: block;
-            text-align: left;
-            margin-bottom: 8px;
-            font-weight: bold;
+        .video-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
+        .vimeo-embed {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
             margin-bottom: 20px;
-            border: 1px solid #5d7d9a;
-            border-radius: 5px;
-            background-color: #4a6784;
-            color: #ecf0f1;
-            box-sizing: border-box;
         }
-        button {
+        .vimeo-embed iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 12px;
-            background-color: #f1c40f;
-            color: #2c3e50;
+            height: 100%;
+            border: 0;
+        }
+        /* Estilo para o botão de sair */
+        #logoutButton {
+            display: block;
+            margin: 20px auto;
+            background-color: #dc3545; /* Cor de Perigo/Sair */
+            color: white;
+            padding: 10px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 1.1em;
+            font-size: 16px;
             transition: background-color 0.3s;
         }
-        button:hover:not(:disabled) {
-            background-color: #f39c12;
-        }
-        button:disabled {
-            background-color: #5d7d9a;
-            cursor: not-allowed;
-        }
-        #message {
-            margin-top: 20px;
-            font-weight: bold;
+        #logoutButton:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
 <body>
-    <div class="login-box">
-        <h1>Acesso Exclusivo</h1>
-        <p>Insira seu código de aluno para liberar o acesso ao curso.</p>
-        
-        <form id="loginForm">
-            <label for="uniqueCode">Código de Acesso Único:</label>
-            <input type="text" id="uniqueCode" required>
-            <button type="submit" id="loginButton">Entrar</button>
-        </form>
-        
-        <div id="message" style="color: #e74c3c;"></div>
+    <button id="logoutButton" onclick="logout()">Sair / Encerrar Sessão</button>
+    <h1>🎓 Módulos do Curso Exclusivo</h1>
+
+    <div class="video-container">
+        <h2>Aula 1: Introdução ao Assunto</h2>
+        <div class="vimeo-embed">
+            <iframe src="https://player.vimeo.com/video/SEU_ID_DO_VIDEO_AQUI?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
     </div>
-
-    <script>
-        // Substitua pela URL da sua Implementação do Google Apps Script (CRÍTICO)
-        const API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwhhZ3nZNPAO0x-0sXd9lMCUWB09yYZhL2G7NWojxCB4Tud6AZxig3wCUap95k1wVp89Q/exec'; 
-
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const code = document.getElementById('uniqueCode').value.trim();
-            const messageDiv = document.getElementById('message');
-            const loginButton = document.getElementById('loginButton');
-
-            if (!code) {
-                messageDiv.textContent = 'Por favor, insira seu código.';
-                return;
-            }
-
-            loginButton.disabled = true;
-            loginButton.textContent = 'Verificando...';
-            messageDiv.textContent = '';
-
-            try {
-                // Tenta fazer o login com o código (doPost)
-                // Usamos o GET parameter ?code=... mas o método é POST para a requisição ser tratada pelo doPost
-                const response = await fetch(`${API_ENDPOINT}?code=${encodeURIComponent(code)}`, {
-                    method: 'POST'
-                });
-
-                if (!response.ok) {
-                    // Se a resposta HTTP não for 200, é um erro de conexão/servidor
-                    console.error('Erro de Servidor HTTP:', response.status);
-                    messageDiv.style.color = '#e74c3c';
-                    messageDiv.textContent = `Erro ${response.status}: Falha na comunicação com o servidor.`;
-                    return; 
-                }
-
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    // Login bem-sucedido.
-                    localStorage.setItem('sessionToken', result.token);
-                    localStorage.setItem('userName', result.name);
-                    
-                    messageDiv.style.color = '#2ecc71';
-                    messageDiv.textContent = `Bem-vindo(a), ${result.name}! Redirecionando...`;
-                    
-                    // Redireciona para a página principal dos cursos de forma segura
-                    setTimeout(() => {
-                        window.location.href = './index.html'; 
-                    }, 1500);
-                    
-                } else {
-                    messageDiv.style.color = '#e74c3c';
-                    messageDiv.textContent = result.message || 'Erro de autenticação.';
-                }
-            } catch (error) {
-                console.error('ERRO FATAL DE CONEXÃO:', error);
-                messageDiv.style.color = '#e74c3c';
-                messageDiv.textContent = 'ERRO AO CONECTAR: Verifique o Console (F12) e a URL da sua API.';
-            } finally {
-                loginButton.disabled = false;
-                loginButton.textContent = 'Entrar';
-            }
-        });
-    </script>
+    
+    <div class="video-container">
+        <h2>Aula 2: Tópico Avançado</h2>
+        <div class="vimeo-embed">
+            <iframe src="https://player.vimeo.com/video/OUTRO_ID_DO_VIDEO_AQUI?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+    </div>
+    
+    <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
