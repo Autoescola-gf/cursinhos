@@ -5,7 +5,7 @@
 
 // 🚨 IMPORTANTE: Verifique se este URL é o CORRETO (Planilha Principal com status do aluno)
 const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/d2cbxsw23rkjz'; 
-
+const PRESENCE_LOG_API_URL = 'https://sheetdb.io/api/v1/vyslff80veuxt';
 // Chaves de localStorage para o Timer de Acesso (24h)
 const ACCESS_KEY = 'vimeo_access_granted';
 const EXPIRATION_KEY = 'access_expires_at';
@@ -508,5 +508,6 @@ function initializePage() {
 
 // Chama a função de inicialização assim que o DOM estiver carregado
 window.onload = initializePage;
+
 
 
