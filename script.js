@@ -479,3 +479,4 @@ function initializePage() {
 // Chama a função de inicialização assim que o DOM estiver carregado
 window.onload = initializePage;
 
+
