@@ -5,7 +5,7 @@
 
 // 🚨 IMPORTANTE: Planilha Principal com status do aluno (Endpoint d2cbxsw23rkjz)
 // ⭐ NOVA API: URL do Google Apps Script (Cole sua URL de Implantação aqui)
-const APPSCRIPT_API_URL = 'https://script.google.com/macros/s/AKfycbxjFteTqLlELcwiouxYrtilVaFUuleCWZceWsmMx6SuKoTNi2ECweuB7ehIXBPeUNQnoQ/exec';
+const APPSCRIPT_API_URL = 'https://script.google.com/macros/s/AKfycby_cWHzJ1oqyzytKpXZVekPrEFuCaX88q8AF0Ng66XR5iz_Gz6oSCd0Vu_TZZhxSU02kA/exec';
 
 // A constante PRESENCE_LOG_API_URL foi removida conforme solicitado.
 
@@ -478,6 +478,7 @@ function initializePage() {
 
 // Chama a função de inicialização assim que o DOM estiver carregado
 window.onload = initializePage;
+
 
 
 
