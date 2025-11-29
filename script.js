@@ -3,18 +3,15 @@
 // LÓGICA DE SEGURANÇA E REGISTRO DE PRESENÇA (GOOGLE SHEETS)
 // =======================================================
 
-// 🚨 IMPORTANTE: Planilha Principal com status do aluno (Endpoint d2cbxsw23rkjz)
-// ⭐ NOVA API: URL do Google Apps Script (Cole sua URL de Implantação aqui)
-const APPSCRIPT_API_URL = 'https://script.google.com/macros/s/AKfycbyoxkY4LdkzL0OH32ECoUuQM5NvhbtplXzAPIxH78ghKjLseTKk9MFoFACdz0xG0DrgHQ/exec';
-
-// A constante PRESENCE_LOG_API_URL foi removida conforme solicitado.
+// 🚨 IMPORTANTE: Verifique se este URL é o CORRETO (Planilha Principal com status do aluno)
+const SHEETDB_API_URL = 'https://sheetdb.io/api/v1/iofg6zqrwtmtn'; 
 
 // Chaves de localStorage para o Timer de Acesso (24h)
 const ACCESS_KEY = 'vimeo_access_granted';
 const EXPIRATION_KEY = 'access_expires_at';
 const CPF_KEY = 'vimeo_user_cpf';
 const TOKEN_KEY = 'vimeo_user_token';
-// Chave para armazenar o nome do aluno
+// NOVO: Chave para armazenar o nome do aluno
 const NAME_KEY = 'vimeo_user_name';
 const DURATION_HOURS = 24;
 
@@ -126,31 +123,22 @@ async function checkToken() {
     messageElement.style.color = 'gray';
 
     try {
-        // 1. Busca na planilha pelo Token e CPF usando a função 'search'
-        const searchResponse = await fetch(APPSCRIPT_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'search',
-                token: tokenInput,
-                cpf: cpfInput
-            })
-        });
-        
-        const searchData = await searchResponse.json();
+        // 1. Busca na planilha pelo Token e CPF
+        const searchUrl = `${SHEETDB_API_URL}/search?token=${tokenInput}&cpf=${cpfInput}`;
+        const response = await fetch(searchUrl);
+        const data = await response.json();
 
-        // Se a busca falhar
-        if (searchData.status !== 'success' || !searchData.data || searchData.data.length === 0) {
+        if (!data || data.length === 0 || data.length > 1) {
             messageElement.textContent = 'Erro: Token ou CPF inválido. Aluno não encontrado na base.';
             return;
         }
 
-        const alunoData = searchData.data[0];
+        const alunoData = data[0];
+        // NOVO: Captura o nome do aluno da coluna 'nome_aluno' (ajuste se sua coluna tiver outro nome)
         const alunoNome = alunoData.nome_aluno || 'Aluno Não Nomeado'; 
         
         const agora = Date.now();
-        // O valor vem do Sheets, que é um number ou string de número
-        const expiracaoSalva = parseInt(alunoData.expiracao_ms) || 0; 
+        const expiracaoSalva = parseInt(alunoData.expiracao_ms) || 0;
 
         let novaExpiracao;
         let statusMensagem;
@@ -162,22 +150,18 @@ async function checkToken() {
         } else {
             novaExpiracao = agora + (DURATION_HOURS * 60 * 60 * 1000);
 
-            // 3. Atualiza a Planilha com a nova data de expiração (PATCH) usando a função 'update_expiration'
-            const updateResponse = await fetch(APPSCRIPT_API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            // 3. Atualiza a Planilha com a nova data de expiração
+            const updateUrl = `${SHEETDB_API_URL}/token/${tokenInput}`;
+
+            await fetch(updateUrl, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify({
-                    action: 'update_expiration',
-                    token: tokenInput,
-                    expiracao_ms: novaExpiracao
+                    data: { expiracao_ms: novaExpiracao }
                 })
             });
-            
-            const updateData = await updateResponse.json();
-
-            if (updateData.status !== 'success') {
-                throw new Error(updateData.message || 'Falha ao atualizar o timer de acesso na planilha.');
-            }
 
             statusMensagem = `Acesso renovado por ${DURATION_HOURS} horas! Redirecionando...`;
         }
@@ -187,6 +171,7 @@ async function checkToken() {
         localStorage.setItem(EXPIRATION_KEY, novaExpiracao);
         localStorage.setItem(CPF_KEY, cpfInput);
         localStorage.setItem(TOKEN_KEY, tokenInput);
+        // NOVO: Salva o nome no localStorage
         localStorage.setItem(NAME_KEY, alunoNome);
 
         messageElement.textContent = statusMensagem;
@@ -197,8 +182,8 @@ async function checkToken() {
         }, 500);
 
     } catch (error) {
-        console.error("Erro na comunicação com a API (Apps Script):", error);
-        messageElement.textContent = `Erro de comunicação ou no servidor. Tente novamente mais tarde. (${error.message})`;
+        console.error("Erro de comunicação com o SheetDB:", error);
+        messageElement.textContent = 'Erro de comunicação ou no servidor. Tente novamente mais tarde.';
     } finally {
         loginButton.disabled = false;
     }
@@ -358,7 +343,7 @@ function verificarStatusPresenca() {
 
 
 /**
- * Registra a presença do usuário na planilha via SheetDB, realizando apenas o PATCH na Planilha Principal.
+ * Registra a presença do usuário na planilha via SheetDB, realizando PATCH (Status) e POST (Histórico).
  */
 async function marcarPresenca() {
     const presencaButton = document.getElementById('presencaButton');
@@ -371,6 +356,7 @@ async function marcarPresenca() {
 
     const token = localStorage.getItem(TOKEN_KEY);
     const cpf = localStorage.getItem(CPF_KEY);
+    // NOVO: Captura o nome do aluno
     const nome = localStorage.getItem(NAME_KEY); 
 
     const todayKey = getCurrentDateKey();
@@ -381,6 +367,7 @@ async function marcarPresenca() {
         return;
     }
 
+    // Adiciona verificação do nome
     if (!token || !cpf || !nome) { 
         presencaMessage.textContent = 'Erro: Falha de autenticação. Tente fazer login novamente.';
         presencaMessage.style.color = '#dc3545';
@@ -390,39 +377,82 @@ async function marcarPresenca() {
     }
 
     try {
+        // 1. Busca o aluno para obter os dados atuais (Passo opcional, mas mantido)
+        const searchUrl = `${SHEETDB_API_URL}/search?token=${token}`;
+        const response = await fetch(searchUrl);
+        const data = await response.json();
+
+        if (!data || data.length === 0) {
+            throw new Error("Aluno não encontrado na base de dados (SheetDB)");
+        }
+
         const currentTimestamp = getCurrentTimestamp();
 
-        // 1. ATUALIZA A PLANILHA PRINCIPAL (PATCH) usando a função 'update_presence'
-        const updateResponse = await fetch(APPSCRIPT_API_URL, {
-            method: 'POST',
+        // =============================================================
+        // PASSO 2: ATUALIZA A PLANILHA PRINCIPAL (PATCH)
+        // Isso é NECESSÁRIO para o bloqueio de UMA presença por dia.
+        // =============================================================
+        const dataToUpdate = {
+            'data': {
+                'ultima_presenca': todayKey,
+                'hora_registro': currentTimestamp, 
+                // NOVO: Adiciona o nome na Planilha Principal (para correção/atualização)
+                'nome_aluno': nome 
+            }
+        };
+
+        const updateUrl = `${SHEETDB_API_URL}/token/${token}`;
+
+        const updateResponse = await fetch(updateUrl, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                action: 'update_presence',
-                token: token,
-                ultima_presenca: todayKey,
-                hora_registro: currentTimestamp, 
-                nome_aluno: nome 
-            })
+            body: JSON.stringify(dataToUpdate)
         });
 
         const result = await updateResponse.json();
 
-        if (result.status === 'success') {
+        if (updateResponse.ok) {
             
+            // =============================================================
+            // PASSO 3: INSERE UM NOVO LOG NA PLANILHA DE HISTÓRICO (POST)
+            // Isso CRIA uma nova linha para o registro de presença, preservando o histórico.
+            // =============================================================
+            const dataToLog = {
+                'data': {
+                    'token': token,
+                    'cpf': cpf,
+                    // NOVO: Adiciona o nome no Log Histórico
+                    'nome_aluno': nome, 
+                    'data_registro': todayKey, 
+                    'hora_registro': currentTimestamp 
+                }
+            };
+            
+            const logResponse = await fetch(PRESENCE_LOG_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataToLog)
+            });
+
+            if (!logResponse.ok) {
+                console.warn('Alerta: Falha ao registrar log de presença na planilha de LOG histórico.');
+            }
+
             // Sucesso! Atualiza o localStorage para evitar múltiplos registros no mesmo dia
             localStorage.setItem(PRESENCE_DATE_KEY, todayKey);
             
-            // 2. Finalização do Processo
+            // 4. Finalização do Processo (MANTIDO)
             verificarStatusPresenca();
             
             presencaMessage.style.color = '#901090';
             presencaMessage.textContent = `✅ Presença registrada com sucesso! ${currentTimestamp}`;
             
         } else {
-            // Ocorreu um erro na atualização do status (PATCH)
-            throw new Error(`Erro ao registrar presença: ${result.message || 'Falha de comunicação.'}`);
+            throw new Error(`Erro ao registrar presença: ${result.message || updateResponse.statusText}`);
         }
     } catch (error) {
         console.error('Erro no registro de presença:', error);
@@ -478,9 +508,5 @@ function initializePage() {
 
 // Chama a função de inicialização assim que o DOM estiver carregado
 window.onload = initializePage;
-
-
-
-
 
 
