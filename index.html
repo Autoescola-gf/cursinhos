@@ -6,6 +6,7 @@
     <title>Acesso às Aulas | Login</title>
      <link rel="icon" type="image/x-icon" href="favicon.ico">
     <style>
+        
         body {
             font-family: sans-serif;
             display: flex;
@@ -68,12 +69,53 @@
             border-radius: 4px;
             display: none; 
         }
+
+        .admin-button {
+            /* Estilo Base */
+            display: inline-block;
+            padding: 12px 25px;
+            margin-top: 30px;
+            border-radius: 8px; /* Cantos arredondados */
+            text-decoration: none; /* Remove o sublinhado */
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            /* Cores */
+            background-color: #0077B5; /* Cor de fundo azul */
+            color: white; /* Cor do texto */
+            border: 2px solid #0077B5;
+        
+            /* Sombra para efeito 3D sutil */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            
+            /* Transição suave para efeitos de hover */
+            transition: all 0.3s ease;
+        }
+
+    /* Efeito ao passar o mouse */
+        .admin-button:hover {
+            background-color: #005f92; /* Azul um pouco mais escuro */
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px); /* Efeito de elevação sutil */
+        }
+
+        /* Efeito ao clicar */
+        .admin-button:active {
+            background-color: #004a75;
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🔑 Acesso Privado</h1>
 
+        <a href="Log.html" class="admin-button">
+        Acessar Relatório de Presença (Admin)
+        </a>
         <p id="expiration-alert">Seu tempo de acesso de 24 horas esgotou. Por favor, faça login novamente com seu token e CPF.</p>
 
         <p>Auto escola Guarda - Preencha seus dados:</p>
@@ -96,6 +138,7 @@
     </script>
 </body>
 </html>
+
 
 
 
