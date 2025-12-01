@@ -136,7 +136,7 @@
     /**
      * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
      */
-    async function fetchPresencaData() {
+  async function fetchPresencaData() {
         const loading = document.getElementById('loading');
         const table = document.getElementById('presencaTable');
         const tbody = document.getElementById('presencaData');
@@ -166,6 +166,26 @@
             data.forEach(record => {
                 const row = tbody.insertRow();
                 
+                // --- INÍCIO DAS ALTERAÇÕES DE FORMATO ---
+                
+                let dataFormatada = record.data_registro || 'N/A';
+                // Assumindo que data_registro vem como "AAAA-MM-DD"
+                if (record.data_registro && record.data_registro.includes('-')) {
+                    const partesData = record.data_registro.split('-'); // [AAAA, MM, DD]
+                    // Reorganiza para DD/MM/AAAA
+                    dataFormatada = `${partesData[2]}/${partesData[1]}/${partesData[0]}`;
+                }
+
+                let horaFormatada = record.hora_registro || 'N/A';
+                // Remove os segundos (os dois últimos caracteres, se existirem)
+                // Ex: Se for "10:30:45", fica "10:30"
+                if (record.hora_registro && record.hora_registro.length > 5) {
+                     horaFormatada = record.hora_registro.substring(0, 5);
+                }
+
+                // --- FIM DAS ALTERAÇÕES DE FORMATO ---
+
+
                 // Adiciona um atributo de dados (data-search) para facilitar a busca
                 const searchableText = `${record.nome_aluno || ''} ${record.cpf || ''}`.toLowerCase();
                 row.setAttribute('data-search', searchableText);
@@ -173,8 +193,9 @@
                 // As chaves de objeto ('nome_aluno', 'cpf', etc.) vêm do Apps Script
                 row.insertCell().textContent = record.nome_aluno || 'N/A';
                 row.insertCell().textContent = record.cpf || 'N/A';
-                row.insertCell().textContent = record.data_registro || 'N/A';
-                row.insertCell().textContent = record.hora_registro || 'N/A';
+                // Usa a data e hora formatadas
+                row.insertCell().textContent = dataFormatada;
+                row.insertCell().textContent = horaFormatada;
             });
 
             // 3. Exibe a tabela
@@ -187,7 +208,6 @@
             loading.style.display = 'none';
         }
     }
-
 
     /**
      * Filtra a tabela em tempo real com base no texto digitado.
@@ -227,4 +247,5 @@
 </body>
 
 </html>
+
 
