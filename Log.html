@@ -78,7 +78,7 @@
 <body>
 
     <div class="container">
-        <h1>Relatório de Presença Diária</h1
+        <h1>Relatório de Presença Diária</h1>
         <p>Dados brutos de todos os registros de presença feitos via API. **(Acesso Admin)**</p>
 		
 		<div style="margin-bottom: 20px; text-align: right;">
@@ -136,7 +136,7 @@
     /**
      * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
      */
-  async function fetchPresencaData() {
+    async function fetchPresencaData() {
         const loading = document.getElementById('loading');
         const table = document.getElementById('presencaTable');
         const tbody = document.getElementById('presencaData');
@@ -166,24 +166,43 @@
             data.forEach(record => {
                 const row = tbody.insertRow();
                 
-                // --- INÍCIO DAS ALTERAÇÕES DE FORMATO ---
+                // --- INÍCIO: CORREÇÃO DE FORMATAÇÃO DE DATA E HORA ---
                 
-                let dataFormatada = record.data_registro || 'N/A';
-                // Assumindo que data_registro vem como "AAAA-MM-DD"
-                if (record.data_registro && record.data_registro.includes('-')) {
-                    const partesData = record.data_registro.split('-'); // [AAAA, MM, DD]
-                    // Reorganiza para DD/MM/AAAA
-                    dataFormatada = `${partesData[2]}/${partesData[1]}/${partesData[0]}`;
-                }
+                let dataFormatada = 'N/A';
+                let horaFormatada = 'N/A';
 
-                let horaFormatada = record.hora_registro || 'N/A';
-                // Remove os segundos (os dois últimos caracteres, se existirem)
-                // Ex: Se for "10:30:45", fica "10:30"
-                if (record.hora_registro && record.hora_registro.length > 5) {
-                     horaFormatada = record.hora_registro.substring(0, 5);
-                }
+                const dataCompleta = record.data_registro || '';
 
-                // --- FIM DAS ALTERAÇÕES DE FORMATO ---
+                // Tenta extrair a data (DD/MM/AAAA)
+                // O formato que está vindo é algo como: '01T03:00:00.000Z/12/2025'
+                
+                if (dataCompleta.includes('/')) {
+                    const partes = dataCompleta.split('/'); // Ex: ['01T03:00:00.000Z', '12', '2025']
+                    if (partes.length === 3) {
+                        // O dia está na primeira parte (antes do 'T' e após a limpeza de possíveis espaços)
+                        const dia = partes[0].trim().substring(0, 2); 
+                        const mes = partes[1].trim();
+                        const ano = partes[2].trim();
+                        
+                        dataFormatada = `${dia}/${mes}/${ano}`; // Resultado: DD/MM/AAAA
+                    }
+                }
+                
+                // Tenta extrair a hora (HH:MM)
+                // A hora real parece estar na primeira parte da data ('01T03:00:00.000Z')
+                if (dataCompleta.includes('T') && dataCompleta.includes(':')) {
+                    // Pega a string que contém a hora (ex: '03:00:00.000Z/12/2025')
+                    const horaString = dataCompleta.split('T')[1];
+                    // Pega apenas a hora do começo da string (ex: '03:00:00.000Z/12/2025' -> '03:00:00')
+                    const horaComSegundos = horaString.split('/')[0];
+
+                    if (horaComSegundos.length >= 5) {
+                        // Pega apenas HH:MM, removendo segundos e Z
+                        horaFormatada = horaComSegundos.substring(0, 5); // Resultado: HH:MM
+                    }
+                }
+                
+                // --- FIM: CORREÇÃO DE FORMATAÇÃO DE DATA E HORA ---
 
 
                 // Adiciona um atributo de dados (data-search) para facilitar a busca
@@ -208,6 +227,7 @@
             loading.style.display = 'none';
         }
     }
+
 
     /**
      * Filtra a tabela em tempo real com base no texto digitado.
@@ -247,5 +267,3 @@
 </body>
 
 </html>
-
-
