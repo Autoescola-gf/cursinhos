@@ -123,12 +123,34 @@
             transition: background-color 0.3s;
         }
         #adminButton:hover {
-            background-color: #707070;
+            background-color: #501050;
         }
         
         #adminButton:button.active {
             background-color: #901090; 
-            border: 2px solid #505050;
+            border: 2px solid #901090;
+        }
+
+                /* Estilo para o botão de sair */
+        #categoriaButton {
+            display: block;
+            margin: 0 auto 20px auto;
+            background-color: #505050;
+            color: white;
+            padding: 10px 20px;
+            border: 1px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        #categoriaButton:hover {
+            background-color: #501050;
+        }
+        
+        #categoriaButton:button.active {
+            background-color: #901090; 
+            border: 2px solid #901090;
         }
         
         /* Estilo para o botão de sair */
@@ -152,6 +174,7 @@
 <body>
     <button id="logoutButton" onclick="logout()">Sair / Encerrar Sessão</button>
     <button id="adminButton" onclick="abrirLog()">Relatorio de presença (admin)</button>
+    <button id="categoriaButton" onclick="abrirAulas()">Acessar aulas antigas</button>
     <p id="tokenExpirationDisplay" style="text-align: center; margin-top: 10px; margin-bottom: 20px; font-weight: bold; font-size: 1.1em;"></p>
     <h1>🎓 Conteúdo Exclusivo | Selecione uma aula para assistir</h1>
     <div class="nav-buttons">
@@ -197,8 +220,6 @@
             <button id="presencaButton" onclick="marcarPresenca()">Marcar Presença de Hoje</button>
             <p id="presencaMessage" style="margin-top: 10px; font-weight: bold;"></p>
         </div>
-
-    
         </div>
 
     <script src="script.js"></script>
@@ -228,6 +249,7 @@
     </script>
 </body>
 </html>
+
 
 
 
