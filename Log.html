@@ -5,50 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatório de Presença - ADMIN</title>
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
-    <style>
-        body {
-            font-family: sans-serif;
-            background-color: #f4f4f9;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            /* ESCONDE O CONTEÚDO ATÉ QUE A SENHA SEJA DIGITADA */
-            display: none; 
-        }
-        h1 {
-            color: #0077B5;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-            font-size: 14px;
-        }
-        th {
-            background-color: #0077B5;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        #loading {
-            font-size: 18px;
-            color: #555;
-            margin-top: 30px;
-        }
-    </style>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #e9ecef; /* Fundo ligeiramente mais claro */
+        padding: 20px;
+        text-align: center;
+    }
+    .container {
+        max-width: 1000px;
+        margin: 20px auto;
+        background: white;
+        padding: 25px; /* Mais preenchimento */
+        border-radius: 12px; /* Cantos mais arredondados */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Sombra mais destacada */
+        display: none; 
+    }
+    h1 {
+        color: #0077B5;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    p {
+        color: #6c757d;
+    }
+    
+    /* --- Estilos da Tabela Melhorados --- */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 25px;
+        border-radius: 8px; /* Arredonda cantos da tabela */
+        overflow: hidden; /* Garante que os cantos arredondados sejam aplicados */
+    }
+    th, td {
+        border: none; /* Remove bordas internas para visual mais limpo */
+        padding: 15px 12px; /* Mais preenchimento */
+        text-align: left;
+        font-size: 15px; /* Fonte ligeiramente maior */
+    }
+    th {
+        background-color: #0077B5;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 700;
+    }
+    
+    /* Linhas pares (cor de fundo mais clara) */
+    tr:nth-child(even) {
+        background-color: #f8f9fa; 
+    }
+    /* Linhas ímpares (cor de fundo branca) */
+    tr:nth-child(odd) {
+        background-color: white; 
+    }
+
+    /* Efeito ao passar o mouse: essencial para rastreamento */
+    tr:hover {
+        background-color: #cfe2ff; /* Um azul muito claro ao passar o mouse */
+        cursor: default;
+        transition: background-color 0.2s ease;
+    }
+
+    #loading {
+        font-size: 18px;
+        color: #555;
+        margin-top: 30px;
+    }
+</style>
 </head>
 <body>
 
@@ -158,4 +183,5 @@
 
     </script>
 </body>
+
 </html>
