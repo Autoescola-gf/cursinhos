@@ -34,9 +34,12 @@ function formatCPF(cpf) {
     return cpf;
 }
 
-function abrirLog() {
-            
+function abrirLog() {           
     window.location.href = 'Log.html';
+}
+
+function abrirAulas() {    
+    window.location.href = 'Aulas.html';
 }
 
 function getCurrentDateKey() {
@@ -427,4 +430,5 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
