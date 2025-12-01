@@ -34,6 +34,11 @@ function formatCPF(cpf) {
     return cpf;
 }
 
+function abrirLog() {
+            
+    window.location.href = 'Log.html';
+}
+
 function getCurrentDateKey() {
     const today = new Date();
     const year = today.getFullYear();
@@ -422,3 +427,4 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
