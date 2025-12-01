@@ -22,7 +22,7 @@
         display: none; 
     }
     h1 {
-        color: #0077B5;
+        color: #901090; /* Cor da tabela */
         font-weight: 600;
         margin-bottom: 5px;
     }
@@ -63,7 +63,7 @@
 
     /* Efeito ao passar o mouse: essencial para rastreamento */
     tr:hover {
-        background-color: #505050; /* Um azul muito claro ao passar o mouse */
+        background-color: #e2e6ea; /* Um azul muito claro ao passar o mouse */
         cursor: default;
         transition: background-color 0.2s ease;
     }
@@ -135,7 +135,7 @@
     
     /**
      * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
-     * (Corrigido para melhor formatação de Data e Hora)
+     * (CORRIGIDO para usar o objeto Date e formatar corretamente)
      */
     async function fetchPresencaData() {
         const loading = document.getElementById('loading');
@@ -167,47 +167,34 @@
             data.forEach(record => {
                 const row = tbody.insertRow();
                 
-                // --- INÍCIO: CORREÇÃO DE FORMATAÇÃO DE DATA E HORA APRIMORADA ---
-                
+                // --- INÍCIO: CORREÇÃO COM OBJETO DATE DO JAVASCRIPT ---
                 let dataFormatada = 'N/A';
                 let horaFormatada = 'N/A';
 
                 const dataCompleta = record.data_registro || '';
 
-                // Verifica se o registro de data não está vazio
                 if (dataCompleta) {
-                    // 1. Extração de Data (DD/MM/AAAA)
-                    // O formato esperado é 'DDT_H:M:S.mZ/MM/YYYY' ou similar.
-                    if (dataCompleta.includes('/')) {
-                        const partes = dataCompleta.split('/'); // Ex: ['01T03:00:00.000Z', '12', '2025']
-                        if (partes.length === 3) {
-                            // Tenta extrair o Dia (DD) da primeira parte (antes do 'T')
-                            const diaMatch = partes[0].trim().match(/^(\d{2})/);
-                            const dia = diaMatch ? diaMatch[1] : 'NN'; 
-                            const mes = partes[1].trim();
-                            const ano = partes[2].trim();
+                    try {
+                        // Tenta criar um objeto Date a partir da string bruta (formato ISO/Apps Script)
+                        const dateObj = new Date(dataCompleta);
+
+                        if (!isNaN(dateObj.getTime())) { // Verifica se é uma data válida
+                            // Formata a data para o fuso horário local: DD/MM/AAAA
+                            dataFormatada = dateObj.toLocaleDateString('pt-BR');
                             
-                            // Verifica se os componentes da data têm o tamanho esperado
-                            if (dia.length === 2 && mes.length === 2 && ano.length === 4) {
-                                dataFormatada = `${dia}/${mes}/${ano}`; // Resultado: DD/MM/AAAA
-                            }
+                            // Formata a hora para o fuso horário local: HH:MM
+                            // O uso do toLocaleTimeString garante a conversão correta de UTC para o fuso local.
+                            horaFormatada = dateObj.toLocaleTimeString('pt-BR', {
+                                hour: '2-digit', 
+                                minute: '2-digit'
+                            });
                         }
-                    }
-
-                    // 2. Extração de Hora (HH:MM)
-                    // A hora está na primeira parte, após o 'T'.
-                    if (dataCompleta.includes('T') && dataCompleta.includes(':')) {
-                        const horaString = dataCompleta.split('T')[1]; // Ex: '03:00:00.000Z/12/2025'
-                        const horaComSegundos = horaString.split('/')[0]; // Ex: '03:00:00.000Z'
-
-                        if (horaComSegundos.length >= 5) {
-                            // Pega apenas HH:MM
-                            horaFormatada = horaComSegundos.substring(0, 5); // Resultado: HH:MM
-                        }
+                    } catch (e) {
+                        console.error("Erro ao formatar data/hora:", e);
+                        // Se houver erro, mantém 'N/A'
                     }
                 }
-                
-                // --- FIM: CORREÇÃO DE FORMATAÇÃO DE DATA E HORA APRIMORADA ---
+                // --- FIM: CORREÇÃO COM OBJETO DATE DO JAVASCRIPT ---
 
 
                 // Adiciona um atributo de dados (data-search) para facilitar a busca
