@@ -135,6 +135,7 @@
     
     /**
      * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
+     * (Corrigido para melhor formatação de Data e Hora)
      */
     async function fetchPresencaData() {
         const loading = document.getElementById('loading');
@@ -166,43 +167,47 @@
             data.forEach(record => {
                 const row = tbody.insertRow();
                 
-                // --- INÍCIO: CORREÇÃO DE FORMATAÇÃO DE DATA E HORA ---
+                // --- INÍCIO: CORREÇÃO DE FORMATAÇÃO DE DATA E HORA APRIMORADA ---
                 
                 let dataFormatada = 'N/A';
                 let horaFormatada = 'N/A';
 
                 const dataCompleta = record.data_registro || '';
 
-                // Tenta extrair a data (DD/MM/AAAA)
-                // O formato que está vindo é algo como: '01T03:00:00.000Z/12/2025'
-                
-                if (dataCompleta.includes('/')) {
-                    const partes = dataCompleta.split('/'); // Ex: ['01T03:00:00.000Z', '12', '2025']
-                    if (partes.length === 3) {
-                        // O dia está na primeira parte (antes do 'T' e após a limpeza de possíveis espaços)
-                        const dia = partes[0].trim().substring(0, 2); 
-                        const mes = partes[1].trim();
-                        const ano = partes[2].trim();
-                        
-                        dataFormatada = `${dia}/${mes}/${ano}`; // Resultado: DD/MM/AAAA
+                // Verifica se o registro de data não está vazio
+                if (dataCompleta) {
+                    // 1. Extração de Data (DD/MM/AAAA)
+                    // O formato esperado é 'DDT_H:M:S.mZ/MM/YYYY' ou similar.
+                    if (dataCompleta.includes('/')) {
+                        const partes = dataCompleta.split('/'); // Ex: ['01T03:00:00.000Z', '12', '2025']
+                        if (partes.length === 3) {
+                            // Tenta extrair o Dia (DD) da primeira parte (antes do 'T')
+                            const diaMatch = partes[0].trim().match(/^(\d{2})/);
+                            const dia = diaMatch ? diaMatch[1] : 'NN'; 
+                            const mes = partes[1].trim();
+                            const ano = partes[2].trim();
+                            
+                            // Verifica se os componentes da data têm o tamanho esperado
+                            if (dia.length === 2 && mes.length === 2 && ano.length === 4) {
+                                dataFormatada = `${dia}/${mes}/${ano}`; // Resultado: DD/MM/AAAA
+                            }
+                        }
                     }
-                }
-                
-                // Tenta extrair a hora (HH:MM)
-                // A hora real parece estar na primeira parte da data ('01T03:00:00.000Z')
-                if (dataCompleta.includes('T') && dataCompleta.includes(':')) {
-                    // Pega a string que contém a hora (ex: '03:00:00.000Z/12/2025')
-                    const horaString = dataCompleta.split('T')[1];
-                    // Pega apenas a hora do começo da string (ex: '03:00:00.000Z/12/2025' -> '03:00:00')
-                    const horaComSegundos = horaString.split('/')[0];
 
-                    if (horaComSegundos.length >= 5) {
-                        // Pega apenas HH:MM, removendo segundos e Z
-                        horaFormatada = horaComSegundos.substring(0, 5); // Resultado: HH:MM
+                    // 2. Extração de Hora (HH:MM)
+                    // A hora está na primeira parte, após o 'T'.
+                    if (dataCompleta.includes('T') && dataCompleta.includes(':')) {
+                        const horaString = dataCompleta.split('T')[1]; // Ex: '03:00:00.000Z/12/2025'
+                        const horaComSegundos = horaString.split('/')[0]; // Ex: '03:00:00.000Z'
+
+                        if (horaComSegundos.length >= 5) {
+                            // Pega apenas HH:MM
+                            horaFormatada = horaComSegundos.substring(0, 5); // Resultado: HH:MM
+                        }
                     }
                 }
                 
-                // --- FIM: CORREÇÃO DE FORMATAÇÃO DE DATA E HORA ---
+                // --- FIM: CORREÇÃO DE FORMATAÇÃO DE DATA E HORA APRIMORADA ---
 
 
                 // Adiciona um atributo de dados (data-search) para facilitar a busca
