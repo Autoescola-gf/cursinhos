@@ -108,36 +108,41 @@
    <script>
     // 🚨 SEU URL CORRETO: (Mantenha o URL de Apps Script usado nas etapas anteriores)
     const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5vT3lhS7QN03KJcr4weoU6NYLbbzcD17bbLiAh3C51vXoPvISeR40/exec';
-    // Ação para buscar o log
+    // URL base para buscar o log
     const ADMIN_API_URL = `${SHEETDB_API_URL}?action=get_log_presenca`;
 
-    // 🚨 SEGURANÇA: DEFINA UMA SENHA SECRETA AQUI!
-    const ADMIN_PASSWORD = 'AutoEscola2025'; 
-
     /**
-     * Checa o acesso do administrador com um prompt simples.
+     * 🚨 AJUSTADO PARA SOLICITAR CPF E CHAVE ADMIN
+     * E chamar a busca de dados.
      */
     function checkAdminAccess() {
         const container = document.querySelector('.container');
-        // Remove a mensagem de carregamento inicial
         document.getElementById('loading').style.display = 'none';
 
-        const password = prompt("🔐 Por favor, digite a senha de administrador para acessar o relatório:");
-
-        if (password === ADMIN_PASSWORD) {
-            container.style.display = 'block'; // Mostra o container
-            fetchPresencaData();
-        } else {
+        // Solicita o CPF e a Chave de Acesso
+        const adminCpf = prompt("🔐 Por favor, digite o seu CPF de administrador:");
+        if (!adminCpf) {
             container.style.display = 'block';
-            container.innerHTML = '<h1>❌ Acesso Negado</h1><p>Você não tem permissão para visualizar este relatório.</p>';
+            container.innerHTML = '<h1>❌ Acesso Negado</h1><p>O CPF é obrigatório.</p>';
+            return;
         }
+        
+        const adminKey = prompt("🔑 Por favor, digite a Chave de Acesso Admin:");
+        if (!adminKey) {
+            container.style.display = 'block';
+            container.innerHTML = '<h1>❌ Acesso Negado</h1><p>A Chave de Acesso é obrigatória.</p>';
+            return;
+        }
+
+        // Se ambos forem fornecidos, procede para a busca de dados
+        container.style.display = 'block';
+        fetchPresencaData(adminCpf, adminKey);
     }
     
     /**
      * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
-     * (Processa o timestamp ISO e converte para horário local do usuário)
      */
-    async function fetchPresencaData() {
+    async function fetchPresencaData(adminCpf, adminKey) {
         const loading = document.getElementById('loading');
         const table = document.getElementById('presencaTable');
         const tbody = document.getElementById('presencaData');
@@ -147,43 +152,49 @@
         table.style.display = 'none';
         errorElement.textContent = '';
         tbody.innerHTML = ''; // Limpa dados anteriores
+
+        // Constrói a URL com as credenciais para o backend validar
+        const API_URL_WITH_CREDS = `${ADMIN_API_URL}&admin_cpf=${encodeURIComponent(adminCpf)}&admin_key=${encodeURIComponent(adminKey)}`;
         
         try {
             // 1. Faz uma requisição GET para buscar TODOS os dados do log
-            const response = await fetch(ADMIN_API_URL);
+            const response = await fetch(API_URL_WITH_CREDS);
             
             if (!response.ok) {
                 throw new Error(`Falha na API: Status ${response.status}`);
             }
             
-            const data = await response.json();
+            const responseData = await response.json();
+            
+            // 2. Verifica a resposta de sucesso do Apps Script
+            if (!responseData.success) {
+                // Exibe a mensagem de erro retornada pelo Apps Script
+                errorElement.textContent = `Acesso negado: ${responseData.message || 'Verifique suas credenciais de administrador.'}`;
+                return;
+            }
+
+            const data = responseData.data; // Pega o array de dados reais
             
             if (!data || data.length === 0) {
                 errorElement.textContent = 'Nenhum registro de presença encontrado na planilha.';
                 return;
             }
             
-            // 2. Itera sobre os dados e preenche a tabela
+            // 3. Itera sobre os dados e preenche a tabela
             data.forEach(record => {
                 const row = tbody.insertRow();
                 
                 let dataFormatada = 'N/A';
                 let horaFormatada = 'N/A';
 
-                // dataCompleta deve conter a string ISO (Ex: 2025-12-02T18:24:42.000Z)
                 const dataCompleta = record.data_registro || '';
 
                 if (dataCompleta) {
                     try {
-                        // CRUCIAL: Cria um objeto Date a partir da string ISO (UTC)
                         const dateObj = new Date(dataCompleta);
 
-                        if (!isNaN(dateObj.getTime())) { // Verifica se é uma data válida
-                            // Formata a data para o fuso horário local: DD/MM/AAAA
+                        if (!isNaN(dateObj.getTime())) { 
                             dataFormatada = dateObj.toLocaleDateString('pt-BR');
-                            
-                            // Formata a hora para o fuso horário local: HH:MM
-                            // Isso converte corretamente o UTC para o fuso do usuário
                             horaFormatada = dateObj.toLocaleTimeString('pt-BR', {
                                 hour: '2-digit', 
                                 minute: '2-digit'
@@ -194,24 +205,21 @@
                     }
                 }
 
-                // Adiciona um atributo de dados (data-search) para facilitar a busca
                 const searchableText = `${record.nome_aluno || ''} ${record.cpf || ''}`.toLowerCase();
                 row.setAttribute('data-search', searchableText);
 
-                // As chaves de objeto ('nome_aluno', 'cpf', etc.) vêm do Apps Script
                 row.insertCell().textContent = record.nome_aluno || 'N/A';
                 row.insertCell().textContent = record.cpf || 'N/A';
-                // Usa a data e hora formatadas que o JS acabou de calcular
                 row.insertCell().textContent = dataFormatada;
                 row.insertCell().textContent = horaFormatada;
             });
 
-            // 3. Exibe a tabela
+            // 4. Exibe a tabela
             table.style.display = 'table';
 
         } catch (error) {
             console.error("Erro ao carregar relatório:", error);
-            errorElement.textContent = `Erro ao carregar relatório. Verifique a URL da API e a conexão. Detalhes: ${error.message}`;
+            errorElement.textContent = `Erro ao carregar relatório. Detalhes: ${error.message}`;
         } finally {
             loading.style.display = 'none';
         }
@@ -222,26 +230,20 @@
      * Filtra a tabela em tempo real com base no texto digitado.
      */
     function filterTable() {
-        // Pega o texto de busca e converte para minúsculas
         const input = document.getElementById('searchInput');
         const filter = input.value.toLowerCase();
         
-        // Pega todas as linhas do corpo da tabela
         const tbody = document.getElementById('presencaData');
         const tr = tbody.getElementsByTagName('tr');
 
-        // Itera sobre as linhas
         for (let i = 0; i < tr.length; i++) {
             const row = tr[i];
-            // Pega o atributo data-search que criamos na função fetchPresencaData
             const searchData = row.getAttribute('data-search'); 
 
             if (searchData) {
-                // Se a linha contiver o texto de busca, exibe a linha
                 if (searchData.indexOf(filter) > -1) {
                     row.style.display = '';
                 } else {
-                    // Caso contrário, esconde a linha
                     row.style.display = 'none';
                 }
             }
