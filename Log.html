@@ -6,73 +6,73 @@
     <title>Relatório de Presença - ADMIN</title>
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #c1c1c1; /* Fundo ligeiramente mais claro */
-        padding: 20px;
-        text-align: center;
-    }
-    .container {
-        max-width: 1000px;
-        margin: 20px auto;
-        background: black;
-        padding: 25px; /* Mais preenchimento */
-        border-radius: 12px; /* Cantos mais arredondados */
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Sombra mais destacada */
-        display: none; 
-    }
-    h1 {
-        color: #901090; /* Cor da tabela */
-        font-weight: 600;
-        margin-bottom: 5px;
-    }
-    p {
-        color: #6c757d;
-    }
-    
-    /* --- Estilos da Tabela Melhorados --- */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 25px;
-        border-radius: 8px; /* Arredonda cantos da tabela */
-        overflow: hidden; /* Garante que os cantos arredondados sejam aplicados */
-    }
-    th, td {
-        border: none; /* Remove bordas internas para visual mais limpo */
-        padding: 15px 12px; /* Mais preenchimento */
-        text-align: left;
-        font-size: 15px; /* Fonte ligeiramente maior */
-    }
-    th {
-        background-color: #901090;
-        color: white;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 700;
-    }
-    
-    /* Linhas pares (cor de fundo mais clara) */
-    tr:nth-child(even) {
-        background-color: #f8f9fa; 
-    }
-    /* Linhas ímpares (cor de fundo branca) */
-    tr:nth-child(odd) {
-        background-color: white; 
-    }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #c1c1c1; /* Fundo ligeiramente mais claro */
+        padding: 20px;
+        text-align: center;
+    }
+    .container {
+        max-width: 1000px;
+        margin: 20px auto;
+        background: black;
+        padding: 25px; /* Mais preenchimento */
+        border-radius: 12px; /* Cantos mais arredondados */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Sombra mais destacada */
+        display: none; 
+    }
+    h1 {
+        color: #901090; /* Cor da tabela */
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    p {
+        color: #6c757d;
+    }
+    
+    /* --- Estilos da Tabela Melhorados --- */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 25px;
+        border-radius: 8px; /* Arredonda cantos da tabela */
+        overflow: hidden; /* Garante que os cantos arredondados sejam aplicados */
+    }
+    th, td {
+        border: none; /* Remove bordas internas para visual mais limpo */
+        padding: 15px 12px; /* Mais preenchimento */
+        text-align: left;
+        font-size: 15px; /* Fonte ligeiramente maior */
+    }
+    th {
+        background-color: #901090;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 700;
+    }
+    
+    /* Linhas pares (cor de fundo mais clara) */
+    tr:nth-child(even) {
+        background-color: #f8f9fa; 
+    }
+    /* Linhas ímpares (cor de fundo branca) */
+    tr:nth-child(odd) {
+        background-color: white; 
+    }
 
-    /* Efeito ao passar o mouse: essencial para rastreamento */
-    tr:hover {
-        background-color: #e2e6ea; /* Um azul muito claro ao passar o mouse */
-        cursor: default;
-        transition: background-color 0.2s ease;
-    }
+    /* Efeito ao passar o mouse: essencial para rastreamento */
+    tr:hover {
+        background-color: #e2e6ea; /* Um azul muito claro ao passar o mouse */
+        cursor: default;
+        transition: background-color 0.2s ease;
+    }
 
-    #loading {
-        font-size: 18px;
-        color: #555;
-        margin-top: 30px;
-    }
+    #loading {
+        font-size: 18px;
+        color: #555;
+        margin-top: 30px;
+    }
 </style>
 </head>
 <body>
@@ -82,9 +82,9 @@
         <p>Dados brutos de todos os registros de presença feitos via API. **(Acesso Admin)**</p>
 		
 		<div style="margin-bottom: 20px; text-align: right;">
-   		 <input type="text" id="searchInput" onkeyup="filterTable()" 
-           placeholder="Buscar por Nome ou CPF..."
-           style="padding: 10px; width: 300px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
+   		 <input type="text" id="searchInput" onkeyup="filterTable()" 
+           placeholder="Buscar por Nome ou CPF..."
+           style="padding: 10px; width: 300px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
 		</div>
 		
         <div id="loading">Carregando dados da planilha...</div>
@@ -94,7 +94,7 @@
                 <tr>
                     <th>Nome do Aluno</th>
                     <th>CPF do Aluno</th>
-                    <th>Data do Registro</th>
+                    <th>Data do Registro</th>
                     <th>Hora do Registro</th>
                 </tr>
             </thead>
@@ -106,133 +106,129 @@
     </div>
 
    <script>
-    // 🚨 SEU URL CORRETO: (Mantenha o URL de Apps Script usado nas etapas anteriores)
-    const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5vT3lhS7QN03KJcr4weoU6NYLbbzcD17bbLiAh3C51vXoPvISeR40/exec';
-    // Ação para buscar o log
-    const ADMIN_API_URL = `${SHEETDB_API_URL}?action=get_log_presenca`;
+    // 🚨 SEU URL CORRETO: (Mantenha o URL de Apps Script usado nas etapas anteriores)
+    const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5vT3lhS7QN03KJcr4weoU6NYLbbzcD17bbLiAh3C51vXoPvISeR40/exec';
+    // Ação para buscar o log
+    const ADMIN_API_URL = `${SHEETDB_API_URL}?action=get_log_presenca`;
 
-    // 🚨 SEGURANÇA: DEFINA UMA SENHA SECRETA AQUI!
-    const ADMIN_PASSWORD = 'AutoEscola2025'; 
+    // 🚨 SEGURANÇA: DEFINA UMA SENHA SECRETA AQUI!
+    const ADMIN_PASSWORD = 'AutoEscola2025'; 
+
+    // =======================================================
+    // NOVO: FUNÇÃO PARA CORRIGIR TIMESTAMP CORROMPIDO
+    // =======================================================
 
     /**
-     * Checa o acesso do administrador com um prompt simples.
+     * Corrige o formato corrompido de log (ex: 2025-12-02T...Z1899-12-30T...Z), 
+     * separando a data da primeira parte e a hora da segunda.
+     * @param {string} corruptedString A string de data/hora corrompida.
+     * @returns {{date: string, time: string}} Um objeto com a data (DD/MM/YYYY) e hora (HH:MM:SS) corrigidas.
      */
-    function checkAdminAccess() {
-        const container = document.querySelector('.container');
-        // Remove a mensagem de carregamento inicial
-        document.getElementById('loading').style.display = 'none';
-
-        const password = prompt("🔐 Por favor, digite a senha de administrador para acessar o relatório:");
-
-        if (password === ADMIN_PASSWORD) {
-            container.style.display = 'block'; // Mostra o container
-            fetchPresencaData();
-        } else {
-            container.style.display = 'block';
-            container.innerHTML = '<h1>❌ Acesso Negado</h1><p>Você não tem permissão para visualizar este relatório.</p>';
+    function parseAndSplitCorruptedTimestamp(corruptedString) {
+        // Assume que strings menores que 30 caracteres não são o formato corrompido
+        if (typeof corruptedString !== 'string' || corruptedString.length < 30) {
+            return { date: corruptedString || 'N/A', time: 'N/A' }; 
         }
-    }
-    
-    /**
-     * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
-     * (CORRIGIDO para usar os campos formatados diretamente)
-     */
-    async function fetchPresencaData() {
-        const loading = document.getElementById('loading');
-        const table = document.getElementById('presencaTable');
-        const tbody = document.getElementById('presencaData');
-        const errorElement = document.getElementById('error');
+
+        // Procura o fim da primeira string ISO (onde termina .000Z)
+        const splitIndex = corruptedString.indexOf('.000Z');
         
-        loading.style.display = 'block';
-        table.style.display = 'none';
-        errorElement.textContent = '';
-        tbody.innerHTML = ''; // Limpa dados anteriores
+        // Se não encontrar o padrão .000Z seguido por mais caracteres, retorna o original
+        if (splitIndex === -1 || splitIndex + 5 >= corruptedString.length) {
+            return { 
+                date: corruptedString.substring(0, 10) || 'N/A', // Tenta pegar a data YYYY-MM-DD
+                time: corruptedString.substring(11, 19) || 'N/A' // Tenta pegar a hora HH:MM:SS
+            }; 
+        }
+        
+        const datePartISO = corruptedString.substring(0, splitIndex + 5); 
+        const timePartISO = corruptedString.substring(splitIndex + 5); 
+        
+        let dateStr = 'N/A';
+        let timeStr = 'N/A';
         
         try {
-            // 1. Faz uma requisição GET para buscar TODOS os dados do log
-            const response = await fetch(ADMIN_API_URL);
-            
-            if (!response.ok) {
-                throw new Error(`Falha na API: Status ${response.status}`);
+            // 1. Extrai a data (YYYY-MM-DD) da primeira parte (que tem a data correta)
+            const dateMatch = datePartISO.match(/^(\d{4}-\d{2}-\d{2})/);
+            if (dateMatch) {
+                // Converte para DD/MM/YYYY para o formato brasileiro
+                const [year, month, day] = dateMatch[1].split('-');
+                dateStr = `${day}/${month}/${year}`;
             }
             
-            const data = await response.json();
-            
-            if (!data || data.length === 0) {
-                errorElement.textContent = 'Nenhum registro de presença encontrado na planilha.';
-                return;
+            // 2. Extrai o tempo (HH:MM:SS) da segunda parte (que tem a hora correta)
+            const timeMatch = timePartISO.match(/T(\d{2}:\d{2}:\d{2})/);
+            if (timeMatch) {
+                timeStr = timeMatch[1]; // HH:MM:SS
             }
-            
-            // 2. Itera sobre os dados e preenche a tabela
-            data.forEach(record => {
-                const row = tbody.insertRow();
-                
-                // --- INÍCIO: CORREÇÃO SIMPLIFICADA E ROBUSTA ---
-                // Agora, assumimos que o CODE.GS salva strings DD/MM/AAAA e HH:mm
-                const dataFormatada = record.data_registro || 'N/A';
-                const horaFormatada = record.hora_registro || 'N/A';
-                // --- FIM: CORREÇÃO SIMPLIFICADA E ROBUSTA ---
-
-
-                // Adiciona um atributo de dados (data-search) para facilitar a busca
-                const searchableText = `${record.nome_aluno || ''} ${record.cpf || ''}`.toLowerCase();
-                row.setAttribute('data-search', searchableText);
-
-                // As chaves de objeto ('nome_aluno', 'cpf', etc.) vêm do Apps Script
-                row.insertCell().textContent = record.nome_aluno || 'N/A';
-                row.insertCell().textContent = record.cpf || 'N/A';
-                // Usa a data e hora formatadas diretamente
-                row.insertCell().textContent = dataFormatada;
-                row.insertCell().textContent = horaFormatada;
-            });
-
-            // 3. Exibe a tabela
-            table.style.display = 'table';
-
-        } catch (error) {
-            console.error("Erro ao carregar relatório:", error);
-            errorElement.textContent = `Erro ao carregar relatório. Verifique a URL da API e a conexão. Detalhes: ${error.message}`;
-        } finally {
-            loading.style.display = 'none';
+        } catch (e) {
+            console.error("Falha ao analisar o timestamp corrompido:", e);
         }
-    }
-
-
-    /**
-     * Filtra a tabela em tempo real com base no texto digitado.
-     */
-    function filterTable() {
-        // Pega o texto de busca e converte para minúsculas
-        const input = document.getElementById('searchInput');
-        const filter = input.value.toLowerCase();
         
-        // Pega todas as linhas do corpo da tabela
-        const tbody = document.getElementById('presencaData');
-        const tr = tbody.getElementsByTagName('tr');
-
-        // Itera sobre as linhas
-        for (let i = 0; i < tr.length; i++) {
-            const row = tr[i];
-            // Pega o atributo data-search que criamos na função fetchPresencaData
-            const searchData = row.getAttribute('data-search'); 
-
-            if (searchData) {
-                // Se a linha contiver o texto de busca, exibe a linha
-                if (searchData.indexOf(filter) > -1) {
-                    row.style.display = '';
-                } else {
-                    // Caso contrário, esconde a linha
-                    row.style.display = 'none';
-                }
-            }
-        }
+        return { date: dateStr, time: timeStr }; 
     }
 
+    /**
+     * Checa o acesso do administrador com um prompt simples.
+     */
+    function checkAdminAccess() {
+        const container = document.querySelector('.container');
+        // Remove a mensagem de carregamento inicial
+        document.getElementById('loading').style.display = 'none';
 
-    // Inicia o cheque de acesso ao carregar a página
-    window.onload = checkAdminAccess;
+        const password = prompt("🔐 Por favor, digite a senha de administrador para acessar o relatório:");
 
-</script>
-</body>
-
-</html>
+        if (password === ADMIN_PASSWORD) {
+            container.style.display = 'block'; // Mostra o container
+            fetchPresencaData();
+        } else {
+            container.style.display = 'block';
+            container.innerHTML = '<h1>❌ Acesso Negado</h1><p>Você não tem permissão para visualizar este relatório.</p>';
+        }
+    }
+    
+    /**
+     * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
+     * (CORRIGIDO para usar a função de parser)
+     */
+    async function fetchPresencaData() {
+        const loading = document.getElementById('loading');
+        const table = document.getElementById('presencaTable');
+        const tbody = document.getElementById('presencaData');
+        const errorElement = document.getElementById('error');
+        
+        loading.style.display = 'block';
+        table.style.display = 'none';
+        errorElement.textContent = '';
+        tbody.innerHTML = ''; // Limpa dados anteriores
+        
+        try {
+            // 1. Faz uma requisição GET para buscar TODOS os dados do log
+            const response = await fetch(ADMIN_API_URL);
+            
+            if (!response.ok) {
+                throw new Error(`Falha na API: Status ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (!data || data.length === 0) {
+                errorElement.textContent = 'Nenhum registro de presença encontrado na planilha.';
+                return;
+            }
+            
+            // 2. Itera sobre os dados e preenche a tabela
+            data.forEach(record => {
+                const row = tbody.insertRow();
+                
+                // =============================================================
+                // INÍCIO: APLICAÇÃO DA CORREÇÃO DE FORMATO
+                // Assume que o campo que contém o timestamp corrompido é o data_registro
+                // Se o campo for o hora_registro, ajuste a linha abaixo.
+                // =============================================================
+                let dataFormatada = record.data_registro || 'N/A';
+                let horaFormatada = record.hora_registro || 'N/A';
+                
+                // Se a data do registro parece ser uma string ISO longa e corrompida
+                if (dataFormatada.length > 30 && dataFormatada.indexOf('.000Z') > 10) {
+                    const corrected = parseAndSplitCor
