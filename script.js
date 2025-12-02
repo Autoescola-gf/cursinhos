@@ -23,7 +23,7 @@ let countdownPresenceInterval = null;
 let countdownTokenInterval = null;
 
 // =======================================================
-// 1. FUNÇÕES DE UTILIDADE E AUXILIARES (Sem alterações)
+// 1. FUNÇÕES DE UTILIDADE E AUXILIARES (Com nova função de correção de log)
 // =======================================================
 
 function formatCPF(cpf) {
@@ -86,6 +86,43 @@ function formatarTempoRestante(milissegundos) {
 
     return `${pad(horas)}h ${pad(minutos)}m ${pad(segundos)}s`;
 }
+
+/**
+ * Corrige o formato corrompido de log (ex: 2025-12-02T...Z1899-12-30T...Z), 
+ * comum ao concatenar datas e horas brutas do Google Sheets.
+ * @param {string} corruptedString A string de data/hora corrompida.
+ * @returns {string} A string corrigida no formato YYYY-MM-DD HH:MM:SS.
+ */
+function parseCorruptedLogTimestamp(corruptedString) {
+    // Procura o fim da primeira string ISO (onde termina .000Z)
+    const splitPoint = corruptedString.indexOf('.000Z');
+    
+    if (splitPoint === -1 || splitPoint + 5 >= corruptedString.length) {
+        return corruptedString; 
+    }
+    
+    const datePartISO = corruptedString.substring(0, splitPoint + 5);
+    const timePartISO = corruptedString.substring(splitPoint + 5);
+    
+    try {
+        // 1. Extrai a data (YYYY-MM-DD) da primeira parte
+        const dateMatch = datePartISO.match(/^(\d{4}-\d{2}-\d{2})/);
+        const dateStr = dateMatch ? dateMatch[1] : '';
+        
+        // 2. Extrai o tempo (HH:MM:SS) da segunda parte (após o 'T')
+        const timeMatch = timePartISO.match(/T(\d{2}:\d{2}:\d{2})/);
+        const timeStr = timeMatch ? timeMatch[1] : '';
+        
+        if (dateStr && timeStr) {
+            return `${dateStr} ${timeStr}`; // Retorna no formato limpo YYYY-MM-DD HH:MM:SS
+        }
+    } catch (e) {
+        console.error("Falha ao analisar o timestamp corrompido:", e);
+    }
+    
+    return corruptedString; // Retorna o original em caso de falha
+}
+
 
 // =======================================================
 // 2. LÓGICA DE LOGIN (checkToken - CORRIGIDO)
@@ -430,5 +467,3 @@ function initializePage() {
 }
 
 window.onload = initializePage;
-
-
