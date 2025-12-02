@@ -31,11 +31,11 @@ const VIDEO_MAP = {
     // LEGISLAÇÃO
     'aula1': { 
         title: 'Aula 1: Legislação',
-        embedUrl: 'https://www.dropbox.com/scl/fi/49sbcsq68he23y3awei5v/23-NORMAS.mp4?rlkey=p6ztt8mbb8hy2k4edjmdvc1em&st=2yq8ewdy&raw=1'
+        embedUrl: 'https://www.dropbox.com/scl/fi/9o814415zdw9mhqgn2bf7/01-LEGISLA-O.mp4?rlkey=p6ztt8mbb8hy2k4edjmdvc1em&st=dy9xf97h&raw=1'
     },
     'aula2': { 
         title: 'Aula 2: Legislação',
-        embedUrl: 'https://www.dropbox.com/scl/fi/49sbcsq68he23y3awei5v/23-NORMAS.mp4?rlkey=cf1btomjkl0e0wq5k9g451819&st=be7l0ryl&raw=1'
+        embedUrl: 'https://www.dropbox.com/scl/fi/ldyz6evyxmgxs8daic9wi/02-LEGISLA-O.mp4?rlkey=cf1btomjkl0e0wq5k9g451819&st=pbb322hc&raw=1'
     },
     'aula3': { 
         title: 'Aula 3: Legislação',
@@ -56,7 +56,7 @@ const VIDEO_MAP = {
         title: 'Aula 6: Sinalização',
         embedUrl: 'https://player.vimeo.com/video/999999910?h=exemplo10&title=0&byline=0&portrait=0' 
     },
-    'aula7': { 
+    'aula7': { https://www.dropbox.com/scl/fi/9o814415zdw9mhqgn2bf7/01-LEGISLA-O.mp4?rlkey=p6ztt8mbb8hy2k4edjmdvc1em&st=dy9xf97h&dl=0
         title: 'Aula 7: Sinalização',
         embedUrl: 'https://www.dropbox.com/scl/fi/49sbcsq68he23y3awei5v/23-NORMAS.mp4?rlkey=4n4z6s2alcayuo2izd2yvt4dz&st=ftdfqtz6&raw=1' 
     },
@@ -530,6 +530,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
