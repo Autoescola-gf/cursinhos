@@ -28,54 +28,61 @@ let countdownTokenInterval = null;
 // =======================================================
 const VIDEO_MAP = {
     // URLs de Vimeo fornecidas
+    //LEGISLAÇÃO
     'aula1': { 
-        title: 'Aula 1: Infrações e Penalidades',
-        embedUrl: 'https://player.vimeo.com/video/1141468817?color=0077B5&title=0&byline=0&portrait=0' 
+        title: 'Aula 1: Legislação',
+        embedUrl: 'https://player.vimeo.com/video/1140876472?color=0077B5&title=0&byline=0&portrait=0' 
     },
     'aula2': { 
-        title: 'Aula 2: Infrações e Penalidades',
+        title: 'Aula 2: Legislação',
         embedUrl: 'https://player.vimeo.com/video/1141468895?color=0077B5&title=0&byline=0&portrait=0' 
     },
     'aula3': { 
-        title: 'Aula 3: Infrações e Penalidades',
+        title: 'Aula 3: Legislação',
         embedUrl: 'https://player.vimeo.com/video/1142063398?color=0077B5&title=0&byline=0&portrait=0' 
     },
     'aula4': { 
+        title: 'Aula 4: Legislação',
+        embedUrl: 'https://player.vimeo.com/video/1142063517?color=0077B5&title=0&byline=0&portrait=0' 
+    },
+
+      // SINALIZAÇÃO
+    'aula5': { 
+        title: 'Aula 5: Sinalização',
+        embedUrl: 'https://player.vimeo.com/video/1140876472?h=exemplo9&title=0&byline=0&portrait=0' 
+    },
+    // 🌱 Meio Ambiente (PLACEHOLDERS - SUBSTITUA!)
+    'aula6': { 
+        title: 'Aula 6: Sinalização',
+        embedUrl: 'https://player.vimeo.com/video/999999910?h=exemplo10&title=0&byline=0&portrait=0' 
+    },
+    'aula7': { 
+        title: 'Aula 7: Sinalização',
+        embedUrl: 'https://player.vimeo.com/video/999999911?h=exemplo11&title=0&byline=0&portrait=0' 
+    },
+    'aula8': { 
+        title: 'Aula 8: Sinalização',
+        embedUrl: 'https://player.vimeo.com/video/1141468817?color=0077B5&title=0&byline=0&portrait=0' 
+    },
+    
+    // INFRAÇOES
+    'aula9': { 
+        title: 'Aula 1: Infrações e Penalidades',
+        embedUrl: 'https://player.vimeo.com/video/1141468817?color=0077B5&title=0&byline=0&portrait=0' 
+    },
+    'aula10': { 
+        title: 'Aula 2: Infrações e Penalidades',
+        embedUrl: 'https://player.vimeo.com/video/1141468895?color=0077B5&title=0&byline=0&portrait=0' 
+    },
+    'aula11': { 
+        title: 'Aula 3: Infrações e Penalidades',
+        embedUrl: 'https://player.vimeo.com/video/1142063398?color=0077B5&title=0&byline=0&portrait=0' 
+    },
+    'aula12': { 
         title: 'Aula 4: Infrações e Penalidades',
         embedUrl: 'https://player.vimeo.com/video/1142063517?color=0077B5&title=0&byline=0&portrait=0' 
     },
     
-    // 🛡️ Direção Defensiva (PLACEHOLDERS - SUBSTITUA!)
-    'aula5': { 
-        title: 'Aula 5: Conceitos e Elementos da Direção Defensiva',
-        embedUrl: 'https://player.vimeo.com/video/999999995?h=exemplo5&title=0&byline=0&portrait=0' 
-    },
-    'aula6': { 
-        title: 'Aula 6: Condições Adversas e Prevenção de Acidentes',
-        embedUrl: 'https://player.vimeo.com/video/999999996?h=exemplo6&title=0&byline=0&portrait=0' 
-    },
-    'aula7': { 
-        title: 'Aula 7: O Condutor e o Meio Social',
-        embedUrl: 'https://player.vimeo.com/video/999999997?h=exemplo7&title=0&byline=0&portrait=0' 
-    },
-    // 🚑 Primeiros Socorros (PLACEHOLDERS - SUBSTITUA!)
-    'aula8': { 
-        title: 'Aula 8: Atitudes em Caso de Acidente e Lesões',
-        embedUrl: 'https://player.vimeo.com/video/999999998?h=exemplo8&title=0&byline=0&portrait=0' 
-    },
-    'aula9': { 
-        title: 'Aula 9: Sinalização do Local e Cuidados com a Vítima',
-        embedUrl: 'https://player.vimeo.com/video/999999999?h=exemplo9&title=0&byline=0&portrait=0' 
-    },
-    // 🌱 Meio Ambiente (PLACEHOLDERS - SUBSTITUA!)
-    'aula10': { 
-        title: 'Aula 10: O Veículo e o Meio Ambiente',
-        embedUrl: 'https://player.vimeo.com/video/999999910?h=exemplo10&title=0&byline=0&portrait=0' 
-    },
-    'aula11': { 
-        title: 'Aula 11: Relacionamento Interpessoal no Trânsito',
-        embedUrl: 'https://player.vimeo.com/video/999999911?h=exemplo11&title=0&byline=0&portrait=0' 
-    },
 };
 
 
@@ -527,4 +534,5 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
