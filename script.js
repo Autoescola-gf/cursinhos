@@ -485,20 +485,17 @@ function showLesson(lessonId) {
     // 2. Atualiza o título da aula
     titleElement.textContent = lessonData.title;
 
-    // 3. Cria e injeta o código iframe do vídeo
-    const iframeCode = `
-        <iframe src="${lessonData.embedUrl}" 
-                title="${lessonData.title}"
-                allow="autoplay; fullscreen; picture-in-picture" 
-                allowfullscreen 
-                webkitallowfullscreen 
-                mozallowfullscreen>
-        </iframe>
+    // 3. Cria e injeta o código HTML do player de vídeo nativo (MP4)
+    const videoCode = `
+        <video controls poster="img/poster-aula.jpg" controlsList="nodownload" preload="metadata">
+            <source src="${lessonData.embedUrl}" type="video/mp4">
+            Seu navegador não suporta a tag de vídeo.
+        </video>
     `;
-
+    
     // 4. Injeta o HTML no container do player
-    playerContainer.innerHTML = iframeCode;
-
+    // 🚨 ATUALIZAÇÃO: Use o novo código do player nativo
+    playerContainer.innerHTML = videoCode; 
 
     // 5. Lógica de navegação original (Habilitar o botão da aula atual)
     const allButtons = document.querySelectorAll('.nav-buttons button');
@@ -534,5 +531,6 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
