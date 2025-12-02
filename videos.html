@@ -79,17 +79,28 @@
             padding-bottom: 10px;
             text-align: center;
         }
+        /* Contêiner que garante a proporção 16:9 */
+        .video-container {
+            position: relative; /* CRUCIAL: Mantém os filhos (vídeo) dentro deste limite */
+            width: 100%;
+            padding-top: 56.25%; /* Proporção 16:9 (9/16 * 100) */
+            margin-bottom: 20px;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
         
         /* Estilos para o Player de Vídeo (Garante responsividade) */
-        .video-container video, 
+        /* Aplica ao elemento <video> (e ao <iframe> se você ainda o tiver) */
+        .video-container video,
         .video-container source { 
-            position: absolute;
+            position: absolute; /* Permite que o vídeo preencha o contêiner 16:9 */
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             border: none;
-            /* Adicione 'display: block;' se necessário para alguns navegadores */
+            display: block; /* Garante que o elemento seja tratado como bloco */
         }
         
        /* Estilos para a Navegação de Aulas */
@@ -189,5 +200,6 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
