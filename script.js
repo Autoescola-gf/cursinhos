@@ -31,11 +31,11 @@ const VIDEO_MAP = {
     // LEGISLAÇÃO
     'aula1': { 
         title: 'Aula 1: Legislação (Infrações e Penalidades I)',
-        embedUrl: 'https://drive.google.com/videoplayback?id=1Igq_4duZeGveLyYuS6Uwhk6TU6wGFcwt'
+        embedUrl: 'https://www.dropbox.com/scl/fi/49sbcsq68he23y3awei5v/23-NORMAS.mp4?rlkey=4n4z6s2alcayuo2izd2yvt4dz&st=ftdfqtz6&raw=1'
     },
     'aula2': { 
         title: 'Aula 2: Legislação',
-        embedUrl: 'https://drive.google.com/uc?export=download&id=1Igq_4duZeGveLyYuS6Uwhk6TU6wGFcwt&confirm=t'
+        embedUrl: 'https://www.dropbox.com/scl/fi/49sbcsq68he23y3awei5v/23-NORMAS.mp4?rlkey=4n4z6s2alcayuo2izd2yvt4dz&st=ftdfqtz6&raw=1'
     },
     'aula3': { 
         title: 'Aula 3: Legislação',
@@ -58,7 +58,7 @@ const VIDEO_MAP = {
     },
     'aula7': { 
         title: 'Aula 7: Sinalização',
-        embedUrl: 'https://player.vimeo.com/video/999999911?h=exemplo11&title=0&byline=0&portrait=0' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/49sbcsq68he23y3awei5v/23-NORMAS.mp4?rlkey=4n4z6s2alcayuo2izd2yvt4dz&st=ftdfqtz6&raw=1' 
     },
     'aula8': { 
         title: 'Aula 8: Sinalização',
@@ -530,6 +530,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
