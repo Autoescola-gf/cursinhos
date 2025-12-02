@@ -31,7 +31,7 @@ const VIDEO_MAP = {
     // LEGISLAÇÃO
     'aula1': { 
         title: 'Aula 1: Legislação',
-        embedUrl: 'https://www.dropbox.com/scl/fi/49sbcsq68he23y3awei5v/23-NORMAS.mp4?rlkey=p6ztt8mbb8hy2k4edjmdvc1em&st=2yq8ewdy&dlraw=1'
+        embedUrl: 'https://www.dropbox.com/scl/fi/49sbcsq68he23y3awei5v/23-NORMAS.mp4?rlkey=p6ztt8mbb8hy2k4edjmdvc1em&st=2yq8ewdy&raw=1'
     },
     'aula2': { 
         title: 'Aula 2: Legislação',
@@ -530,6 +530,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
