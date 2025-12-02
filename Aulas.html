@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AUTO ESCOLA GUARDA | TODAS AS AULAS</title>
-     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <style>
         /* Estilos básicos */
         body {
@@ -127,10 +127,9 @@
     <script>
         /**
          * Redireciona para videos.html e passa o ID da aula via parâmetro na URL.
-         * O script.js (ou videos.html) fará o resto.
          */
         function redirectToVideo(lessonId) {
-            // Preserva o status do login, redireciona e adiciona o parâmetro 'lesson'
+            // Redireciona e adiciona o parâmetro 'lesson'
             window.location.href = `videos.html?lesson=${lessonId}`;
         }
     </script>
