@@ -1,5 +1,5 @@
 // =======================================================
-// ARQUIVO: script.js - CORREÇÃO FINAL DE COMUNICAÇÃO POST
+// ARQUIVO: script.js - CORREÇÃO FINAL DE COMUNICAÇÃO POST + EMBED VÍDEO
 // =======================================================
 
 // 🚨 IMPORTANTE: Mantenha sua URL de Apps Script aqui
@@ -22,8 +22,65 @@ const PRESENCE_DATE_KEY = 'lastPresenceDate';
 let countdownPresenceInterval = null;
 let countdownTokenInterval = null;
 
+
 // =======================================================
-// 1. FUNÇÕES DE UTILIDADE E AUXILIARES (Com nova função de correção de log)
+// 🚨 MAPA DE VÍDEOS (INFORMAÇÕES FORNECIDAS PELO USUÁRIO)
+// =======================================================
+const VIDEO_MAP = {
+    // URLs de Vimeo fornecidas
+    'aula1': { 
+        title: 'Aula 1: Infrações e Penalidades',
+        embedUrl: 'https://player.vimeo.com/video/1141468817?color=0077B5&title=0&byline=0&portrait=0' 
+    },
+    'aula2': { 
+        title: 'Aula 2: Infrações e Penalidades',
+        embedUrl: 'https://player.vimeo.com/video/1141468895?color=0077B5&title=0&byline=0&portrait=0' 
+    },
+    'aula3': { 
+        title: 'Aula 3: Infrações e Penalidades',
+        embedUrl: 'https://player.vimeo.com/video/1142063398?color=0077B5&title=0&byline=0&portrait=0' 
+    },
+    'aula4': { 
+        title: 'Aula 4: Infrações e Penalidades',
+        embedUrl: 'https://player.vimeo.com/video/1142063517?color=0077B5&title=0&byline=0&portrait=0' 
+    },
+    
+    // 🛡️ Direção Defensiva (PLACEHOLDERS - SUBSTITUA!)
+    'aula5': { 
+        title: 'Aula 5: Conceitos e Elementos da Direção Defensiva',
+        embedUrl: 'https://player.vimeo.com/video/999999995?h=exemplo5&title=0&byline=0&portrait=0' 
+    },
+    'aula6': { 
+        title: 'Aula 6: Condições Adversas e Prevenção de Acidentes',
+        embedUrl: 'https://player.vimeo.com/video/999999996?h=exemplo6&title=0&byline=0&portrait=0' 
+    },
+    'aula7': { 
+        title: 'Aula 7: O Condutor e o Meio Social',
+        embedUrl: 'https://player.vimeo.com/video/999999997?h=exemplo7&title=0&byline=0&portrait=0' 
+    },
+    // 🚑 Primeiros Socorros (PLACEHOLDERS - SUBSTITUA!)
+    'aula8': { 
+        title: 'Aula 8: Atitudes em Caso de Acidente e Lesões',
+        embedUrl: 'https://player.vimeo.com/video/999999998?h=exemplo8&title=0&byline=0&portrait=0' 
+    },
+    'aula9': { 
+        title: 'Aula 9: Sinalização do Local e Cuidados com a Vítima',
+        embedUrl: 'https://player.vimeo.com/video/999999999?h=exemplo9&title=0&byline=0&portrait=0' 
+    },
+    // 🌱 Meio Ambiente (PLACEHOLDERS - SUBSTITUA!)
+    'aula10': { 
+        title: 'Aula 10: O Veículo e o Meio Ambiente',
+        embedUrl: 'https://player.vimeo.com/video/999999910?h=exemplo10&title=0&byline=0&portrait=0' 
+    },
+    'aula11': { 
+        title: 'Aula 11: Relacionamento Interpessoal no Trânsito',
+        embedUrl: 'https://player.vimeo.com/video/999999911?h=exemplo11&title=0&byline=0&portrait=0' 
+    },
+};
+
+
+// =======================================================
+// 1. FUNÇÕES DE UTILIDADE E AUXILIARES (Inclui abrirLog e abrirAulas)
 // =======================================================
 
 function formatCPF(cpf) {
@@ -35,11 +92,13 @@ function formatCPF(cpf) {
 }
 
 function abrirLog() {           
+    // Redireciona para a página de Log (relatório de presença)
     window.location.href = 'Log.html';
 }
 
 function abrirAulas() {    
-    window.location.href = 'Aulas.html';
+    // Redireciona para o nome do arquivo do catálogo de aulas
+    window.location.href = 'TODAS AS AULAS.html'; 
 }
 
 function getCurrentDateKey() {
@@ -87,45 +146,8 @@ function formatarTempoRestante(milissegundos) {
     return `${pad(horas)}h ${pad(minutos)}m ${pad(segundos)}s`;
 }
 
-/**
- * Corrige o formato corrompido de log (ex: 2025-12-02T...Z1899-12-30T...Z), 
- * comum ao concatenar datas e horas brutas do Google Sheets.
- * @param {string} corruptedString A string de data/hora corrompida.
- * @returns {string} A string corrigida no formato YYYY-MM-DD HH:MM:SS.
- */
-function parseCorruptedLogTimestamp(corruptedString) {
-    // Procura o fim da primeira string ISO (onde termina .000Z)
-    const splitPoint = corruptedString.indexOf('.000Z');
-    
-    if (splitPoint === -1 || splitPoint + 5 >= corruptedString.length) {
-        return corruptedString; 
-    }
-    
-    const datePartISO = corruptedString.substring(0, splitPoint + 5);
-    const timePartISO = corruptedString.substring(splitPoint + 5);
-    
-    try {
-        // 1. Extrai a data (YYYY-MM-DD) da primeira parte
-        const dateMatch = datePartISO.match(/^(\d{4}-\d{2}-\d{2})/);
-        const dateStr = dateMatch ? dateMatch[1] : '';
-        
-        // 2. Extrai o tempo (HH:MM:SS) da segunda parte (após o 'T')
-        const timeMatch = timePartISO.match(/T(\d{2}:\d{2}:\d{2})/);
-        const timeStr = timeMatch ? timeMatch[1] : '';
-        
-        if (dateStr && timeStr) {
-            return `${dateStr} ${timeStr}`; // Retorna no formato limpo YYYY-MM-DD HH:MM:SS
-        }
-    } catch (e) {
-        console.error("Falha ao analisar o timestamp corrompido:", e);
-    }
-    
-    return corruptedString; // Retorna o original em caso de falha
-}
-
-
 // =======================================================
-// 2. LÓGICA DE LOGIN (checkToken - CORRIGIDO)
+// 2. LÓGICA DE LOGIN (checkToken - Sem alterações estruturais)
 // =======================================================
 
 async function checkToken() {
@@ -219,7 +241,7 @@ async function checkToken() {
 }
 
 // =======================================================
-// 3. SEGURANÇA E ACESSO (Sem alterações)
+// 3. SEGURANÇA E ACESSO (checkAccess - MODIFICADA)
 // =======================================================
 
 function checkAccess() {
@@ -237,8 +259,13 @@ function checkAccess() {
         return false;
     }
 
-    if(document.getElementById('aula1')) {
-        showLesson('aula1');
+    // Obter o ID da aula da URL (lesson=aulaX)
+    const urlParams = new URLSearchParams(window.location.search);
+    const lessonId = urlParams.get('lesson') || 'aula1'; // Padrão para aula1
+    
+    // Inicia a renderização do conteúdo apenas se estivermos em videos.html
+    if(document.getElementById('videoPlayerEmbed')) { 
+        showLesson(lessonId); // Carrega a aula específica (ou aula1)
         verificarStatusPresenca();
         iniciarContadorExpiracao(); 
     }
@@ -252,6 +279,7 @@ function logout() {
     localStorage.removeItem(CPF_KEY);
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(NAME_KEY);
+    localStorage.removeItem(PRESENCE_DATE_KEY); // Limpa o status de presença ao sair
 
     if (countdownPresenceInterval !== null) {
         clearInterval(countdownPresenceInterval);
@@ -266,7 +294,7 @@ function logout() {
 }
 
 // =======================================================
-// 4. CONTADOR DE EXPIRAÇÃO DE TOKEN (Sem alterações)
+// 4. CONTADOR DE EXPIRAÇÃO DE TOKEN (Sem alterações estruturais)
 // =======================================================
 
 function iniciarContadorExpiracao() {
@@ -308,7 +336,7 @@ function iniciarContadorExpiracao() {
 
 
 // =======================================================
-// 5. REGISTRO DE PRESENÇA (marcarPresenca - CORRIGIDO)
+// 5. REGISTRO DE PRESENÇA (marcarPresenca - Sem alterações estruturais)
 // =======================================================
 
 function verificarStatusPresenca() {
@@ -343,7 +371,7 @@ function verificarStatusPresenca() {
     } else {
         presencaButton.disabled = false;
         presencaButton.textContent = 'Marcar Presença de Hoje';
-        presencaMessage.style.color = '#000000';
+        presencaMessage.style.color = '#ccc';
         presencaMessage.textContent = 'Clique para registrar sua presença e frequência no curso.';
     }
 }
@@ -428,29 +456,61 @@ async function marcarPresenca() {
 }
 
 // =======================================================
-// 6. FUNÇÕES DE NAVEGAÇÃO (Sem alterações)
+// 6. FUNÇÕES DE NAVEGAÇÃO (MODIFICADA PARA INCORPORAÇÃO DE VÍDEO)
 // =======================================================
 
 function showLesson(lessonId) {
-    const allLessons = document.querySelectorAll('.aula-container');
-    allLessons.forEach(lesson => lesson.style.display = 'none');
+    // 1. Lógica para incorporação do vídeo
+    const lessonData = VIDEO_MAP[lessonId];
+    // Agora usando o ID do contêiner único
+    const playerContainer = document.getElementById('videoPlayerEmbed'); 
+    const titleElement = document.getElementById('lessonTitle');
+    
+    // Fallback: se a aula não for encontrada, mostra uma mensagem de erro no player.
+    if (!lessonData || !playerContainer || !titleElement) {
+        console.error("Dados da aula ou contêiner não encontrados para:", lessonId);
+        playerContainer.innerHTML = '<p style="color: red; text-align: center; padding: 50px;">Erro: Conteúdo da aula não encontrado.</p>';
+        titleElement.textContent = 'Aula Não Encontrada';
+        return;
+    }
 
-    const allButtons = document.querySelectorAll('.nav-buttons button');
-    allButtons.forEach(button => button.classList.remove('active'));
+    // 2. Atualiza o título da aula
+    titleElement.textContent = lessonData.title;
 
-    const currentLesson = document.getElementById(lessonId);
-    if (currentLesson) {
-        currentLesson.style.display = 'block';
-    }
+    // 3. Cria e injeta o código iframe do vídeo
+    // O iframe preenche 100% do contêiner pai, que é responsivo (video-container)
+    const iframeCode = `
+        <iframe src="${lessonData.embedUrl}" 
+                title="${lessonData.title}"
+                allow="autoplay; fullscreen; picture-in-picture" 
+                allowfullscreen 
+                webkitallowfullscreen 
+                mozallowfullscreen>
+        </iframe>
+    `;
 
-    const currentButton = document.getElementById(`btn-${lessonId}`);
-    if (currentButton) {
-        currentButton.classList.add('active');
-    }
+    // 4. Injeta o HTML no container do player
+    playerContainer.innerHTML = iframeCode;
+
+
+    // 5. Lógica de navegação original (Habilitar o botão da aula atual)
+    const allButtons = document.querySelectorAll('.nav-buttons button');
+    allButtons.forEach(button => button.classList.remove('active'));
+
+    const currentButton = document.getElementById(`btn-${lessonId}`);
+    if (currentButton) {
+        currentButton.classList.add('active');
+    }
+
+    // 6. Adiciona funcionalidade de clique ao botão de catálogo (se não estiver lá)
+    const catalogLink = document.getElementById('catalogLink');
+    if (catalogLink) {
+        catalogLink.onclick = abrirAulas;
+    }
 }
 
 // =======================================================
-// 7. INICIALIZAÇÃO DA PÁGINA (Sem alterações)
+// 7. INICIALIZAÇÃO DA PÁGINA (Sem alterações estruturais)
 // =======================================================
 
 function initializePage() {
