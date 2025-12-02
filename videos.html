@@ -5,170 +5,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AUTO ESCOLA GUARDA | MINHAS AULAS</title>
      <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <style>
-        body {
-            font-family: sans-serif;
-            background-color: #c1c1c1;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #0077B5;
-            margin-bottom: 20px;
-        }
-        
-        h2 {
-            color: white;
-            margin-bottom: 10px;
-        }
-        /* Estilos para o Botão de Presença */
-        .presenca-container {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 15px;
-            background-color: #c5c5c5;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        #presencaButton {
-            background-color: #28a745; /* Cor Verde para Ação Positiva */
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        #presencaButton:hover:not(:disabled) {
-            background-color: #901090;
-        }
-        #presencaButton:disabled {
-            background-color: #901090;
-            cursor: not-allowed;
-        }
-        #presencaMessage {
-            margin-top: 10px;
-        }
+<style>
+    /* Variáveis de Cor para Tema Roxo e Consistência */
+    :root {
+        --roxo-primario: #6C0BA6;      /* Roxo Profundo (títulos, ações principais) */
+        --roxo-secundario: #901090;    /* Roxo Vibrante (ativo, hover) */
+        --roxo-claro: #F5EEFF;         /* Roxo muito claro para fundos/hover */
+        --fundo-body: #c1c1c1;         /* Fundo original do body */
+        --fundo-video: #212121;        /* Fundo escuro para o vídeo (melhor contraste) */
+        --fundo-container: #ffffff;    /* Fundo branco/claro para containers */
+        --cinza-escuro: #505050;
+        --texto-escuro: #333;
+        --texto-claro: white;
+        --cor-acao-perigo: #dc3545;    /* Vermelho para sair/logout */
+        --cor-presenca: #5CB85C;       /* Verde para Presença (Ação positiva) */
+    }
 
-        /* Estilos para a Navegação de Aulas */
-        .nav-buttons {
-            background-color: #c1c1c1;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-        .nav-buttons button {
-            background-color: #505050;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s, transform 0.1s;
-        }
-        .nav-buttons button:hover {
-            background-color: #707070;
-        }
-        .nav-buttons button.active {
-            background-color: #901090; 
-            border: 2px solid #901090;
-        }
-        
-        .video-content-wrapper {
-            max-width: 900px;
-            margin: 20px auto;
-            background: black;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--fundo-body); 
+        padding: 20px;
+        text-align: center;
+    }
 
-        .aula-container {
-            display: none; 
-        }
-        
-        .vimeo-embed {
-            position: relative;
-            padding-bottom: 56.25%; 
-            height: 0;
-            overflow: hidden;
-            margin-top: 15px;
-        }
-        .vimeo-embed iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-        /* Estilo para o botão de sair */
-        #adminButton {
-            display: block;
-            margin: 0 auto 20px auto;
-            background-color: #505050;
-            color: white;
-            padding: 10px 20px;
-            border: 1px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        #adminButton:hover {
-            background-color: #901090;
-        }
-        
-        #adminButton:button.active {
-            background-color: #901090; 
-            border: 2px solid #901090;
-        }
-        /* Estilo botão todas aulas */
-        #categoriaButton {
-            display: block;
-            margin: 0 auto 20px auto;
-            background-color: #505050;
-            color: white;
-            padding: 10px 20px;
-            border: 1px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        #categoriaButton:hover {
-            background-color: #501050;
-        }
-        
-        #categoriaButton:button.active {
-            background-color: #901090; 
-            border: 2px solid #901090;
-        }
-        
-        /* Estilo para o botão de sair */
-        #logoutButton {
-            display: block;
-            margin: 0 auto 20px auto;
-            background-color: #dc3545;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        #logoutButton:hover {
-            background-color: #c82333;
-        }
-    </style>
+    /* Título Principal */
+    h1 {
+        text-align: center;
+        color: var(--roxo-primario);
+        margin-bottom: 20px;
+        font-weight: 700;
+    }
+    
+    /* Títulos de Aula dentro do container de vídeo */
+    h2 {
+        color: var(--texto-claro); /* Branco para contraste no fundo escuro */
+        margin-bottom: 10px;
+        font-size: 1.5em;
+    }
+    
+    /* Estilos Comuns para Todos os Botões Superiores */
+    #logoutButton, #adminButton, #categoriaButton {
+        display: inline-block; /* Alinha os botões na mesma linha */
+        margin: 0 5px 20px 5px; /* Espaçamento entre botões */
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: background-color 0.3s, box-shadow 0.3s;
+        color: white;
+    }
+    
+    /* Botões Secundários (Admin e Aulas Antigas) */
+    #adminButton, #categoriaButton {
+        background-color: var(--cinza-escuro);
+    }
+    #adminButton:hover, #categoriaButton:hover {
+        background-color: var(--roxo-primario);
+    }
+    
+    /* Botão Sair (Cor de Perigo Padrão) */
+    #logoutButton {
+        background-color: var(--cor-acao-perigo);
+    }
+    #logoutButton:hover {
+        background-color: #c82333;
+    }
+
+    /* Estilos para a Navegação de Aulas (Botões) */
+    .nav-buttons {
+        background-color: transparent; /* Fundo transparente sobre o body */
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 20px;
+        gap: 10px;
+        padding: 10px 0;
+    }
+    .nav-buttons button {
+        background-color: var(--cinza-escuro);
+        color: white;
+        padding: 12px 18px;
+        border: 2px solid transparent; /* Adiciona borda transparente para evitar "pulo" no active */
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s, border-color 0.3s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .nav-buttons button:hover {
+        background-color: var(--roxo-primario);
+    }
+    /* Botão Ativo (Destaque Roxo Forte) */
+    .nav-buttons button.active {
+        background-color: var(--roxo-secundario); 
+        border-color: var(--roxo-secundario);
+        transform: translateY(-1px); /* Leve levantamento */
+    }
+    
+    /* Wrapper do Vídeo (Container Principal) */
+    .video-content-wrapper {
+        max-width: 900px;
+        margin: 20px auto;
+        background: var(--fundo-video); /* Fundo escuro para o vídeo (melhor para o foco) */
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Sombra mais destacada */
+    }
+
+    .aula-container {
+        display: none; 
+    }
+    
+    /* Embed do Vídeo */
+    .vimeo-embed {
+        position: relative;
+        padding-bottom: 56.25%; /* Relação de aspecto 16:9 */
+        height: 0;
+        overflow: hidden;
+        margin-top: 15px;
+    }
+    .vimeo-embed iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        border-radius: 8px; /* Cantos levemente arredondados */
+    }
+
+    /* Container de Presença */
+    .presenca-container {
+        text-align: center;
+        margin-top: 30px; 
+        margin-bottom: 0;
+        padding: 20px;
+        background-color: var(--roxo-claro); /* Fundo roxo claro */
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .presenca-container h3 {
+        color: var(--texto-escuro);
+        margin-top: 0;
+    }
+
+    /* Botão de Marcar Presença */
+    #presencaButton {
+        background-color: var(--roxo-primario); /* Roxo como cor de ação principal */
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        transition: background-color 0.3s, transform 0.1s;
+    }
+    #presencaButton:hover:not(:disabled) {
+        background-color: var(--roxo-secundario);
+        transform: scale(1.02);
+    }
+    /* Botão Desabilitado (Destaca que a ação já foi feita ou não está disponível) */
+    #presencaButton:disabled {
+        background-color: var(--roxo-secundario); /* Roxo vibrante para "já feito" */
+        cursor: not-allowed;
+        opacity: 0.9;
+    }
+    
+    #presencaMessage {
+        margin-top: 15px;
+        font-size: 1.1em;
+        color: var(--texto-escuro);
+    }
+
+    /* Estilo para a mensagem de expiração do token */
+    #tokenExpirationDisplay {
+        color: var(--roxo-primario);
+    }
+</style>
 </head>
 <body>
     <button id="logoutButton" onclick="logout()">Sair / Encerrar Sessão</button>
@@ -248,6 +264,7 @@
     </script>
 </body>
 </html>
+
 
 
 
