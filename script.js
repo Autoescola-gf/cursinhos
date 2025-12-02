@@ -29,19 +29,19 @@ let countdownTokenInterval = null;
 const VIDEO_MAP = {
     // URLs de Vimeo fornecidas
     'aula1': { 
-        title: 'Aula 1: Infrações e Penalidades (Vídeo 1)',
+        title: 'Aula 1: Infrações e Penalidades',
         embedUrl: 'https://player.vimeo.com/video/1141468817?color=0077B5&title=0&byline=0&portrait=0' 
     },
     'aula2': { 
-        title: 'Aula 2: Infrações e Penalidades (Vídeo 2)',
+        title: 'Aula 2: Infrações e Penalidades',
         embedUrl: 'https://player.vimeo.com/video/1141468895?color=0077B5&title=0&byline=0&portrait=0' 
     },
     'aula3': { 
-        title: 'Aula 3: Normas de Circulação (Novo)',
+        title: 'Aula 3: Infrações e Penalidades',
         embedUrl: 'https://player.vimeo.com/video/1142063398?color=0077B5&title=0&byline=0&portrait=0' 
     },
     'aula4': { 
-        title: 'Aula 4: Sinalização de Trânsito (Novo)',
+        title: 'Aula 4: Infrações e Penalidades',
         embedUrl: 'https://player.vimeo.com/video/1142063517?color=0077B5&title=0&byline=0&portrait=0' 
     },
     
@@ -98,7 +98,7 @@ function abrirLog() {
 
 function abrirAulas() {    
     // Redireciona para o nome do arquivo do catálogo de aulas
-    window.location.href = 'TODAS AS AULAS.html'; 
+    window.location.href = 'Aulas.html'; 
 }
 
 function getCurrentDateKey() {
@@ -527,3 +527,4 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
