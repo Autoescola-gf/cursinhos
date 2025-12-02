@@ -3,42 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TODAS AS AULAS | AUTO ESCOLA</title>
+    <title>AUTO ESCOLA GUARDA | TODAS AS AULAS</title>
      <link rel="icon" type="image/x-icon" href="favicon.ico">
     <style>
+        /* Estilos básicos */
         body {
             font-family: sans-serif;
             background-color: #c1c1c1;
             padding: 20px;
         }
-		
-       h1 {
-            font-family: sans-serif;
-            background-color: #c1c1c1;
-            padding: 20px;
+        h1 {
+            text-align: center;
+            color: #0077B5;
+            margin-bottom: 30px;
         }
+        h2 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #901090;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+        
+        .content-wrapper {
+            max-width: 900px;
+            margin: 20px auto;
+            background: black;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            color: white;
+        }
+
+        /* Estilo dos links de aula */
+        .aula-list {
+            list-style: none;
+            padding: 0;
+        }
+        .aula-list li {
+            background-color: #505050;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .aula-list li:hover {
+            background-color: #901090;
+        }
+        .aula-list a {
+            display: block;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        /* Botão Voltar */
+        #backButton {
+            display: block;
+            margin: 0 auto 20px auto;
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        #backButton:hover {
+            background-color: #c82333;
+        }
+        
     </style>
 </head>
 <body>
-    <h1>EM BREVE!</h1>
+    <button id="backButton" onclick="window.location.href='videos.html'">⬅️ Voltar para Aulas de Hoje</button>
+
+    <h1>📚 Catálogo Completo de Aulas</h1>
+
+    <div class="content-wrapper">
+        <p>Clique no título da aula para assistir. Você será redirecionado para a página principal de aulas.</p>
+        
+        <h2>Teoria Geral</h2>
+        <ul class="aula-list">
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula1')">Aula 1: Infrações e Penalidades (Vídeo 1)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula2')">Aula 2: Infrações e Penalidades (Vídeo 2)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula3')">Aula 3: Infrações e Penalidades (Vídeo NOVO 1)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula4')">Aula 4: Infrações e Penalidades (Vídeo NOVO 2)</a></li>
+            </ul>
+        
+        <p style="margin-top: 30px; text-align: center; color: #ccc;">*Mais categorias e aulas serão adicionadas em breve.</p>
+    </div>
+    
+    <script>
+        /**
+         * Redireciona para videos.html e passa o ID da aula via parâmetro na URL.
+         * O script.js (ou videos.html) fará o resto.
+         */
+        function redirectToVideo(lessonId) {
+            // Preserva o status do login, redireciona e adiciona o parâmetro 'lesson'
+            window.location.href = `videos.html?lesson=${lessonId}`;
+        }
+    </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
