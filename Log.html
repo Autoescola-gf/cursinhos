@@ -8,47 +8,61 @@
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #c1c1c1; /* Fundo ligeiramente mais claro */
+        background-color: #e9ecef; /* Cinza claro suave e moderno */
         padding: 20px;
         text-align: center;
     }
     .container {
         max-width: 1000px;
         margin: 20px auto;
-        background: black;
-        padding: 25px; /* Mais preenchimento */
-        border-radius: 12px; /* Cantos mais arredondados */
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Sombra mais destacada */
+        background: #1c1c1c; /* Preto suave para tema escuro */
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); /* Sombra mais dramática */
         display: none; 
     }
     h1 {
-        color: #901090; /* Cor da tabela */
-        font-weight: 600;
+        color: #901090; /* Mantendo o magenta de destaque */
+        font-weight: 700; /* Mais peso */
         margin-bottom: 5px;
     }
     p {
-        color: #6c757d;
+        color: #cccccc; /* Cinza claro para legibilidade no fundo escuro */
     }
-    
+    /* Estilo da barra de busca */
+    #searchInput {
+        padding: 10px; 
+        width: 300px; 
+        font-size: 16px;
+        background-color: #333; /* Fundo escuro */
+        color: #fff; /* Texto claro */
+        border: 1px solid #901090 !important; /* Borda de destaque */
+        border-radius: 4px; 
+        transition: border-color 0.3s;
+    }
+    #searchInput:focus {
+        border-color: #ff33aa !important; /* Borda mais clara ao focar */
+        outline: none;
+    }
     /* --- Estilos da Tabela Melhorados --- */
     table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 25px;
-        border-radius: 8px; /* Arredonda cantos da tabela */
-        overflow: hidden; /* Garante que os cantos arredondados sejam aplicados */
+        border-radius: 8px;
+        overflow: hidden;
     }
     th, td {
-        border: none; /* Remove bordas internas para visual mais limpo */
-        padding: 15px 12px; /* Mais preenchimento */
+        border: none;
+        padding: 15px 12px;
         text-align: left;
-        font-size: 15px; /* Fonte ligeiramente maior */
+        font-size: 15px;
     }
     th {
-        background-color: #901090;
+        background-color: #901090; /* Cor de destaque para o cabeçalho */
         color: white;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.8px;
         font-weight: 700;
     }
     
@@ -61,16 +75,16 @@
         background-color: white; 
     }
 
-    /* Efeito ao passar o mouse: essencial para rastreamento */
+    /* Efeito ao passar o mouse */
     tr:hover {
-        background-color: #e2e6ea; /* Um azul muito claro ao passar o mouse */
+        background-color: #e2e6ea;
         cursor: default;
         transition: background-color 0.2s ease;
     }
 
     #loading {
         font-size: 18px;
-        color: #555;
+        color: #cccccc; /* Ajustado para fundo escuro */
         margin-top: 30px;
     }
 </style>
@@ -84,7 +98,7 @@
 		<div style="margin-bottom: 20px; text-align: right;">
    		 <input type="text" id="searchInput" onkeyup="filterTable()" 
            placeholder="Buscar por Nome ou CPF..."
-           style="padding: 10px; width: 300px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
+           >
 		</div>
 		
         <div id="loading">Carregando dados da planilha...</div>
@@ -118,55 +132,65 @@
     // NOVO: FUNÇÃO PARA CORRIGIR TIMESTAMP CORROMPIDO
     // =======================================================
 
-    /**
-     * Corrige o formato corrompido de log (ex: 2025-12-02T...Z1899-12-30T...Z), 
-     * separando a data da primeira parte e a hora da segunda.
-     * @param {string} corruptedString A string de data/hora corrompida.
-     * @returns {{date: string, time: string}} Um objeto com a data (DD/MM/YYYY) e hora (HH:MM:SS) corrigidas.
-     */
-    function parseAndSplitCorruptedTimestamp(corruptedString) {
-        // Assume que strings menores que 30 caracteres não são o formato corrompido
-        if (typeof corruptedString !== 'string' || corruptedString.length < 30) {
-            return { date: corruptedString || 'N/A', time: 'N/A' }; 
-        }
+    /**
+     * Corrige o formato corrompido de log (ex: 2025-12-02T...Z1899-12-30T...Z), 
+     * separando a data da primeira parte e a hora da segunda.
+     * @param {string} corruptedString A string de data/hora corrompida.
+     * @returns {{date: string, time: string}} Um objeto com a data (DD/MM/YYYY) e hora (HH:MM:SS) corrigidas.
+     */
+    function parseAndSplitCorruptedTimestamp(corruptedString) {
+        // Assume que strings menores que 30 caracteres não são o formato corrompido
+        if (typeof corruptedString !== 'string' || corruptedString.length < 30) {
+            return { date: corruptedString || 'N/A', time: 'N/A' }; 
+        }
 
-        // Procura o fim da primeira string ISO (onde termina .000Z)
-        const splitIndex = corruptedString.indexOf('.000Z');
-        
-        // Se não encontrar o padrão .000Z seguido por mais caracteres, retorna o original
-        if (splitIndex === -1 || splitIndex + 5 >= corruptedString.length) {
-            return { 
-                date: corruptedString.substring(0, 10) || 'N/A', // Tenta pegar a data YYYY-MM-DD
-                time: corruptedString.substring(11, 19) || 'N/A' // Tenta pegar a hora HH:MM:SS
-            }; 
-        }
-        
-        const datePartISO = corruptedString.substring(0, splitIndex + 5); 
-        const timePartISO = corruptedString.substring(splitIndex + 5); 
-        
-        let dateStr = 'N/A';
-        let timeStr = 'N/A';
-        
-        try {
-            // 1. Extrai a data (YYYY-MM-DD) da primeira parte (que tem a data correta)
-            const dateMatch = datePartISO.match(/^(\d{4}-\d{2}-\d{2})/);
-            if (dateMatch) {
-                // Converte para DD/MM/YYYY para o formato brasileiro
-                const [year, month, day] = dateMatch[1].split('-');
+        // Procura o fim da primeira string ISO (onde termina .000Z)
+        const splitIndex = corruptedString.indexOf('.000Z');
+        
+        // Se não encontrar o padrão .000Z seguido por mais caracteres, retorna o original
+        if (splitIndex === -1 || splitIndex + 5 >= corruptedString.length) {
+            // Tentativa de retorno caso não seja o formato concatenado, mas ainda seja ISO
+            const datePart = corruptedString.substring(0, 10);
+            const timePart = corruptedString.substring(11, 19);
+
+            let dateStr = 'N/A';
+            if (datePart.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                const [year, month, day] = datePart.split('-');
                 dateStr = `${day}/${month}/${year}`;
             }
-            
-            // 2. Extrai o tempo (HH:MM:SS) da segunda parte (que tem a hora correta)
-            const timeMatch = timePartISO.match(/T(\d{2}:\d{2}:\d{2})/);
-            if (timeMatch) {
-                timeStr = timeMatch[1]; // HH:MM:SS
-            }
-        } catch (e) {
-            console.error("Falha ao analisar o timestamp corrompido:", e);
-        }
-        
-        return { date: dateStr, time: timeStr }; 
-    }
+
+            return { 
+                date: dateStr,
+                time: timePart || 'N/A' 
+            }; 
+        }
+        
+        const datePartISO = corruptedString.substring(0, splitIndex + 5); 
+        const timePartISO = corruptedString.substring(splitIndex + 5); 
+        
+        let dateStr = 'N/A';
+        let timeStr = 'N/A';
+        
+        try {
+            // 1. Extrai a data (YYYY-MM-DD) da primeira parte (que tem a data correta)
+            const dateMatch = datePartISO.match(/^(\d{4}-\d{2}-\d{2})/);
+            if (dateMatch) {
+                // Converte para DD/MM/YYYY para o formato brasileiro
+                const [year, month, day] = dateMatch[1].split('-');
+                dateStr = `${day}/${month}/${year}`;
+            }
+            
+            // 2. Extrai o tempo (HH:MM:SS) da segunda parte (que tem a hora correta)
+            const timeMatch = timePartISO.match(/T(\d{2}:\d{2}:\d{2})/);
+            if (timeMatch) {
+                timeStr = timeMatch[1]; // HH:MM:SS
+            }
+        } catch (e) {
+            console.error("Falha ao analisar o timestamp corrompido:", e);
+        }
+        
+        return { date: dateStr, time: timeStr }; 
+    }
 
     /**
      * Checa o acesso do administrador com um prompt simples.
@@ -189,7 +213,6 @@
     
     /**
      * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
-     * (CORRIGIDO para usar a função de parser)
      */
     async function fetchPresencaData() {
         const loading = document.getElementById('loading');
@@ -223,18 +246,19 @@
                 
                 // =============================================================
                 // INÍCIO: APLICAÇÃO DA CORREÇÃO DE FORMATO
-                // Assume que o campo que contém o timestamp corrompido é o data_registro
-                // Se o campo for o hora_registro, ajuste a linha abaixo.
+                // O campo que contem a data/hora corrompida deve ser ajustado aqui.
                 // =============================================================
+                let rawTimestamp = record.data_registro || record.hora_registro || ''; // Assumindo que pode estar em data_registro ou hora_registro
+                
                 let dataFormatada = record.data_registro || 'N/A';
                 let horaFormatada = record.hora_registro || 'N/A';
-                
-                // Se a data do registro parece ser uma string ISO longa e corrompida
-                if (dataFormatada.length > 30 && dataFormatada.indexOf('.000Z') > 10) {
-                    const corrected = parseAndSplitCorruptedTimestamp(dataFormatada);
-                    dataFormatada = corrected.date;
-                    horaFormatada = corrected.time;
-                }
+                
+                // Se o timestamp for a string corrompida longa, corrige e separa
+                if (rawTimestamp.length > 30 && rawTimestamp.includes('.000Z1899-12-30T')) {
+                    const corrected = parseAndSplitCorruptedTimestamp(rawTimestamp);
+                    dataFormatada = corrected.date;
+                    horaFormatada = corrected.time;
+                }
                 // =============================================================
                 // FIM: APLICAÇÃO DA CORREÇÃO DE FORMATO
                 // =============================================================
