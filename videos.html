@@ -4,293 +4,198 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AUTO ESCOLA GUARDA | MINHAS AULAS</title>
-     <link rel="icon" type="image/x-icon" href="favicon.ico">
-<style>
-    /* Variáveis de Cor para Tema Roxo e Consistência */
-    :root {
-        --roxo-primario: #6C0BA6;      /* Roxo Profundo (títulos, ações principais) */
-        --roxo-secundario: #901090;    /* Roxo Vibrante (ativo, hover) */
-        --roxo-claro: #F5EEFF;         /* Roxo muito claro para fundos/hover */
-        --fundo-body: #c1c1c1;         /* Fundo original do body */
-        --fundo-video: #212121;        /* Fundo escuro para o vídeo (melhor contraste) */
-        --fundo-container: #ffffff;    /* Fundo branco/claro para containers */
-        --cinza-escuro: #505050;
-        --texto-escuro: #333;
-        --texto-claro: white;
-        --cor-acao-perigo: #dc3545;    /* Vermelho para sair/logout */
-        --cor-presenca: #5CB85C;       /* Verde para Presença (Ação positiva) */
-    }
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        /* Cores Base */
+        :root {
+            --primary-color: #901090; /* Magenta de Destaque */
+            --secondary-color: #dc3545; /* Vermelho para Sair */
+            --success-color: #28a745; /* Verde para Presença */
+            --log-color: #0077B5; /* Azul para o Log */
+            --bg-color-main: #c1c1c1;
+            --bg-color-wrapper: #1c1c1c; /* Preto Suave (Dark Theme) */
+        }
 
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: var(--fundo-body); 
-        padding: 20px;
-        text-align: center;
-    }
-
-    /* Título Principal */
-    h1 {
-        text-align: center;
-        color: var(--roxo-primario);
-        margin-bottom: 20px;
-        font-weight: 700;
-    }
-    
-    /* Títulos de Aula dentro do container de vídeo */
-    h2 {
-        color: var(--texto-claro); /* Branco para contraste no fundo escuro */
-        margin-bottom: 10px;
-        font-size: 1.5em;
-    }
-    
-    /* Estilos Comuns para Todos os Botões Superiores */
-    #logoutButton, #adminButton, #categoriaButton {
-        display: inline-block; /* Alinha os botões na mesma linha */
-        margin: 0 5px 20px 5px; /* Espaçamento entre botões */
-        padding: 10px 20px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-        transition: background-color 0.3s, box-shadow 0.3s;
-        color: white;
-    }
-    
-    /* Botões Secundários (Admin e Aulas Antigas) */
-    #adminButton, #categoriaButton {
-        background-color: var(--cinza-escuro);
-    }
-    #adminButton:hover, #categoriaButton:hover {
-        background-color: var(--roxo-primario);
-    }
-    
-    /* Botão Sair (Cor de Perigo Padrão) */
-    #logoutButton {
-        background-color: var(--cor-acao-perigo);
-    }
-    #logoutButton:hover {
-        background-color: #c82333;
-    }
-
-    /* Estilos para a Navegação de Aulas (Botões) */
-    .nav-buttons {
-        background-color: transparent; /* Fundo transparente sobre o body */
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-bottom: 20px;
-        gap: 10px;
-        padding: 10px 0;
-    }
-    .nav-buttons button {
-        background-color: var(--cinza-escuro);
-        color: white;
-        padding: 12px 18px;
-        border: 2px solid transparent; /* Adiciona borda transparente para evitar "pulo" no active */
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s, border-color 0.3s;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .nav-buttons button:hover {
-        background-color: var(--roxo-primario);
-    }
-    /* Botão Ativo (Destaque Roxo Forte) */
-    .nav-buttons button.active {
-        background-color: var(--roxo-secundario); 
-        border-color: var(--roxo-secundario);
-        transform: translateY(-1px); /* Leve levantamento */
-    }
-    
-    /* Wrapper do Vídeo (Container Principal) */
-    .video-content-wrapper {
-        max-width: 900px;
-        margin: 20px auto;
-        background: var(--fundo-video); /* Fundo escuro para o vídeo (melhor para o foco) */
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Sombra mais destacada */
-    }
-
-    .aula-container {
-        display: none; 
-    }
-    
-    /* Embed do Vídeo */
-    .vimeo-embed {
-        position: relative;
-        padding-bottom: 56.25%; /* Relação de aspecto 16:9 */
-        height: 0;
-        overflow: hidden;
-        margin-top: 15px;
-    }
-    .vimeo-embed iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: 0;
-        border-radius: 8px; /* Cantos levemente arredondados */
-    }
-
-    /* Container de Presença */
-    .presenca-container {
-        text-align: center;
-        margin-top: 30px; 
-        margin-bottom: 0;
-        padding: 20px;
-        background-color: var(--roxo-claro); /* Fundo roxo claro */
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    .presenca-container h3 {
-        color: var(--texto-escuro);
-        margin-top: 0;
-    }
-
-    /* Botão de Marcar Presença */
-    #presencaButton {
-        background-color: var(--roxo-primario); /* Roxo como cor de ação principal */
-        color: white;
-        padding: 12px 25px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 18px;
-        font-weight: bold;
-        transition: background-color 0.3s, transform 0.1s;
-    }
-    #presencaButton:hover:not(:disabled) {
-        background-color: var(--roxo-secundario);
-        transform: scale(1.02);
-    }
-    /* Botão Desabilitado (Destaca que a ação já foi feita ou não está disponível) */
-    #presencaButton:disabled {
-        background-color: var(--roxo-secundario); /* Roxo vibrante para "já feito" */
-        cursor: not-allowed;
-        opacity: 0.9;
-    }
-    
-    #presencaMessage {
-        margin-top: 15px;
-        font-size: 1.1em;
-        color: var(--texto-escuro);
-    }
-
-    /* Estilo para a mensagem de expiração do token */
-    #tokenExpirationDisplay {
-        color: var(--roxo-primario);
-    }
-</style>
-</head>
-<body>
-    <button id="logoutButton" onclick="logout()">Sair / Encerrar Sessão</button>
-    <button id="adminButton" onclick="abrirLog()">Relatorio de presença (admin)</button>
-    <button title="EM BREVE! AGUARDE!" id="categoriaButton" onclick="abrirAulas()">Acessar aulas antigas</button>
-    <p id="tokenExpirationDisplay" style="text-align: center; margin-top: 10px; margin-bottom: 20px; font-weight: bold; font-size: 1.1em;"></p>
-    <h1>🎓 Conteúdo Exclusivo | Selecione uma aula para assistir</h1>
-    <div class="nav-buttons">
-        <button id="btn-aula1" onclick="showLesson('aula1')">Aula 1: Infrações e Penalidades </button>
-        <button id="btn-aula2" onclick="showLesson('aula2')">Aula 2: Infrações e Penalidades </button>
-        <button id="btn-aula3" onclick="showLesson('aula3')">Aula 3: Infrações e Penalidades</button>
-        <button id="btn-aula4" onclick="showLesson('aula4')">Aula 4: Infrações e Penalidades</button>
-        </div>
-
-    <div class="video-content-wrapper">
-        
-        <div id="aula1" class="aula-container">
-            <h2>Aula 1: INFRAÇÕES E PENALIDADES</h2>
-            <div class="vimeo-embed">
-                <iframe src="https://player.vimeo.com/video/1141468817?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
-        </div>
-
-        <div id="aula2" class="aula-container">
-            <h2>Aula 2: INFRAÇÕES E PENALIDADES</h2>
-            <div class="vimeo-embed">
-                 <iframe src="https://player.vimeo.com/video/1141468895?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
-        </div>
-        
-        <div id="aula3" class="aula-container">
-            <h2>Aula 3: INFRAÇÕES E PENALIDADES(NOVO)</h2>
-            <div class="vimeo-embed">
-                 <iframe src="https://player.vimeo.com/video/1142063398?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
-        </div>
-
-
-         <div id="aula4" class="aula-container">
-            <h2>Aula 3: INFRAÇÕES E PENALIDADES(NOVO)</h2>
-            <div class="vimeo-embed">
-                 <iframe src="https://player.vimeo.com/video/1142063517?color=0077B5&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
-        </div>
-        
-        <div class="presenca-container">
-            <h3>Registro de Presença Diária</h3>
-            <button id="presencaButton" onclick="marcarPresenca()">Marcar Presença de Hoje</button>
-            <p id="presencaMessage" style="margin-top: 10px; font-weight: bold;"></p>
-        </div>
-        </div>
-
-    <script src="script.js"></script>
-    <script>
-        // Funções de Navegação (showLesson) e Segurança (checkAccess, logout, verificarStatusPresenca)
-        // A função showLesson deve ser definida aqui para que os botões a encontrem no HTML
-        function showLesson(lessonId) {
-            const allLessons = document.querySelectorAll('.aula-container');
-            allLessons.forEach(lesson => lesson.style.display = 'none');
-
-            const allButtons = document.querySelectorAll('.nav-buttons button');
-            allButtons.forEach(button => button.classList.remove('active'));
-
-            const currentLesson = document.getElementById(lessonId);
-            if (currentLesson) {
-                currentLesson.style.display = 'block';
-            }
-
-            const currentButton = document.getElementById(`btn-${lessonId}`);
-            if (currentButton) {
-                currentButton.classList.add('active');
-            }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color-main);
+            padding: 20px;
         }
         
-        // A lógica de checkAccess, logout, marcarPresenca e verificarStatusPresenca 
-        // é chamada pelo window.onload no script.js, mas suas definições devem estar lá.
-    </script>
+        /* Controles do Cabeçalho */
+        .header-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .header-controls button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            color: white;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+        
+        /* Estilos dos Botões de Controle */
+        #logoutButton {
+            background-color: var(--secondary-color); 
+        }
+        #logoutButton:hover {
+            background-color: #c82333;
+        }
+        #logButton {
+            background-color: var(--log-color); /* Azul para o Log */
+        }
+        #logButton:hover {
+            background-color: #005f92;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color); 
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+        
+        /* Container Principal (Dark Theme) */
+        .video-content-wrapper {
+            max-width: 900px;
+            margin: 20px auto;
+            background: var(--bg-color-wrapper);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            color: #cccccc;
+        }
+        #lessonTitle {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        
+        /* Estilos para o Player de Vídeo (Garante responsividade) */
+        .video-container {
+            width: 100%;
+            position: relative; 
+            padding-bottom: 56.25%; 
+            height: 0;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background-color: black;
+            border-radius: 8px;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Estilos para a Navegação de Aulas */
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 8px;
+        }
+        .nav-buttons button {
+            background-color: #505050;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.3s;
+        }
+        .nav-buttons button:hover {
+            background-color: #707070;
+        }
+        .nav-buttons button.active {
+            background-color: var(--primary-color); 
+            box-shadow: 0 0 8px rgba(144, 16, 144, 0.5);
+        }
+        
+        /* Botão Catálogo */
+        #catalogLink {
+             background-color: #0077B5 !important;
+        }
+        
+        /* Estilos para o Botão de Presença */
+        .presence-section {
+             text-align: center;
+             padding-top: 20px;
+             border-top: 1px solid #333;
+        }
+        #presencaButton {
+            background-color: var(--success-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        #presencaButton:hover:not(:disabled) {
+            background-color: #1e7e34;
+        }
+        #presencaButton:disabled {
+            background-color: var(--primary-color); 
+            cursor: not-allowed;
+        }
+        #presencaMessage {
+            margin-top: 15px;
+            font-weight: 600;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="header-controls">
+        <button id="logButton" onclick="abrirLog()">Acessar Log de Presença</button>
+        <button id="logoutButton" onclick="logout()">Sair / Encerrar Sessão</button>
+    </div>
+
+    <p id="tokenExpirationDisplay" style="text-align: center; margin-top: 10px; margin-bottom: 20px; font-weight: bold; font-size: 1.1em;"></p>
+    <h1>🎓 Conteúdo Exclusivo | Selecione uma aula para assistir</h1>
+    
+    <div class="video-content-wrapper">
+    
+        <div class="nav-buttons">
+            <button id="btn-aula1" onclick="showLesson('aula1')">Aula 1: Legislação I</button>
+            <button id="btn-aula2" onclick="showLesson('aula2')">Aula 2: Legislação II</button>
+            <button id="btn-aula3" onclick="showLesson('aula3')">Aula 3: Normas de Circulação</button>
+            <button id="btn-aula4" onclick="showLesson('aula4')">Aula 4: Sinalização</button>
+            <button id="catalogLink" onclick="abrirAulas()">Catálogo Completo de Aulas</button>
+        </div>
+        
+        <h2 id="lessonTitle">Carregando Aula...</h2>
+        
+        <div class="video-container">
+            <div id="videoPlayerEmbed">
+                </div>
+        </div>
+        
+        <div class="presence-section">
+            <p id="presencaMessage">Clique para registrar sua presença e frequência no curso.</p>
+            <button id="presencaButton" onclick="marcarPresenca()">Marcar Presença de Hoje</button>
+        </div>
+    
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
