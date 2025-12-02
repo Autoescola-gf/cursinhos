@@ -488,6 +488,7 @@ function showLesson(lessonId) {
     // 3. Cria e injeta o código HTML do player de vídeo nativo (MP4)
     const videoCode = `
         <video controls poster="img/poster-aula.jpg" controlsList="nodownload" preload="preload">
+            poster="favicon.ico"  <-- 🚨 AQUI ESTÁ A MUDANÇA
             <source src="${lessonData.embedUrl}" type="video/mp4">
             Seu navegador não suporta a tag de vídeo.
         </video>
@@ -530,6 +531,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
