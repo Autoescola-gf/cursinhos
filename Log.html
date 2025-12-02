@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatório de Presença - ADMIN</title>
-	<link rel="icon" type="image/x-icon" href="favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Presença - ADMIN</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #c1c1c1; 
+        background-color: #c1c1c1; /* Fundo ligeiramente mais claro */
         padding: 20px;
         text-align: center;
     }
     .container {
         max-width: 1000px;
         margin: 20px auto;
-        background: #1c1c1c; /* Fundo do container agora é preto */
-        padding: 25px; 
-        border-radius: 12px; 
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); 
+        background: black;
+        padding: 25px; /* Mais preenchimento */
+        border-radius: 12px; /* Cantos mais arredondados */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Sombra mais destacada */
         display: none; 
-        color: #f8f9fa; /* Cor do texto no container */
     }
     h1 {
         color: #901090; /* Cor da tabela */
@@ -28,71 +27,59 @@
         margin-bottom: 5px;
     }
     p {
-        color: #adb5bd; /* Texto de descrição claro */
+        color: #6c757d;
     }
     
-    /* --- Estilos da Tabela Melhorados para Dark Theme --- */
+    /* --- Estilos da Tabela Melhorados --- */
     table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 25px;
-        border-radius: 8px; 
-        overflow: hidden; 
-        color: #343a40; /* Cor padrão do texto na tabela */
+        border-radius: 8px; /* Arredonda cantos da tabela */
+        overflow: hidden; /* Garante que os cantos arredondados sejam aplicados */
     }
     th, td {
-        border: none; 
-        padding: 15px 12px; 
+        border: none; /* Remove bordas internas para visual mais limpo */
+        padding: 15px 12px; /* Mais preenchimento */
         text-align: left;
-        font-size: 15px; 
+        font-size: 15px; /* Fonte ligeiramente maior */
     }
     th {
-        background-color: #901090; /* Cabeçalho Magenta */
+        background-color: #901090;
         color: white;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         font-weight: 700;
     }
     
-    /* Linhas pares (fundo mais escuro) */
+    /* Linhas pares (cor de fundo mais clara) */
     tr:nth-child(even) {
-        background-color: #e9ecef; /* Cinza bem claro */
+        background-color: #f8f9fa; 
     }
-    /* Linhas ímpares (fundo claro) */
+    /* Linhas ímpares (cor de fundo branca) */
     tr:nth-child(odd) {
         background-color: white; 
     }
 
-    /* Efeito ao passar o mouse */
+    /* Efeito ao passar o mouse: essencial para rastreamento */
     tr:hover {
-        background-color: #dee2e6; 
+        background-color: #e2e6ea; /* Um azul muito claro ao passar o mouse */
         cursor: default;
         transition: background-color 0.2s ease;
     }
 
     #loading {
         font-size: 18px;
-        color: #adb5bd; /* Cor clara */
+        color: #555;
         margin-top: 30px;
     }
-    
-    /* Estilo da caixa de busca */
-    #searchInput {
-        background-color: #343a40; 
-        color: #fff;
-        border: 1px solid #901090; /* Borda magenta */
-    }
-    #searchInput::placeholder {
-        color: #adb5bd;
-    }
-
 </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Relatório de Presença Diária</h1>
-        <p>Dados brutos de todos os registros de presença feitos via API. **(Acesso Admin)**</p>
+    <div class="container">
+        <h1>Relatório de Presença Diária</h1>
+        <p>Dados brutos de todos os registros de presença feitos via API. **(Acesso Admin)**</p>
 		
 		<div style="margin-bottom: 20px; text-align: right;">
    		 <input type="text" id="searchInput" onkeyup="filterTable()" 
@@ -100,25 +87,25 @@
            style="padding: 10px; width: 300px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
 		</div>
 		
-        <div id="loading">Carregando dados da planilha...</div>
+        <div id="loading">Carregando dados da planilha...</div>
 
-        <table id="presencaTable" style="display: none;">
-            <thead>
-                <tr>
-                    <th>Nome do Aluno</th>
-                    <th>CPF do Aluno</th>
+        <table id="presencaTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Nome do Aluno</th>
+                    <th>CPF do Aluno</th>
                     <th>Data do Registro</th>
-                    <th>Hora do Registro</th>
-                </tr>
-            </thead>
-            <tbody id="presencaData">
-                            </tbody>
-        </table>
+                    <th>Hora do Registro</th>
+                </tr>
+            </thead>
+            <tbody id="presencaData">
+                            </tbody>
+        </table>
 
-        <p id="error" style="color: red; margin-top: 20px;"></p>
-    </div>
+        <p id="error" style="color: red; margin-top: 20px;"></p>
+    </div>
 
-   <script>
+   <script>
     // 🚨 SEU URL CORRETO: (Mantenha o URL de Apps Script usado nas etapas anteriores)
     const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5vT3lhS7QN03KJcr4weoU6NYLbbzcD17bbLiAh3C51vXoPvISeR40/exec';
     // Ação para buscar o log
@@ -148,6 +135,7 @@
     
     /**
      * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
+     * (AJUSTADO para usar as strings de data e hora pré-formatadas do Apps Script)
      */
     async function fetchPresencaData() {
         const loading = document.getElementById('loading');
@@ -158,36 +146,70 @@
         loading.style.display = 'block';
         table.style.display = 'none';
         errorElement.textContent = '';
-        tbody.innerHTML = ''; 
+        tbody.innerHTML = ''; // Limpa dados anteriores
         
-       try {
-        // ... (Requisição à API) ...
-        
-        // 2. Itera sobre os dados e preenche a tabela
-        data.forEach(record => {
-            const row = tbody.insertRow();
+        try {
+            // 1. Faz uma requisição GET para buscar TODOS os dados do log
+            const response = await fetch(ADMIN_API_URL);
             
-            // --- INÍCIO: AJUSTE PARA USAR STRINGS PRÉ-FORMATADAS DO APPS SCRIPT ---
-            // O Apps Script já está enviando 'dd/MM/yyyy' e 'HH:mm' como strings.
-            // Basta usar os campos 'data_registro' e 'hora_registro' do log.
-            const dataFormatada = record.data_registro || 'N/A'; // Ex: "02/12/2025"
-            const horaFormatada = record.hora_registro || 'N/A'; // Ex: "15:15"
-
-            // NOTA: Os campos nome_aluno e cpf devem vir da planilha de Log
+            if (!response.ok) {
+                throw new Error(`Falha na API: Status ${response.status}`);
+            }
             
-            // --- FIM: AJUSTE ---
+            const data = await response.json();
+            
+            if (!data || data.length === 0) {
+                errorElement.textContent = 'Nenhum registro de presença encontrado na planilha.';
+                return;
+            }
+            
+            // 2. Itera sobre os dados e preenche a tabela
+            data.forEach(record => {
+                const row = tbody.insertRow();
+                
+                // --- INÍCIO: AJUSTE PARA USAR STRINGS PRÉ-FORMATADAS ---
+                // O Apps Script já está enviando 'dd/MM/yyyy' e 'HH:mm' como strings 
+                // nos campos 'data_registro' e 'hora_registro'.
+                
+                const dataFormatada = record.data_registro || 'N/A'; 
+                const horaFormatada = record.hora_registro || 'N/A'; 
+                
+                // Se o campo `data_registro` for um objeto Date (como era antes) OU 
+                // a string pré-formatada, isso cobrirá ambos.
+                
+                // Se a data e hora vierem em campos separados (string), usamos eles:
+                if (typeof record.data_registro !== 'string' || typeof record.hora_registro !== 'string') {
+                    // CÓDIGO DE FALLBACK/COMPATIBILIDADE (Se o Apps Script mudar)
+                    let dataCompleta = record.data_registro || '';
+                    if (dataCompleta) {
+                        try {
+                            const dateObj = new Date(dataCompleta);
+                            if (!isNaN(dateObj.getTime())) {
+                                dataFormatada = dateObj.toLocaleDateString('pt-BR');
+                                horaFormatada = dateObj.toLocaleTimeString('pt-BR', {
+                                    hour: '2-digit', 
+                                    minute: '2-digit'
+                                });
+                            }
+                        } catch (e) {
+                            console.error("Erro ao formatar data/hora:", e);
+                        }
+                    }
+                }
+                // --- FIM: AJUSTE PARA USAR STRINGS PRÉ-FORMATADAS ---
 
-            // Adiciona um atributo de dados (data-search) para facilitar a busca
-            const searchableText = `${record.nome_aluno || ''} ${record.cpf || ''}`.toLowerCase();
-            row.setAttribute('data-search', searchableText);
 
-            // As chaves de objeto ('nome_aluno', 'cpf', etc.) vêm do Apps Script
-            row.insertCell().textContent = record.nome_aluno || 'N/A';
-            row.insertCell().textContent = record.cpf || 'N/A';
-            // Usa a data e hora formatadas que já vêm prontas do Apps Script
-            row.insertCell().textContent = dataFormatada;
-            row.insertCell().textContent = horaFormatada;
-        });
+                // Adiciona um atributo de dados (data-search) para facilitar a busca
+                const searchableText = `${record.nome_aluno || ''} ${record.cpf || ''}`.toLowerCase();
+                row.setAttribute('data-search', searchableText);
+
+                // As chaves de objeto ('nome_aluno', 'cpf', etc.) vêm do Apps Script
+                row.insertCell().textContent = record.nome_aluno || 'N/A';
+                row.insertCell().textContent = record.cpf || 'N/A';
+                // Usa a data e hora formatadas
+                row.insertCell().textContent = dataFormatada;
+                row.insertCell().textContent = horaFormatada;
+            });
 
             // 3. Exibe a tabela
             table.style.display = 'table';
@@ -205,29 +227,37 @@
      * Filtra a tabela em tempo real com base no texto digitado.
      */
     function filterTable() {
+        // Pega o texto de busca e converte para minúsculas
         const input = document.getElementById('searchInput');
         const filter = input.value.toLowerCase();
+        
+        // Pega todas as linhas do corpo da tabela
         const tbody = document.getElementById('presencaData');
         const tr = tbody.getElementsByTagName('tr');
 
+        // Itera sobre as linhas
         for (let i = 0; i < tr.length; i++) {
             const row = tr[i];
+            // Pega o atributo data-search que criamos na função fetchPresencaData
             const searchData = row.getAttribute('data-search'); 
 
             if (searchData) {
+                // Se a linha contiver o texto de busca, exibe a linha
                 if (searchData.indexOf(filter) > -1) {
                     row.style.display = '';
                 } else {
+                    // Caso contrário, esconde a linha
                     row.style.display = 'none';
                 }
             }
         }
     }
 
+
+    // Inicia o cheque de acesso ao carregar a página
     window.onload = checkAdminAccess;
 
 </script>
 </body>
 
 </html>
-
