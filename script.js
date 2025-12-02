@@ -30,8 +30,8 @@ const VIDEO_MAP = {
     // URLs de Vimeo fornecidas
     // LEGISLAÇÃO
     'aula1': { 
-        title: 'Aula 1: Legislação (Infrações e Penalidades I)',
-        embedUrl: 'https://www.dropbox.com/scl/fi/49sbcsq68he23y3awei5v/23-NORMAS.mp4?rlkey=4n4z6s2alcayuo2izd2yvt4dz&st=ftdfqtz6&raw=1'
+        title: 'Aula 1: Legislação',
+        embedUrl: 'https://www.dropbox.com/scl/fi/49sbcsq68he23y3awei5v/23-NORMAS.mp4?rlkey=p6ztt8mbb8hy2k4edjmdvc1em&st=2yq8ewdy&dlraw=1'
     },
     'aula2': { 
         title: 'Aula 2: Legislação',
@@ -487,7 +487,7 @@ function showLesson(lessonId) {
 
     // 3. Cria e injeta o código HTML do player de vídeo nativo (MP4)
     const videoCode = `
-        <video controls poster="img/poster-aula.jpg" controlsList="nodownload" preload="metadata">
+        <video controls poster="img/poster-aula.jpg" controlsList="nodownload" preload="preload">
             <source src="${lessonData.embedUrl}" type="video/mp4">
             Seu navegador não suporta a tag de vídeo.
         </video>
@@ -530,6 +530,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
