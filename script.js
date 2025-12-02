@@ -31,15 +31,15 @@ const VIDEO_MAP = {
     // LEGISLAÇÃO
     'aula1': { 
         title: 'Aula 1: Legislação (Infrações e Penalidades I)',
-        embedUrl: 'https://drive.google.com/uc?export=download&id=1Igq_4duZeGveLyYuS6Uwhk6TU6wGFcwt'
+        embedUrl: 'https://drive.google.com/uc?export=download&id=1Igq_4duZeGveLyYuS6Uwhk6TU6wGFcwt&confirm=t'
     },
     'aula2': { 
         title: 'Aula 2: Legislação',
-        embedUrl: 'https://drive.google.com/uc?export=download&id=1Igq_4duZeGveLyYuS6Uwhk6TU6wGFcwt'
+        embedUrl: 'https://drive.google.com/uc?export=download&id=1Igq_4duZeGveLyYuS6Uwhk6TU6wGFcwt&confirm=t'
     },
     'aula3': { 
         title: 'Aula 3: Legislação',
-        embedUrl: 'https://player.vimeo.com/video/1142063398?color=0077B5&title=0&byline=0&portrait=0' 
+        embedUrl: 'https://drive.google.com/uc?export=download&id=1Igq_4duZeGveLyYuS6Uwhk6TU6wGFcwt&confirm=t' 
     },
     'aula4': { 
         title: 'Aula 4: Legislação',
@@ -530,6 +530,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
