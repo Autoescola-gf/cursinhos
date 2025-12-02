@@ -135,7 +135,7 @@
     
     /**
      * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
-     * (AJUSTADO para usar as strings de data e hora pré-formatadas do Apps Script)
+     * (CORRIGIDO para processar o timestamp ISO corretamente)
      */
     async function fetchPresencaData() {
         const loading = document.getElementById('loading');
@@ -167,36 +167,35 @@
             data.forEach(record => {
                 const row = tbody.insertRow();
                 
-                // --- INÍCIO: AJUSTE PARA USAR STRINGS PRÉ-FORMATADAS ---
-                // O Apps Script já está enviando 'dd/MM/yyyy' e 'HH:mm' como strings 
-                // nos campos 'data_registro' e 'hora_registro'.
-                
-                const dataFormatada = record.data_registro || 'N/A'; 
-                const horaFormatada = record.hora_registro || 'N/A'; 
-                
-                // Se o campo `data_registro` for um objeto Date (como era antes) OU 
-                // a string pré-formatada, isso cobrirá ambos.
-                
-                // Se a data e hora vierem em campos separados (string), usamos eles:
-                if (typeof record.data_registro !== 'string' || typeof record.hora_registro !== 'string') {
-                    // CÓDIGO DE FALLBACK/COMPATIBILIDADE (Se o Apps Script mudar)
-                    let dataCompleta = record.data_registro || '';
-                    if (dataCompleta) {
-                        try {
-                            const dateObj = new Date(dataCompleta);
-                            if (!isNaN(dateObj.getTime())) {
-                                dataFormatada = dateObj.toLocaleDateString('pt-BR');
-                                horaFormatada = dateObj.toLocaleTimeString('pt-BR', {
-                                    hour: '2-digit', 
-                                    minute: '2-digit'
-                                });
-                            }
-                        } catch (e) {
-                            console.error("Erro ao formatar data/hora:", e);
+                // --- INÍCIO: PROCESSAMENTO DO TIMESTAMP ISO ---
+                let dataFormatada = 'N/A';
+                let horaFormatada = 'N/A';
+
+                // dataCompleta agora é a string ISO (Ex: 2025-12-02T18:24:42.000Z)
+                const dataCompleta = record.data_registro || '';
+
+                if (dataCompleta) {
+                    try {
+                        // Tenta criar um objeto Date a partir da string ISO (UTC)
+                        const dateObj = new Date(dataCompleta);
+
+                        if (!isNaN(dateObj.getTime())) { // Verifica se é uma data válida
+                            // Formata a data para o fuso horário local: DD/MM/AAAA
+                            dataFormatada = dateObj.toLocaleDateString('pt-BR');
+                            
+                            // Formata a hora para o fuso horário local: HH:MM
+                            // Isso converte corretamente o UTC para o fuso do usuário
+                            horaFormatada = dateObj.toLocaleTimeString('pt-BR', {
+                                hour: '2-digit', 
+                                minute: '2-digit'
+                            });
                         }
+                    } catch (e) {
+                        console.error("Erro ao formatar data/hora:", e);
+                        // Se houver erro, mantém 'N/A'
                     }
                 }
-                // --- FIM: AJUSTE PARA USAR STRINGS PRÉ-FORMATADAS ---
+                // --- FIM: PROCESSAMENTO DO TIMESTAMP ISO ---
 
 
                 // Adiciona um atributo de dados (data-search) para facilitar a busca
@@ -206,7 +205,7 @@
                 // As chaves de objeto ('nome_aluno', 'cpf', etc.) vêm do Apps Script
                 row.insertCell().textContent = record.nome_aluno || 'N/A';
                 row.insertCell().textContent = record.cpf || 'N/A';
-                // Usa a data e hora formatadas
+                // Usa a data e hora formatadas que o JS acabou de calcular
                 row.insertCell().textContent = dataFormatada;
                 row.insertCell().textContent = horaFormatada;
             });
