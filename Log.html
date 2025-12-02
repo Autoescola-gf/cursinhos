@@ -135,7 +135,7 @@
     
     /**
      * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
-     * (CORRIGIDO para usar o objeto Date e formatar corretamente)
+     * (CORRIGIDO para usar os campos formatados diretamente)
      */
     async function fetchPresencaData() {
         const loading = document.getElementById('loading');
@@ -167,34 +167,11 @@
             data.forEach(record => {
                 const row = tbody.insertRow();
                 
-                // --- INÍCIO: CORREÇÃO COM OBJETO DATE DO JAVASCRIPT ---
-                let dataFormatada = 'N/A';
-                let horaFormatada = 'N/A';
-
-                const dataCompleta = record.data_registro || '';
-
-                if (dataCompleta) {
-                    try {
-                        // Tenta criar um objeto Date a partir da string bruta (formato ISO/Apps Script)
-                        const dateObj = new Date(dataCompleta);
-
-                        if (!isNaN(dateObj.getTime())) { // Verifica se é uma data válida
-                            // Formata a data para o fuso horário local: DD/MM/AAAA
-                            dataFormatada = dateObj.toLocaleDateString('pt-BR');
-                            
-                            // Formata a hora para o fuso horário local: HH:MM
-                            // O uso do toLocaleTimeString garante a conversão correta de UTC para o fuso local.
-                            horaFormatada = dateObj.toLocaleTimeString('pt-BR', {
-                                hour: '2-digit', 
-                                minute: '2-digit'
-                            });
-                        }
-                    } catch (e) {
-                        console.error("Erro ao formatar data/hora:", e);
-                        // Se houver erro, mantém 'N/A'
-                    }
-                }
-                // --- FIM: CORREÇÃO COM OBJETO DATE DO JAVASCRIPT ---
+                // --- INÍCIO: CORREÇÃO SIMPLIFICADA E ROBUSTA ---
+                // Agora, assumimos que o CODE.GS salva strings DD/MM/AAAA e HH:mm
+                const dataFormatada = record.data_registro || 'N/A';
+                const horaFormatada = record.hora_registro || 'N/A';
+                // --- FIM: CORREÇÃO SIMPLIFICADA E ROBUSTA ---
 
 
                 // Adiciona um atributo de dados (data-search) para facilitar a busca
@@ -204,7 +181,7 @@
                 // As chaves de objeto ('nome_aluno', 'cpf', etc.) vêm do Apps Script
                 row.insertCell().textContent = record.nome_aluno || 'N/A';
                 row.insertCell().textContent = record.cpf || 'N/A';
-                // Usa a data e hora formatadas
+                // Usa a data e hora formatadas diretamente
                 row.insertCell().textContent = dataFormatada;
                 row.insertCell().textContent = horaFormatada;
             });
