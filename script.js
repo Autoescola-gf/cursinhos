@@ -102,7 +102,7 @@ const VIDEO_MAP = {
     },
     'aula17': { 
         title: 'Aula 17: Normas e condutas',
-        embedUrl: 'https://www.dropbox.com/scl/fi/hwja871n5mkaaal5wsmx2/22-NORMAS.mp4?rlkey=jd5zzc9gea63z24rvc0fzuq24&st=gjdie2bo&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/h9oujsj6c0m7pq0h3tqlf/23-NORMAS-cortado.mp4?rlkey=ape0ablkvzuofey95c8l72cjg&st=dcwwthpw&raw=1' 
     },
 };
 
@@ -552,6 +552,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
