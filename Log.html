@@ -135,7 +135,7 @@
     
     /**
      * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
-     * (CORRIGIDO para processar o timestamp ISO corretamente)
+     * (Processa o timestamp ISO e converte para horário local do usuário)
      */
     async function fetchPresencaData() {
         const loading = document.getElementById('loading');
@@ -167,16 +167,15 @@
             data.forEach(record => {
                 const row = tbody.insertRow();
                 
-                // --- INÍCIO: PROCESSAMENTO DO TIMESTAMP ISO ---
                 let dataFormatada = 'N/A';
                 let horaFormatada = 'N/A';
 
-                // dataCompleta agora é a string ISO (Ex: 2025-12-02T18:24:42.000Z)
+                // dataCompleta deve conter a string ISO (Ex: 2025-12-02T18:24:42.000Z)
                 const dataCompleta = record.data_registro || '';
 
                 if (dataCompleta) {
                     try {
-                        // Tenta criar um objeto Date a partir da string ISO (UTC)
+                        // CRUCIAL: Cria um objeto Date a partir da string ISO (UTC)
                         const dateObj = new Date(dataCompleta);
 
                         if (!isNaN(dateObj.getTime())) { // Verifica se é uma data válida
@@ -192,11 +191,8 @@
                         }
                     } catch (e) {
                         console.error("Erro ao formatar data/hora:", e);
-                        // Se houver erro, mantém 'N/A'
                     }
                 }
-                // --- FIM: PROCESSAMENTO DO TIMESTAMP ISO ---
-
 
                 // Adiciona um atributo de dados (data-search) para facilitar a busca
                 const searchableText = `${record.nome_aluno || ''} ${record.cpf || ''}`.toLowerCase();
