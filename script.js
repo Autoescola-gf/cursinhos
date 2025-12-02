@@ -49,40 +49,61 @@ const VIDEO_MAP = {
       // SINALIZAÇÃO
     'aula5': { 
         title: 'Aula 5: Sinalização',
-        embedUrl: 'https://player.vimeo.com/video/1140876472?h=exemplo9&title=0&byline=0&portrait=0' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/srykoh773chkf3ieuvyuh/13-SINALIZA-O.mp4?rlkey=iaxh02y2dbv8h0d84wc2a13at&st=48vmou9s&raw=1' 
     },
     
     'aula6': { 
         title: 'Aula 6: Sinalização',
-        embedUrl: 'https://player.vimeo.com/video/999999910?h=exemplo10&title=0&byline=0&portrait=0' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/wrd4t03sp7dj5ymjwpk0z/14-SINALIZA-O.mp4?rlkey=w3384i5co4487osxv5iym87tw&st=8m820y1q&raw=1' 
     },
     'aula7': { 
         title: 'Aula 7: Sinalização',
-        embedUrl: 'https://www.dropbox.com/scl/fi/49sbcsq68he23y3awei5v/23-NORMAS.mp4?rlkey=4n4z6s2alcayuo2izd2yvt4dz&st=ftdfqtz6&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/f5dstcsiqh583gise2o7i/15-SINALIZA-O.mp4?rlkey=85vw1dmpuxp0ybw3oa36scsos&st=xedqqlzj&raw=1' 
     },
     'aula8': { 
         title: 'Aula 8: Sinalização',
-        embedUrl: 'https://player.vimeo.com/video/1141468817?color=0077B5&title=0&byline=0&portrait=0' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/6g8g6at1kj4low2aoln0o/16-SINALIZA-O.mp4?rlkey=m2jyacqwop97h2nkopi6zyrr9&st=f6re8zhc&raw=1' 
     },
     
-    // Normas e condutas
+    // Infraçoes e penalidades
     'aula9': {
-        title: 'Aula 9: Normas e condutas',
-        embedUrl: 'https://www.dropbox.com/scl/fi/nhomlzazqe5e11rnz0i27/19-NORMAS.mp4?rlkey=vtzip44vho3a002flg9vpefh1&st=07p326us&raw=1' 
+        title: 'Aula 9: Infrações e Penalidades',
+        embedUrl: 'https://www.dropbox.com/scl/fi/nhomlzazqe5e11rnz0i27/19-NORMAS.mp4?rlkey=vtzip44vho3a002flg9vpefh1&st=go9am7fw&raw=1' 
     },
     'aula10': { 
-        title: 'Aula 10: Normas e condutas',
-        embedUrl: 'https://www.dropbox.com/scl/fi/qm9nfcikean3vygexzmae/20-NORMAS.mp4?rlkey=l5mvdndtgmkz1q61fmh8srz7i&st=m4m051fl&raw=1' 
+        title: 'Aula 10: Infrações e Penalidades',
+        embedUrl: 'https://www.dropbox.com/scl/fi/qm9nfcikean3vygexzmae/20-NORMAS.mp4?rlkey=l5mvdndtgmkz1q61fmh8srz7i&st=0otwaiqr&raw=1' 
     },
     'aula11': { 
-        title: 'Aula 11: Normas e condutas',
-        embedUrl: 'https://www.dropbox.com/scl/fi/dm7jio99x38t5krxf3mf7/21-NORMAS.mp4?rlkey=fw5qpxbj5n3s3gdcwx4n83r9f&st=wl4cpt5y&raw=1' 
+        title: 'Aula 11: Infrações e Penalidades',
+        embedUrl: 'https://www.dropbox.com/scl/fi/dm7jio99x38t5krxf3mf7/21-NORMAS.mp4?rlkey=fw5qpxbj5n3s3gdcwx4n83r9f&st=0h49t4p8&raw=1' 
     },
     'aula12': { 
-        title: 'Aula 12: Normas e condutas',
+        title: 'Aula 12: Infrações e Penalidades',
         embedUrl: 'https://www.dropbox.com/scl/fi/hwja871n5mkaaal5wsmx2/22-NORMAS.mp4?rlkey=jd5zzc9gea63z24rvc0fzuq24&st=gjdie2bo&raw=1' 
     },
     
+    // Normas e condutas
+    'aula13': {
+        title: 'Aula 13: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/nhomlzazqe5e11rnz0i27/19-NORMAS.mp4?rlkey=vtzip44vho3a002flg9vpefh1&st=go9am7fw&raw=1' 
+    },
+    'aula14': { 
+        title: 'Aula 14: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/qm9nfcikean3vygexzmae/20-NORMAS.mp4?rlkey=l5mvdndtgmkz1q61fmh8srz7i&st=0otwaiqr&raw=1' 
+    },
+    'aula15': { 
+        title: 'Aula 15: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/dm7jio99x38t5krxf3mf7/21-NORMAS.mp4?rlkey=fw5qpxbj5n3s3gdcwx4n83r9f&st=0h49t4p8&raw=1' 
+    },
+    'aula16': { 
+        title: 'Aula 16: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/1zkcqa9nktmw58o0bvkn9/22-NORMAS.mp4?rlkey=8ns52inrwe4iosiis6j3iou1k&st=drh0ql3y&raw=1' 
+    },
+    'aula17': { 
+        title: 'Aula 17: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/hwja871n5mkaaal5wsmx2/22-NORMAS.mp4?rlkey=jd5zzc9gea63z24rvc0fzuq24&st=gjdie2bo&raw=1' 
+    },
 };
 
 
@@ -531,6 +552,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
