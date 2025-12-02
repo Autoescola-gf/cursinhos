@@ -29,19 +29,19 @@ let countdownTokenInterval = null;
 const VIDEO_MAP = {
     // URLs de Vimeo fornecidas
     'aula1': { 
-        title: 'Aula 1: Infrações e Penalidades',
+        title: 'Aula 1: Infrações e Penalidades (Vídeo 1)',
         embedUrl: 'https://player.vimeo.com/video/1141468817?color=0077B5&title=0&byline=0&portrait=0' 
     },
     'aula2': { 
-        title: 'Aula 2: Infrações e Penalidades',
+        title: 'Aula 2: Infrações e Penalidades (Vídeo 2)',
         embedUrl: 'https://player.vimeo.com/video/1141468895?color=0077B5&title=0&byline=0&portrait=0' 
     },
     'aula3': { 
-        title: 'Aula 3: Infrações e Penalidades',
+        title: 'Aula 3: Normas de Circulação (Novo)',
         embedUrl: 'https://player.vimeo.com/video/1142063398?color=0077B5&title=0&byline=0&portrait=0' 
     },
     'aula4': { 
-        title: 'Aula 4: Infrações e Penalidades',
+        title: 'Aula 4: Sinalização de Trânsito (Novo)',
         embedUrl: 'https://player.vimeo.com/video/1142063517?color=0077B5&title=0&byline=0&portrait=0' 
     },
     
@@ -264,7 +264,8 @@ function checkAccess() {
     const lessonId = urlParams.get('lesson') || 'aula1'; // Padrão para aula1
     
     // Inicia a renderização do conteúdo apenas se estivermos em videos.html
-    if(document.getElementById('videoPlayerEmbed')) { 
+    // 🚨 CORREÇÃO: Usando o novo ID do contêiner principal para verificar
+    if(document.getElementById('videoPlayerContainer')) { 
         showLesson(lessonId); // Carrega a aula específica (ou aula1)
         verificarStatusPresenca();
         iniciarContadorExpiracao(); 
@@ -456,17 +457,17 @@ async function marcarPresenca() {
 }
 
 // =======================================================
-// 6. FUNÇÕES DE NAVEGAÇÃO (MODIFICADA PARA INCORPORAÇÃO DE VÍDEO)
+// 6. FUNÇÕES DE NAVEGAÇÃO (CORRIGIDA)
 // =======================================================
 
 function showLesson(lessonId) {
     // 1. Lógica para incorporação do vídeo
     const lessonData = VIDEO_MAP[lessonId];
-    // Agora usando o ID do contêiner único
-    const playerContainer = document.getElementById('videoPlayerEmbed'); 
+    // 🚨 CORREÇÃO: Agora buscando o ID do contêiner principal para garantir o CSS responsivo
+    const playerContainer = document.getElementById('videoPlayerContainer'); 
     const titleElement = document.getElementById('lessonTitle');
     
-    // Fallback: se a aula não for encontrada, mostra uma mensagem de erro no player.
+    // Fallback: se a aula não for encontrada...
     if (!lessonData || !playerContainer || !titleElement) {
         console.error("Dados da aula ou contêiner não encontrados para:", lessonId);
         playerContainer.innerHTML = '<p style="color: red; text-align: center; padding: 50px;">Erro: Conteúdo da aula não encontrado.</p>';
@@ -478,7 +479,6 @@ function showLesson(lessonId) {
     titleElement.textContent = lessonData.title;
 
     // 3. Cria e injeta o código iframe do vídeo
-    // O iframe preenche 100% do contêiner pai, que é responsivo (video-container)
     const iframeCode = `
         <iframe src="${lessonData.embedUrl}" 
                 title="${lessonData.title}"
@@ -527,4 +527,3 @@ function initializePage() {
 }
 
 window.onload = initializePage;
-
