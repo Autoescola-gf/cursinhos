@@ -160,60 +160,34 @@
         errorElement.textContent = '';
         tbody.innerHTML = ''; 
         
-        try {
-            // 1. Faz uma requisição GET para buscar TODOS os dados do log
-            const response = await fetch(ADMIN_API_URL);
+       try {
+        // ... (Requisição à API) ...
+        
+        // 2. Itera sobre os dados e preenche a tabela
+        data.forEach(record => {
+            const row = tbody.insertRow();
             
-            if (!response.ok) {
-                throw new Error(`Falha na API: Status ${response.status}`);
-            }
+            // --- INÍCIO: AJUSTE PARA USAR STRINGS PRÉ-FORMATADAS DO APPS SCRIPT ---
+            // O Apps Script já está enviando 'dd/MM/yyyy' e 'HH:mm' como strings.
+            // Basta usar os campos 'data_registro' e 'hora_registro' do log.
+            const dataFormatada = record.data_registro || 'N/A'; // Ex: "02/12/2025"
+            const horaFormatada = record.hora_registro || 'N/A'; // Ex: "15:15"
+
+            // NOTA: Os campos nome_aluno e cpf devem vir da planilha de Log
             
-            const data = await response.json();
-            
-            if (!data || data.length === 0) {
-                errorElement.textContent = 'Nenhum registro de presença encontrado na planilha.';
-                return;
-            }
-            
-            // 2. Itera sobre os dados e preenche a tabela
-            data.forEach(record => {
-                const row = tbody.insertRow();
-                
-                let dataFormatada = 'N/A';
-                let horaFormatada = 'N/A';
+            // --- FIM: AJUSTE ---
 
-                const dataCompleta = record.data_registro || '';
+            // Adiciona um atributo de dados (data-search) para facilitar a busca
+            const searchableText = `${record.nome_aluno || ''} ${record.cpf || ''}`.toLowerCase();
+            row.setAttribute('data-search', searchableText);
 
-                if (dataCompleta) {
-                    try {
-                        const dateObj = new Date(dataCompleta);
-
-                        if (!isNaN(dateObj.getTime())) { 
-                            // Formata a data para o fuso horário local: DD/MM/AAAA
-                            dataFormatada = dateObj.toLocaleDateString('pt-BR');
-                            
-                            // Formata a hora para o fuso horário local: HH:MM
-                            horaFormatada = dateObj.toLocaleTimeString('pt-BR', {
-                                hour: '2-digit', 
-                                minute: '2-digit'
-                            });
-                        }
-                    } catch (e) {
-                        console.error("Erro ao formatar data/hora:", e);
-                    }
-                }
-
-                // Adiciona um atributo de dados (data-search) para facilitar a busca
-                const searchableText = `${record.nome_aluno || ''} ${record.cpf || ''}`.toLowerCase();
-                row.setAttribute('data-search', searchableText);
-
-                // As chaves de objeto ('nome_aluno', 'cpf', etc.) vêm do Apps Script
-                row.insertCell().textContent = record.nome_aluno || 'N/A';
-                row.insertCell().textContent = record.cpf || 'N/A';
-                // Usa a data e hora formatadas
-                row.insertCell().textContent = dataFormatada;
-                row.insertCell().textContent = horaFormatada;
-            });
+            // As chaves de objeto ('nome_aluno', 'cpf', etc.) vêm do Apps Script
+            row.insertCell().textContent = record.nome_aluno || 'N/A';
+            row.insertCell().textContent = record.cpf || 'N/A';
+            // Usa a data e hora formatadas que já vêm prontas do Apps Script
+            row.insertCell().textContent = dataFormatada;
+            row.insertCell().textContent = horaFormatada;
+        });
 
             // 3. Exibe a tabela
             table.style.display = 'table';
@@ -256,3 +230,4 @@
 </body>
 
 </html>
+
