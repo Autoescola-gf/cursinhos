@@ -527,3 +527,4 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
