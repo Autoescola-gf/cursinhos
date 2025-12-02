@@ -28,10 +28,10 @@ let countdownTokenInterval = null;
 // =======================================================
 const VIDEO_MAP = {
     // URLs de Vimeo fornecidas
-    //LEGISLAÇÃO
+    // LEGISLAÇÃO
     'aula1': { 
-        title: 'Aula 1: Legislação',
-        embedUrl: 'https://player.vimeo.com/video/1140876472?color=0077B5&title=0&byline=0&portrait=0' 
+        title: 'Aula 1: Legislação (Infrações e Penalidades I)',
+        embedUrl: 'https://drive.google.com/uc?export=download&id=1Igq_4duZeGveLyYuS6Uwhk6TU6wGFcwt' 
     },
     'aula2': { 
         title: 'Aula 2: Legislação',
@@ -531,6 +531,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
