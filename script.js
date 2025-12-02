@@ -492,7 +492,6 @@ function showLesson(lessonId) {
             Seu navegador não suporta a tag de vídeo.
         </video>
     `;
-    
     // 4. Injeta o HTML no container do player
     // 🚨 ATUALIZAÇÃO: Use o novo código do player nativo
     playerContainer.innerHTML = videoCode; 
@@ -531,6 +530,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
