@@ -231,4 +231,74 @@
                 
                 // Se a data do registro parece ser uma string ISO longa e corrompida
                 if (dataFormatada.length > 30 && dataFormatada.indexOf('.000Z') > 10) {
-                    const corrected = parseAndSplitCor
+                    const corrected = parseAndSplitCorruptedTimestamp(dataFormatada);
+                    dataFormatada = corrected.date;
+                    horaFormatada = corrected.time;
+                }
+                // =============================================================
+                // FIM: APLICAÇÃO DA CORREÇÃO DE FORMATO
+                // =============================================================
+
+
+                // Adiciona um atributo de dados (data-search) para facilitar a busca
+                const searchableText = `${record.nome_aluno || ''} ${record.cpf || ''}`.toLowerCase();
+                row.setAttribute('data-search', searchableText);
+
+                // As chaves de objeto ('nome_aluno', 'cpf', etc.) vêm do Apps Script
+                row.insertCell().textContent = record.nome_aluno || 'N/A';
+                row.insertCell().textContent = record.cpf || 'N/A';
+                // Usa a data e hora formatadas diretamente
+                row.insertCell().textContent = dataFormatada;
+                row.insertCell().textContent = horaFormatada;
+            });
+
+            // 3. Exibe a tabela
+            table.style.display = 'table';
+
+        } catch (error) {
+            console.error("Erro ao carregar relatório:", error);
+            errorElement.textContent = `Erro ao carregar relatório. Verifique a URL da API e a conexão. Detalhes: ${error.message}`;
+        } finally {
+            loading.style.display = 'none';
+        }
+    }
+
+
+    /**
+     * Filtra a tabela em tempo real com base no texto digitado.
+     */
+    function filterTable() {
+        // Pega o texto de busca e converte para minúsculas
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase();
+        
+        // Pega todas as linhas do corpo da tabela
+        const tbody = document.getElementById('presencaData');
+        const tr = tbody.getElementsByTagName('tr');
+
+        // Itera sobre as linhas
+        for (let i = 0; i < tr.length; i++) {
+            const row = tr[i];
+            // Pega o atributo data-search que criamos na função fetchPresencaData
+            const searchData = row.getAttribute('data-search'); 
+
+            if (searchData) {
+                // Se a linha contiver o texto de busca, exibe a linha
+                if (searchData.indexOf(filter) > -1) {
+                    row.style.display = '';
+                } else {
+                    // Caso contrário, esconde a linha
+                    row.style.display = 'none';
+                }
+            }
+        }
+    }
+
+
+    // Inicia o cheque de acesso ao carregar a página
+    window.onload = checkAdminAccess;
+
+</script>
+</body>
+
+</html>
