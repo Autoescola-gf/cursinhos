@@ -51,7 +51,7 @@ const VIDEO_MAP = {
         title: 'Aula 5: Sinalização',
         embedUrl: 'https://player.vimeo.com/video/1140876472?h=exemplo9&title=0&byline=0&portrait=0' 
     },
-    // 🌱 Meio Ambiente (PLACEHOLDERS - SUBSTITUA!)
+    
     'aula6': { 
         title: 'Aula 6: Sinalização',
         embedUrl: 'https://player.vimeo.com/video/999999910?h=exemplo10&title=0&byline=0&portrait=0' 
@@ -65,22 +65,22 @@ const VIDEO_MAP = {
         embedUrl: 'https://player.vimeo.com/video/1141468817?color=0077B5&title=0&byline=0&portrait=0' 
     },
     
-    // INFRAÇOES
-    'aula9': { 
-        title: 'Aula 1: Infrações e Penalidades',
-        embedUrl: 'https://player.vimeo.com/video/1141468817?color=0077B5&title=0&byline=0&portrait=0' 
+    // Normas e condutas
+    'aula9': {
+        title: 'Aula 9: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/nhomlzazqe5e11rnz0i27/19-NORMAS.mp4?rlkey=vtzip44vho3a002flg9vpefh1&st=07p326us&raw=1' 
     },
     'aula10': { 
-        title: 'Aula 2: Infrações e Penalidades',
-        embedUrl: 'https://player.vimeo.com/video/1141468895?color=0077B5&title=0&byline=0&portrait=0' 
+        title: 'Aula 10: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/qm9nfcikean3vygexzmae/20-NORMAS.mp4?rlkey=l5mvdndtgmkz1q61fmh8srz7i&st=m4m051fl&raw=1' 
     },
     'aula11': { 
-        title: 'Aula 3: Infrações e Penalidades',
-        embedUrl: 'https://player.vimeo.com/video/1142063398?color=0077B5&title=0&byline=0&portrait=0' 
+        title: 'Aula 11: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/dm7jio99x38t5krxf3mf7/21-NORMAS.mp4?rlkey=fw5qpxbj5n3s3gdcwx4n83r9f&st=wl4cpt5y&raw=1' 
     },
     'aula12': { 
-        title: 'Aula 4: Infrações e Penalidades',
-        embedUrl: 'https://player.vimeo.com/video/1142063517?color=0077B5&title=0&byline=0&portrait=0' 
+        title: 'Aula 12: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/hwja871n5mkaaal5wsmx2/22-NORMAS.mp4?rlkey=jd5zzc9gea63z24rvc0fzuq24&st=gjdie2bo&raw=1' 
     },
     
 };
@@ -531,6 +531,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
