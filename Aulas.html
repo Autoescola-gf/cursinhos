@@ -5,86 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AUTO ESCOLA GUARDA | TODAS AS AULAS</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <style>
-        /* Estilos básicos */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #e9ecef; /* Fundo suave */
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #901090; /* Magenta de destaque */
-            margin-bottom: 30px;
-            font-weight: 800;
-            font-size: 2.2em;
-        }
-        /* Container principal do conteúdo (cor preta/escura) */
-        .content-wrapper {
-            max-width: 900px;
-            margin: 20px auto;
-            background: #1c1c1c; /* Preto suave (Dark Theme) */
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
-            color: #cccccc; /* Texto padrão cinza claro */
-            /* 🚨 NOVO: Escondido por padrão, será exibido pelo script após a verificação */
-            display: none; 
-        }
-        h2 {
-            color: #ffffff;
-            border-bottom: 2px solid #901090;
-            padding-bottom: 8px;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            font-size: 1.6em;
-        }
-        .aula-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .aula-list li {
-            background-color: #333;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            transition: background-color 0.3s;
-        }
-        .aula-list li:hover {
-            background-color: #444;
-        }
-        .aula-list a {
-            display: block;
-            padding: 12px 15px;
-            text-decoration: none;
-            color: #f0f0f0;
-            font-weight: 600;
-            font-size: 1.1em;
-        }
-        
-        .header-controls {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-bottom: 20px;
-            /* 🚨 NOVO: Escondido por padrão, será exibido pelo script após a verificação */
-            display: none; 
-        }
-        .header-controls button { 
-            padding: 10px 15px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .header-controls button:nth-child(1) { /* Botão Sair */
-            background-color: #dc3545;
-            color: white;
-        }
-        .header-controls button:nth-child(1):hover {
-            background-color: #c82333;
-        }
-    </style>
+  <style>
+    /* Estilos básicos */
+    :root {
+        --primary-color: #901090; /* Magenta */
+        --bg-color-wrapper: #1c1c1c; /* Preto suave (Dark Theme) */
+        --bg-color-main: #e9ecef; /* Fundo suave */
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-color-main);
+        padding: 20px;
+    }
+    
+    h1 {
+        text-align: center;
+        color: var(--primary-color); 
+        margin-bottom: 30px;
+        font-weight: 800;
+        font-size: 2.2em;
+        text-transform: uppercase;
+    }
+    
+    /* Container principal do conteúdo */
+    .content-wrapper {
+        max-width: 900px;
+        margin: 20px auto;
+        background: var(--bg-color-wrapper); 
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
+        color: #cccccc; 
+        display: none; 
+    }
+    
+    /* Títulos de Seção */
+    h2 {
+        color: #ffffff;
+        /* Estilo de título mais moderno */
+        border-left: 5px solid var(--primary-color); 
+        padding-left: 15px;
+        padding-top: 5px;
+        margin-top: 35px;
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        font-weight: 700;
+    }
+    
+    .aula-list {
+        list-style-type: none;
+        padding: 0;
+    }
+    
+    /* Lista de Aulas Aprimorada */
+    .aula-list li {
+        background-color: #333;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s, background-color 0.2s;
+    }
+    .aula-list li:hover {
+        background-color: #444;
+        transform: scale(1.01); /* Leve zoom ao passar o mouse */
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .aula-list a {
+        display: flex; /* Flex para alinhamento */
+        padding: 15px 15px; /* Mais padding */
+        text-decoration: none;
+        color: #f0f0f0;
+        font-weight: 600;
+        font-size: 1.05em;
+        align-items: center;
+    }
+    .aula-list a::before {
+        /* Simula um ícone de bullet ou marcador */
+        content: '▶'; 
+        color: var(--primary-color);
+        margin-right: 10px;
+        font-size: 0.8em;
+    }
+    
+    /* Controles (Botão Sair) */
+    .header-controls {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-bottom: 20px;
+        display: none; 
+    }
+    .header-controls button { 
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .header-controls button:nth-child(1) { 
+        background-color: #dc3545;
+        color: white;
+    }
+    .header-controls button:nth-child(1):hover {
+        background-color: #c82333;
+    }
+</style>
 </head>
 <body>
     
@@ -167,3 +195,4 @@
 
 </body>
 </html>
+
