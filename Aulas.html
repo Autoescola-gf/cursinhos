@@ -28,87 +28,91 @@
             border-radius: 12px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
             color: #cccccc; /* Texto padrão cinza claro */
+            /* 🚨 NOVO: Escondido por padrão, será exibido pelo script após a verificação */
+            display: none; 
         }
         h2 {
-            color: white;
-            margin-bottom: 10px;
-            font-size: 1.6em;
-            border-bottom: 2px solid #901090; /* Separador Magenta */
+            color: #ffffff;
+            border-bottom: 2px solid #901090;
             padding-bottom: 8px;
-            margin-top: 40px;
-            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.6em;
         }
-        
-        /* Estilo dos links de aula */
         .aula-list {
-            list-style: none;
+            list-style-type: none;
             padding: 0;
         }
         .aula-list li {
-            background-color: #333333; /* Fundo do item mais escuro */
+            background-color: #333;
             margin-bottom: 8px;
             border-radius: 6px;
-            transition: background-color 0.3s, transform 0.2s;
+            transition: background-color 0.3s;
         }
         .aula-list li:hover {
-            background-color: #901090; /* Destaque Magenta no hover */
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(144, 16, 144, 0.5);
+            background-color: #444;
         }
         .aula-list a {
             display: block;
-            padding: 15px;
-            color: white;
+            padding: 12px 15px;
             text-decoration: none;
-            font-weight: bold;
+            color: #f0f0f0;
+            font-weight: 600;
             font-size: 1.1em;
         }
-
-        /* Botão Voltar */
-        #backButton {
-            display: block;
-            margin: 0 auto 30px auto;
-            background-color: #dc3545; /* Vermelho */
-            color: white;
-            padding: 12px 25px;
+        
+        .header-controls {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 20px;
+            /* 🚨 NOVO: Escondido por padrão, será exibido pelo script após a verificação */
+            display: none; 
+        }
+        .header-controls button { 
+            padding: 10px 15px;
             border: none;
             border-radius: 6px;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
             transition: background-color 0.3s;
         }
-        #backButton:hover {
+        .header-controls button:nth-child(1) { /* Botão Sair */
+            background-color: #dc3545;
+            color: white;
+        }
+        .header-controls button:nth-child(1):hover {
             background-color: #c82333;
         }
-        
     </style>
 </head>
 <body>
-    <button id="backButton" onclick="window.location.href='videos.html'">⬅️ Voltar para Aulas de Hoje</button>
+    
+    <div class="header-controls">
+        <button onclick="logout()">Sair</button>
+    </div>
 
-    <h1>📚 Catálogo Completo de Aulas</h1>
+    <h1>Catálogo Completo de Aulas</h1>
 
     <div class="content-wrapper">
-        <p>Clique no título da aula para assistir. Você será redirecionado para a página principal de aulas.</p>
         
-        <h2>🚦 Legislação de Trânsito</h2>
+        <h2>🚨 Primeiros Socorros</h2>
         <ul class="aula-list">
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula1')">Aula 1: Infrações e Penalidades (Video 1)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula2')">Aula 2: Infrações e Penalidades (Video 2)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula3')">Aula 3: Infrações e Penalidades (Video 3)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula4')">Aula 4: Infrações e Penalidades (Video 4)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula1')">Aula 1: Primeiros Socorros (Video 1)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula2')">Aula 2: Primeiros Socorros (Video 2)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula3')">Aula 3: Primeiros Socorros (Video 3)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula4')">Aula 4: Primeiros Socorros (Video 4)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula5')">Aula 5: Primeiros Socorros (Video 5)</a></li>
         </ul>
         
-        <h2>🚦 Sinalização </h2>
+        <h2>🚧 Direção Defensiva</h2>
         <ul class="aula-list">
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula5')">Aula 5: Sinalização (Video 1)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula6')">Aula 6: Sinalização (Video 2)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula7')">Aula 7: Sinalização (Video 3)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula8')">Aula 8: Sinalização (Video 4)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula6')">Aula 6: Direção Defensiva (Video 1)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula7')">Aula 7: Direção Defensiva (Video 2)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula8')">Aula 8: Direção Defensiva (Video 3)</a></li>
         </ul>
-
-        <h2>❌ Infrações e Penalidades </h2>
+        
+        <h2>⚖️ Legislação de Trânsito / Infrações</h2>
         <ul class="aula-list">
             <li><a href="javascript:void(0)" onclick="redirectToVideo('aula9')">Aula 9: Infrações e Penalidades (Video 1)</a></li>
             <li><a href="javascript:void(0)" onclick="redirectToVideo('aula10')">Aula 10: Infrações e Penalidades (Video 2)</a></li>
@@ -125,15 +129,41 @@
             <li><a href="javascript:void(0)" onclick="redirectToVideo('aula17')">Aula 17: Normas e condutas (Video 5)</a></li>
         </ul>
 
-        <p style="margin-top: 30px; text-align: center; color: #777;">**O acesso a cada aula é liberado após a conclusão e registro de presença na aula anterior, conforme a ordem do seu curso.</p>
+        <p style="margin-top: 30px; text-align: center; color: #777;">**O acesso a esta página é liberado após a marcação da presença diária.**</p>
     </div>
     
+    <script src="script.js"></script>
+
     <script>
-        function redirectToVideo(lessonId) {
-            window.location.href = `videos.html?lesson=${lessonId}`;
-        }
+        // 🚨 NOVO BLOCO: Verifica a presença ao carregar a página Aulas.html
+        document.addEventListener('DOMContentLoaded', async () => {
+            const hasAccess = localStorage.getItem('vimeo_access_granted');
+            const contentWrapper = document.querySelector('.content-wrapper');
+            const headerControls = document.querySelector('.header-controls');
+            
+            // 1. Verifica se há token de acesso (login)
+            if (!hasAccess) {
+                 // Se não logou, volta para o login
+                window.location.href = 'index.html'; 
+                return;
+            }
+
+            // 2. Verifica o status da presença no servidor
+            const presenceStatus = await isPresenceMarked();
+
+            if (!presenceStatus) {
+                // Se a presença NÃO estiver marcada, bloqueia e redireciona para a página de vídeo (onde se marca a presença)
+                alert('Você precisa marcar sua presença diária antes de acessar o Catálogo de Aulas. Redirecionando...');
+                window.location.href = 'videos.html'; 
+                return;
+            }
+            
+            // Se ambos (Login e Presença) estiverem OK, exibe o conteúdo
+            if (headerControls) headerControls.style.display = 'flex';
+            if (contentWrapper) contentWrapper.style.display = 'block';
+
+        });
     </script>
+
 </body>
 </html>
-
-
