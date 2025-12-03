@@ -6,11 +6,11 @@ const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5
 const PRESENCE_LOG_API_URL = `${SHEETDB_API_URL}?action=marcar_presenca`;
 
 // Chaves de localStorage para o Timer de Acesso (24h)
-const ACCESS_KEY = 'vimeo_access_granted';
+const ACCESS_KEY = 'site_access_granted'; 
 const EXPIRATION_KEY = 'access_expires_at';
-const CPF_KEY = 'vimeo_user_cpf';
-const TOKEN_KEY = 'vimeo_user_token';
-const NAME_KEY = 'vimeo_user_name';
+const CPF_KEY = 'site_user_cpf';
+const TOKEN_KEY = 'site_user_token';
+const NAME_KEY = 'site_user_name';
 const DURATION_HOURS = 24;
 
 // Chave de localStorage para a Presença Diária
@@ -561,4 +561,5 @@ function initializePage() {
 }
 
 document.addEventListener('DOMContentLoaded', initializePage);
+
 
