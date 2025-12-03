@@ -6,66 +6,105 @@
     <title>Relatório de Presença - ADMIN</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
-   body {
+    /* 1. Melhora do Fundo Geral e Container */
+    body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #e9ecef; /* Unificar fundo */
+        background-color: #e9ecef; /* Fundo muito claro e moderno */
         padding: 20px;
         text-align: center;
     }
     .container {
         max-width: 1000px;
         margin: 20px auto;
-        background: #1c1c1c; /* Preto suave para consistência */
+        background: #ffffff; /* Container branco para efeito "card" flutuante */
         padding: 30px; 
-        border-radius: 12px; 
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); 
+        border-radius: 16px; 
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Sombra mais suave e moderna */
         display: none; 
     }
     h1 {
-        color: #901090;
-        /* ... manter o resto ... */
+        color: #901090; /* Cor de destaque mantida */
+        font-weight: 700; 
+        margin-bottom: 5px;
+        border-bottom: 1px solid #dee2e6; /* Linha sutil abaixo do título */
+        padding-bottom: 10px;
     }
     p {
-        color: #cccccc; /* Melhor leitura no fundo escuro */
+        color: #6c757d; /* Texto levemente cinza */
     }
     
-    /* --- Estilos da Tabela Melhorados --- */
-    /* ... manter estilos de table, th, td ... */
-    
-    /* Linhas pares (cor de fundo mais clara) */
-    tr:nth-child(even) {
-        background-color: #f0f0f0; 
-    }
-    /* Linhas ímpares (cor de fundo branca) */
-    tr:nth-child(odd) {
-        background-color: #ffffff; 
-    }
-
-    /* Efeito ao passar o mouse: Usar cor da marca */
-    tr:hover {
-        background-color: #ffd8ff; 
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-    }
-    
-    /* Novo estilo para o input de busca (Remova o 'style' inline do HTML) */
+    /* 2. Estilo do Campo de Busca */
     #searchInput {
         padding: 12px;
         width: 300px;
-        border: 2px solid #ccc;
-        border-radius: 6px;
+        border: 1px solid #ced4da;
+        border-radius: 6px; 
         font-size: 16px;
         transition: border-color 0.3s, box-shadow 0.3s;
     }
     #searchInput:focus {
-        border-color: #901090;
-        box-shadow: 0 0 0 3px rgba(144, 16, 144, 0.2);
+        border-color: #901090; 
+        box-shadow: 0 0 5px rgba(144, 16, 144, 0.3);
         outline: none;
     }
+    
+    /* --- 3. Estilos da Tabela Melhorados --- */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 25px;
+        border-radius: 8px; 
+        overflow: hidden; 
+    }
+    th, td {
+        border: none; 
+        padding: 15px 12px; 
+        text-align: left;
+        font-size: 14px; /* Mais limpo */
+    }
+    th {
+        background-color: #901090; 
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600; /* Levemente menos negrito */
+    }
+    
+    /* Linhas pares (cor de fundo mais clara) */
+    tr:nth-child(even) {
+        background-color: #f8f9fa; 
+    }
+    /* Linhas ímpares (cor de fundo branca) */
+    tr:nth-child(odd) {
+        background-color: white; 
+    }
+
+    /* 4. Efeito ao passar o mouse: Mais destacado, utilizando um tom do tema */
+    tr:hover {
+        background-color: #d9b3d9; /* Cor mais próxima do roxo */
+        color: #333; 
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    /* 5. Alinhamento e Largura para Data e Hora */
+    #presencaTable th:nth-child(3), 
+    #presencaTable td:nth-child(3),
+    #presencaTable th:nth-child(4), 
+    #presencaTable td:nth-child(4) {
+        text-align: center;
+        width: 15%; 
+    }
+
     #loading {
         font-size: 18px;
-        color: #555;
+        color: #901090; /* Usa a cor de destaque */
         margin-top: 30px;
+    }
+    
+    #error {
+        color: #dc3545; /* Vermelho para erros */
+        font-weight: 600;
     }
 </style>
 </head>
@@ -78,7 +117,7 @@
 		<div style="margin-bottom: 20px; text-align: right;">
    		 <input type="text" id="searchInput" onkeyup="filterTable()" 
            placeholder="Buscar por Nome ou CPF..."
-           style="padding: 10px; width: 300px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
+           style="padding: 12px; width: 300px; border: 1px solid #ced4da; border-radius: 6px; font-size: 16px; transition: border-color 0.3s, box-shadow 0.3s;">
 		</div>
 		
         <div id="loading">Carregando dados da planilha...</div>
@@ -252,4 +291,3 @@
 </body>
 
 </html>
-
