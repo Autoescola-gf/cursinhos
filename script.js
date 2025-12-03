@@ -1,48 +1,107 @@
-// =======================================================
-// ARQUIVO: script.js - VERSÃO FINAL CORRIGIDA (URLs Originais e Player Nativo)
-// =======================================================
 
-// 🚨 IMPORTANTE: Mantenha sua URL de Apps Script aqui. Use a URL do seu deploy.
+// 🚨 IMPORTANTE: Mantenha sua URL de Apps Script aqui
 const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5vT3lhS7QN03KJcr4weoU6NYLbbzcD17bbLiAh3C51vXoPvISeR40/exec'; 
 
 // URL para a ação de Marcar Presença (POST com action no Apps Script)
 const PRESENCE_LOG_API_URL = `${SHEETDB_API_URL}?action=marcar_presenca`;
 
 // Chaves de localStorage para o Timer de Acesso (24h)
-const ACCESS_KEY = 'site_access_granted';
+const ACCESS_KEY = 'vimeo_access_granted';
 const EXPIRATION_KEY = 'access_expires_at';
-const CPF_KEY = 'site_user_cpf';
-const TOKEN_KEY = 'site_user_token';
-const NAME_KEY = 'site_user_name';
+const CPF_KEY = 'vimeo_user_cpf';
+const TOKEN_KEY = 'vimeo_user_token';
+const NAME_KEY = 'vimeo_user_name';
 const DURATION_HOURS = 24;
+
+// Chave de localStorage para a Presença Diária
+const PRESENCE_DATE_KEY = 'lastPresenceDate';
 
 let countdownPresenceInterval = null;
 let countdownTokenInterval = null;
 
 
 // =======================================================
-// 🚨 MAPA DE VÍDEOS (RESTAURADO COM SUAS URLs ORIGINAIS)
+// 🚨 MAPA DE VÍDEOS (INFORMAÇÕES FORNECIDAS PELO USUÁRIO)
 // =======================================================
 const VIDEO_MAP = {
-    'aula1': { title: 'Aula 1: Primeiros Socorros (Video 1)', url: 'http://guarda-auto-escola.com.br/videos/aula1.mp4' },
-    'aula2': { title: 'Aula 2: Primeiros Socorros (Video 2)', url: 'http://guarda-auto-escola.com.br/videos/aula2.mp4' },
-    'aula3': { title: 'Aula 3: Primeiros Socorros (Video 3)', url: 'http://guarda-auto-escola.com.br/videos/aula3.mp4' },
-    'aula4': { title: 'Aula 4: Primeiros Socorros (Video 4)', url: 'http://guarda-auto-escola.com.br/videos/aula4.mp4' },
-    'aula5': { title: 'Aula 5: Primeiros Socorros (Video 5)', url: 'http://guarda-auto-escola.com.br/videos/aula5.mp4' },
-    'aula6': { title: 'Aula 6: Direção Defensiva (Video 1)', url: 'http://guarda-auto-escola.com.br/videos/aula6.mp4' },
-    'aula7': { title: 'Aula 7: Direção Defensiva (Video 2)', url: 'http://guarda-auto-escola.com.br/videos/aula7.mp4' },
-    'aula8': { title: 'Aula 8: Direção Defensiva (Video 3)', url: 'http://guarda-auto-escola.com.br/videos/aula8.mp4' },
-    'aula9': { title: 'Aula 9: Infrações e Penalidades (Video 1)', url: 'http://guarda-auto-escola.com.br/videos/aula9.mp4' },
-    'aula10': { title: 'Aula 10: Infrações e Penalidades (Video 2)', url: 'http://guarda-auto-escola.com.br/videos/aula10.mp4' },
-    'aula11': { title: 'Aula 11: Infrações e Penalidades (Video 3)', url: 'http://guarda-auto-escola.com.br/videos/aula11.mp4' },
-    'aula12': { title: 'Aula 12: Infrações e Penalidades (Video 4)', url: 'http://guarda-auto-escola.com.br/videos/aula12.mp4' },
-    'aula13': { title: 'Aula 13: Normas e condutas (Video 1)', url: 'http://guarda-auto-escola.com.br/videos/aula13.mp4' },
-    'aula14': { title: 'Aula 14: Normas e condutas (Video 2)', url: 'http://guarda-auto-escola.com.br/videos/aula14.mp4' },
-    'aula15': { title: 'Aula 15: Normas e condutas (Video 3)', url: 'http://guarda-auto-escola.com.br/videos/aula15.mp4' },
-    'aula16': { title: 'Aula 16: Normas e condutas (Video 4)', url: 'http://guarda-auto-escola.com.br/videos/aula16.mp4' },
-    'aula17': { title: 'Aula 17: Normas e condutas (Video 5)', url: 'http://guarda-auto-escola.com.br/videos/aula17.mp4' },
-};
+    // URLs de Vimeo fornecidas
+    // LEGISLAÇÃO
+    'aula1': { 
+        title: 'Aula 1: Legislação',
+        embedUrl: 'https://www.dropbox.com/scl/fi/9o814415zdw9mhqgn2bf7/01-LEGISLA-O.mp4?rlkey=p6ztt8mbb8hy2k4edjmdvc1em&st=mhcyzy4t&dl=0'
+    },
+    'aula2': { 
+        title: 'Aula 2: Legislação',
+        embedUrl: 'https://www.dropbox.com/scl/fi/ldyz6evyxmgxs8daic9wi/02-LEGISLA-O.mp4?rlkey=cf1btomjkl0e0wq5k9g451819&st=pbb322hc&raw=1'
+    },
+    'aula3': { 
+        title: 'Aula 3: Legislação',
+        embedUrl: 'https://www.dropbox.com/scl/fi/mj4xgb1kk6w5gbjbsy5vb/03-LEGISLA-O.mp4?rlkey=49kb0wvhr6aqi31w38ql2yrvz&st=3l4uj8m0&raw=1' 
+    },
+    'aula4': { 
+        title: 'Aula 4: Legislação',
+        embedUrl: 'https://www.dropbox.com/scl/fi/dos0tzdmvf78qylfdx8bb/04-LEGISLA-O.mp4?rlkey=ke2dm1itat5p3jt26der72pg8&st=xim554v4&raw=1' 
+    },
 
+      // SINALIZAÇÃO
+    'aula5': { 
+        title: 'Aula 5: Sinalização',
+        embedUrl: 'https://www.dropbox.com/scl/fi/srykoh773chkf3ieuvyuh/05-SINALIZA-O.mp4?rlkey=iaxh02y2dbv8h0d84wc2a13at&st=57tydwo2&raw=1' 
+    },
+    
+    'aula6': { 
+        title: 'Aula 6: Sinalização',
+        embedUrl: 'https://www.dropbox.com/scl/fi/wrd4t03sp7dj5ymjwpk0z/06-SINALIZA-O.mp4?rlkey=w3384i5co4487osxv5iym87tw&st=ar3r7avb&raw=1' 
+    },
+    'aula7': { 
+        title: 'Aula 7: Sinalização',
+        embedUrl: 'https://www.dropbox.com/scl/fi/f5dstcsiqh583gise2o7i/07-SINALIZA-O.mp4?rlkey=85vw1dmpuxp0ybw3oa36scsos&st=cmj9rud4&raw=1' 
+    },
+    'aula8': { 
+        title: 'Aula 8: Sinalização',
+        embedUrl: 'https://www.dropbox.com/scl/fi/6g8g6at1kj4low2aoln0o/08-SINALIZA-O.mp4?rlkey=m2jyacqwop97h2nkopi6zyrr9&st=0i453ie6&raw=1' 
+    },
+    
+    // Infraçoes e penalidades
+    'aula9': {
+        title: 'Aula 9: Infrações e Penalidades',
+        embedUrl: 'https://www.dropbox.com/scl/fi/aptuctp47uvq1s0fdd6we/09-INFRA-ES.mp4?rlkey=7gaxdp3oa7giba8bvptwpc8ri&st=ixunp96n&raw=1' 
+    },
+    'aula10': { 
+        title: 'Aula 10: Infrações e Penalidades',
+        embedUrl: 'https://www.dropbox.com/scl/fi/s4y6bv770avosgta4603e/10-INFRA-ES.mp4?rlkey=kp605rhpi364ayhs24d4s3hs7&st=1hq0j0li&raw=1' 
+    },
+    'aula11': { 
+        title: 'Aula 11: Infrações e Penalidades',
+        embedUrl: 'https://www.dropbox.com/scl/fi/69bs9nprwyjdhj4lkofgn/11-INFRA-ES.mp4?rlkey=q1ufj79pohytwknsw8ncfidv2&st=v174abb3&raw=1' 
+    },
+    'aula12': { 
+        title: 'Aula 12: Infrações e Penalidades (AULA FALTANDO)',
+        embedUrl: '' 
+    },
+    
+    // Normas e condutas
+    'aula13': {
+        title: 'Aula 13: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/max3ghqx7vdilszdmybcr/13-NORMAS.mp4?rlkey=zm2jta931fmgqn1c94dcuw1vm&st=wdfhabtm&raw=1' 
+    },
+    'aula14': { 
+        title: 'Aula 14: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/fq00c00vjkrua8u5ww0em/14-NORMAS.mp4?rlkey=nhg13uwr1ko8fmmtijp4wp02u&st=yx9dlw6j&raw=1' 
+    },
+    'aula15': { 
+        title: 'Aula 15: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/j9zrb7dw2j1ndelr4gdbq/15-NORMAS.mp4?rlkey=tdbf9pe5ocoggzb5ew2zdx766&st=gfi9wngu&raw=1' 
+    },
+    'aula16': { 
+        title: 'Aula 16: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/1tbhtbnj6pvwholkf56y6/16-NORMAS.mp4?rlkey=9no5xathyftzfqlzh2zr6n9k9&st=npr11qrh&raw=1' 
+    },
+    'aula17': { 
+        title: 'Aula 17: Normas e condutas',
+        embedUrl: 'https://www.dropbox.com/scl/fi/fot8ymvzii7ao81uatvv6/17-NORMAS-cut.mp4?rlkey=rbck82vsudt4y4tr9e97dk2t4&st=6doacpdt&raw=1' 
+    },
+};
 
 // =======================================================
 // 1. FUNÇÕES DE UTILIDADE
@@ -502,3 +561,4 @@ function initializePage() {
 }
 
 document.addEventListener('DOMContentLoaded', initializePage);
+
