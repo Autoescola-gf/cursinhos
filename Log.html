@@ -6,340 +6,255 @@
     <title>Relatório de Presença - ADMIN</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
-    /* Estilos globais e cores */
-    :root {
-        --primary-color: #901090;
-        --bg-color-main: #c1c1c1;
-        --bg-color-wrapper: black;
-    }
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: var(--bg-color-main); 
+        background-color: #c1c1c1; /* Fundo ligeiramente mais claro */
         padding: 20px;
         text-align: center;
     }
     .container {
         max-width: 1000px;
         margin: 20px auto;
-        background: var(--bg-color-wrapper);
-        padding: 25px; 
-        border-radius: 12px; 
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); 
-        color: white;
+        background: black;
+        padding: 25px; /* Mais preenchimento */
+        border-radius: 12px; /* Cantos mais arredondados */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Sombra mais destacada */
+        display: none; 
     }
     h1 {
-        color: var(--primary-color); 
+        color: #901090; /* Cor da tabela */
         font-weight: 600;
         margin-bottom: 5px;
     }
-    h2 {
-        color: white;
-        margin-bottom: 20px;
-    }
     p {
-        color: #cccccc;
+        color: #6c757d;
     }
     
-    /* --- Estilos da Tabela e Filtro --- */
-    #searchArea, #loginForm {
-        margin-bottom: 20px;
-    }
-    #searchInput, input[type="text"], input[type="password"] {
-        padding: 10px;
-        border: 1px solid #444;
-        border-radius: 4px;
-        margin-right: 10px;
-        width: 100%;
-        max-width: 300px;
-        box-sizing: border-box;
-        background-color: #333;
-        color: white;
-    }
-    #searchArea #searchInput {
-        max-width: 400px;
-        margin-right: 0;
-    }
-    .admin-button {
-        padding: 10px 15px;
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: background-color 0.3s;
-        margin-left: 10px;
-    }
-    .admin-button:hover {
-        background-color: #ff00ff;
-    }
-
-    /* Tabela */
+    /* --- Estilos da Tabela Melhorados --- */
     table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 20px;
-        background-color: #333;
-        color: white;
-        display: none; /* Escondido por padrão */
+        margin-top: 25px;
+        border-radius: 8px; /* Arredonda cantos da tabela */
+        overflow: hidden; /* Garante que os cantos arredondados sejam aplicados */
     }
     th, td {
-        border: 1px solid #444;
-        padding: 12px 8px;
+        border: none; /* Remove bordas internas para visual mais limpo */
+        padding: 15px 12px; /* Mais preenchimento */
         text-align: left;
+        font-size: 15px; /* Fonte ligeiramente maior */
     }
     th {
-        background-color: var(--primary-color);
+        background-color: #901090;
         color: white;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
         font-weight: 700;
-        position: sticky;
-        top: 0;
     }
     
-    /* Mensagens */
-    #loadingMessage, #errorMessage, #loginMessage {
-        margin-top: 20px;
-        font-weight: bold;
+    /* Linhas pares (cor de fundo mais clara) */
+    tr:nth-child(even) {
+        background-color: #f8f9fa; 
     }
-    #loadingMessage {
-        color: #ff00ff;
-    }
-    #errorMessage, #loginMessage {
-        color: #dc3545;
+    /* Linhas ímpares (cor de fundo branca) */
+    tr:nth-child(odd) {
+        background-color: white; 
     }
 
-    /* Login Específico */
-    #loginForm {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-    #loginForm input {
-        max-width: 350px;
-    }
-    #loginForm button {
-        width: 100%;
-        max-width: 350px;
+    /* Efeito ao passar o mouse: essencial para rastreamento */
+    tr:hover {
+        background-color: #e2e6ea; /* Um azul muito claro ao passar o mouse */
+        cursor: default;
+        transition: background-color 0.2s ease;
     }
 
+    #loading {
+        font-size: 18px;
+        color: #555;
+        margin-top: 30px;
+    }
 </style>
 </head>
 <body>
-    <h1>📋 Relatório de Presença - ADMIN</h1>
 
-    <div id="loginSection" class="container">
-        <h2>Acesso Administrativo</h2>
-        <div id="loginForm">
-            <input type="text" id="adminCpfInput" placeholder="CPF do Administrador" maxlength="14" required>
-            <input type="password" id="adminKeyInput" placeholder="Chave Secreta Admin" required>
-            <button class="admin-button" onclick="adminLogin()">Acessar Relatório</button>
-        </div>
-        <p id="loginMessage"></p>
-        <a href="index.html" style="color: #ccc; margin-top: 15px; display: block;">Voltar para o Login do Aluno</a>
-    </div>
+    <div class="container">
+        <h1>Relatório de Presença Diária</h1>
+        <p>Dados brutos de todos os registros de presença feitos via API. **(Acesso Admin)**</p>
+		
+		<div style="margin-bottom: 20px; text-align: right;">
+   		 <input type="text" id="searchInput" onkeyup="filterTable()" 
+           placeholder="Buscar por Nome ou CPF..."
+           style="padding: 10px; width: 300px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
+		</div>
+		
+        <div id="loading">Carregando dados da planilha...</div>
 
-    <div id="reportSection" class="container" style="display: none;">
-        <div id="searchArea">
-            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Filtrar por nome ou CPF...">
-            <button class="admin-button" onclick="loadReportData()">Atualizar</button>
-        </div>
-        
-        <p id="loadingMessage" style="display: none;">Carregando dados...</p>
-        <p id="errorMessage"></p>
-
-        <table>
+        <table id="presencaTable" style="display: none;">
             <thead>
                 <tr>
                     <th>Nome do Aluno</th>
-                    <th>CPF</th>
-                    <th>Data</th>
-                    <th>Hora</th>
+                    <th>CPF do Aluno</th>
+                    <th>Data do Registro</th>
+                    <th>Hora do Registro</th>
                 </tr>
             </thead>
             <tbody id="presencaData">
-                </tbody>
+                            </tbody>
         </table>
+
+        <p id="error" style="color: red; margin-top: 20px;"></p>
     </div>
 
-    <script src="script.js"></script>
-    <script>
-        // Use a URL do Apps Script do script.js
-        const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5vT3lhS7QN03KJcr4weoU6NYLbbzcD17bbLiAh3C51vXoPvISeR40/exec'; // **MANTENHA A URL REAL**
-        const ADMIN_ACCESS_KEY = 'admin_access_granted';
-        const ADMIN_CPF_KEY = 'admin_user_cpf';
-        const ADMIN_KEY_VALUE = 'admin_key_value'; // Chave Admin real
+   <script>
+    // 🚨 SEU URL CORRETO: (Mantenha o URL de Apps Script usado nas etapas anteriores)
+    const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5vT3lhS7QN03KJcr4weoU6NYLbbzcD17bbLiAh3C51vXoPvISeR40/exec';
+    // URL base para buscar o log
+    const ADMIN_API_URL = `${SHEETDB_API_URL}?action=get_log_presenca`;
+
+    /**
+     * 🚨 AJUSTADO PARA SOLICITAR CPF E CHAVE ADMIN
+     * E chamar a busca de dados.
+     */
+    function checkAdminAccess() {
+        const container = document.querySelector('.container');
+        document.getElementById('loading').style.display = 'none';
+
+        // Solicita o CPF e a Chave de Acesso
+        const adminCpf = prompt("🔐 Por favor, digite o seu CPF de administrador:");
+        if (!adminCpf) {
+            container.style.display = 'block';
+            container.innerHTML = '<h1>❌ Acesso Negado</h1><p>O CPF é obrigatório.</p>';
+            return;
+        }
         
-        // Verifica se o admin já está logado
-        if (localStorage.getItem(ADMIN_ACCESS_KEY) === 'true') {
-            showReportSection();
-            loadReportData();
+        const adminKey = prompt("🔑 Por favor, digite a Chave de Acesso Admin:");
+        if (!adminKey) {
+            container.style.display = 'block';
+            container.innerHTML = '<h1>❌ Acesso Negado</h1><p>A Chave de Acesso é obrigatória.</p>';
+            return;
         }
 
-        function formatCPF(cpf) {
-            // Re-implementa a função de formatação de CPF
-            cpf = cpf.replace(/\D/g, '');
-            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
-            cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
-            cpf = cpf.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-            return cpf;
-        }
+        // Se ambos forem fornecidos, procede para a busca de dados
+        container.style.display = 'block';
+        fetchPresencaData(adminCpf, adminKey);
+    }
+    
+    /**
+     * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
+     */
+    async function fetchPresencaData(adminCpf, adminKey) {
+        const loading = document.getElementById('loading');
+        const table = document.getElementById('presencaTable');
+        const tbody = document.getElementById('presencaData');
+        const errorElement = document.getElementById('error');
+        
+        loading.style.display = 'block';
+        table.style.display = 'none';
+        errorElement.textContent = '';
+        tbody.innerHTML = ''; // Limpa dados anteriores
 
-        document.getElementById('adminCpfInput').addEventListener('input', (e) => {
-            e.target.value = formatCPF(e.target.value);
-        });
-
-        function showReportSection() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('reportSection').style.display = 'block';
-        }
-
-        async function adminLogin() {
-            const cpfInput = document.getElementById('adminCpfInput');
-            const keyInput = document.getElementById('adminKeyInput');
-            const messageElement = document.getElementById('loginMessage');
+        // Constrói a URL com as credenciais para o backend validar
+        const API_URL_WITH_CREDS = `${ADMIN_API_URL}&admin_cpf=${encodeURIComponent(adminCpf)}&admin_key=${encodeURIComponent(adminKey)}`;
+        
+        try {
+            // 1. Faz uma requisição GET para buscar TODOS os dados do log
+            const response = await fetch(API_URL_WITH_CREDS);
             
-            const cpf = cpfInput.value.replace(/\D/g, '');
-            const key = keyInput.value.trim();
-
-            messageElement.textContent = '';
-            if (cpf.length !== 11 || !key) {
-                messageElement.textContent = 'Preencha o CPF e a Chave Admin.';
+            if (!response.ok) {
+                throw new Error(`Falha na API: Status ${response.status}`);
+            }
+            
+            const responseData = await response.json();
+            
+            // 2. Verifica a resposta de sucesso do Apps Script
+            if (!responseData.success) {
+                // Exibe a mensagem de erro retornada pelo Apps Script
+                errorElement.textContent = `Acesso negado: ${responseData.message || 'Verifique suas credenciais de administrador.'}`;
                 return;
             }
 
-            // Simula o login enviando credenciais para o Apps Script
-            const searchUrl = `${SHEETDB_API_URL}?action=get_log_presenca&admin_cpf=${cpf}&admin_key=${key}`;
+            const data = responseData.data; // Pega o array de dados reais
             
-            messageElement.textContent = 'Verificando credenciais...';
-
-            try {
-                const response = await fetch(searchUrl);
-                const result = await response.json();
-
-                if (result.success) {
-                    localStorage.setItem(ADMIN_ACCESS_KEY, 'true');
-                    localStorage.setItem(ADMIN_CPF_KEY, cpf);
-                    localStorage.setItem(ADMIN_KEY_VALUE, key);
-                    
-                    showReportSection();
-                    renderReportTable(result.data);
-                    messageElement.textContent = '';
-                } else {
-                    messageElement.textContent = result.message || 'Erro de autenticação. Chave ou CPF incorretos.';
-                }
-            } catch (error) {
-                console.error("Erro no login admin:", error);
-                messageElement.textContent = 'Erro de comunicação com o servidor.';
-            }
-        }
-
-        async function loadReportData() {
-            const cpf = localStorage.getItem(ADMIN_CPF_KEY);
-            const key = localStorage.getItem(ADMIN_KEY_VALUE);
-            
-            const loading = document.getElementById('loadingMessage');
-            const errorElement = document.getElementById('errorMessage');
-            const table = document.querySelector('#reportSection table');
-            const tbody = document.getElementById('presencaData');
-
-            errorElement.textContent = '';
-            tbody.innerHTML = '';
-            table.style.display = 'none';
-            loading.style.display = 'block';
-
-            if (!cpf || !key) {
-                localStorage.removeItem(ADMIN_ACCESS_KEY);
-                document.getElementById('loginSection').style.display = 'block';
-                document.getElementById('reportSection').style.display = 'none';
+            if (!data || data.length === 0) {
+                errorElement.textContent = 'Nenhum registro de presença encontrado na planilha.';
                 return;
             }
-
-            const fetchUrl = `${SHEETDB_API_URL}?action=get_log_presenca&admin_cpf=${cpf}&admin_key=${key}`;
-
-            try {
-                const response = await fetch(fetchUrl);
-                const result = await response.json();
-
-                if (result.success && result.data) {
-                    renderReportTable(result.data);
-                } else if (!result.success && result.message === 'Acesso negado. CPF ou Chave Admin incorreta.') {
-                    // Se a chave/CPF foi revogado no servidor
-                    localStorage.removeItem(ADMIN_ACCESS_KEY);
-                    window.location.reload(); 
-                } else {
-                    throw new Error(result.message || 'Dados vazios ou formato inesperado.');
-                }
-            } catch (error) {
-                console.error("Erro ao carregar relatório:", error);
-                errorElement.textContent = `Erro ao carregar relatório. Detalhes: ${error.message}`;
-            } finally {
-                loading.style.display = 'none';
-            }
-        }
-
-        function renderReportTable(data) {
-            const tbody = document.getElementById('presencaData');
-            const table = document.querySelector('#reportSection table');
-            tbody.innerHTML = '';
             
-            // Reverte a ordem para mostrar o mais recente primeiro, se o Apps Script não o fez
-            // O Apps Script já está retornando invertido (mais recente primeiro)
-
+            // 3. Itera sobre os dados e preenche a tabela
             data.forEach(record => {
                 const row = tbody.insertRow();
                 
-                // O Apps Script retorna data_registro como string ISO (Ex: 2025-12-03T13:36:34.000Z)
-                const dateObj = new Date(record.data_registro);
-                
-                // Formata para a hora local
-                const dataFormatada = dateObj.toLocaleDateString('pt-BR');
-                const horaFormatada = dateObj.toLocaleTimeString('pt-BR', { hour12: false });
-                
-                // Constrói o atributo de busca para o filtro
-                const searchData = `${record.nome_aluno || ''} ${record.cpf || ''}`.toLowerCase();
-                row.setAttribute('data-search', searchData);
+                let dataFormatada = 'N/A';
+                let horaFormatada = 'N/A';
+
+                const dataCompleta = record.data_registro || '';
+
+                if (dataCompleta) {
+                    try {
+                        const dateObj = new Date(dataCompleta);
+
+                        if (!isNaN(dateObj.getTime())) { 
+                            dataFormatada = dateObj.toLocaleDateString('pt-BR');
+                            horaFormatada = dateObj.toLocaleTimeString('pt-BR', {
+                                hour: '2-digit', 
+                                minute: '2-digit'
+                            });
+                        }
+                    } catch (e) {
+                        console.error("Erro ao formatar data/hora:", e);
+                    }
+                }
+
+                const searchableText = `${record.nome_aluno || ''} ${record.cpf || ''}`.toLowerCase();
+                row.setAttribute('data-search', searchableText);
 
                 row.insertCell().textContent = record.nome_aluno || 'N/A';
-                row.insertCell().textContent = formatCPF(record.cpf || 'N/A');
+                row.insertCell().textContent = record.cpf || 'N/A';
                 row.insertCell().textContent = dataFormatada;
                 row.insertCell().textContent = horaFormatada;
             });
 
+            // 4. Exibe a tabela
             table.style.display = 'table';
-            document.getElementById('searchInput').value = '';
+
+        } catch (error) {
+            console.error("Erro ao carregar relatório:", error);
+            errorElement.textContent = `Erro ao carregar relatório. Detalhes: ${error.message}`;
+        } finally {
+            loading.style.display = 'none';
         }
+    }
 
 
-        /**
-         * Filtra a tabela em tempo real com base no texto digitado.
-         */
-        function filterTable() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
-            
-            const tbody = document.getElementById('presencaData');
-            const tr = tbody.getElementsByTagName('tr');
+    /**
+     * Filtra a tabela em tempo real com base no texto digitado.
+     */
+    function filterTable() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase();
+        
+        const tbody = document.getElementById('presencaData');
+        const tr = tbody.getElementsByTagName('tr');
 
-            for (let i = 0; i < tr.length; i++) {
-                const row = tr[i];
-                const searchData = row.getAttribute('data-search'); 
+        for (let i = 0; i < tr.length; i++) {
+            const row = tr[i];
+            const searchData = row.getAttribute('data-search'); 
 
-                if (searchData) {
-                    if (searchData.indexOf(filter) > -1) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
+            if (searchData) {
+                if (searchData.indexOf(filter) > -1) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
                 }
             }
         }
-        
-        // Adiciona a formatação de CPF ao campo de login Admin
-        document.getElementById('adminCpfInput').addEventListener('input', (e) => {
-            e.target.value = formatCPF(e.target.value);
-        });
+    }
 
-    </script>
+
+    // Inicia o cheque de acesso ao carregar a página
+    window.onload = checkAdminAccess;
+
+</script>
 </body>
+
 </html>
