@@ -5,107 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acesso às Aulas | Login</title>
      <link rel="icon" type="image/x-icon" href="favicon.ico">
-<style>
-    /* Variáveis para cores */
-    :root {
-        --primary-color: #901090;
-        --bg-color-main: #c1c1c1;
-        --bg-color-container: #1c1c1c; /* Preto Suave */
-        --input-border: #555;
-        --text-color: #f0f0f0;
-    }
-    
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background-color: var(--bg-color-main);
-        margin: 0;
-        text-align: center;
-    }
-    .container {
-        background: var(--bg-color-container);
-        padding: 40px 30px; /* Mais padding */
-        border-radius: 12px; /* Cantos mais suaves */
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); /* Sombra mais profunda */
-        width: 90%;
-        max-width: 380px;
-    }
-    h1 {
-        /* MUDANÇA: Cor do título para contraste no fundo escuro */
-        color: var(--primary-color);
-        margin-bottom: 25px;
-        font-size: 1.8em;
-        border-bottom: 2px solid var(--primary-color);
-        padding-bottom: 5px;
-    }
-    p {
-        color: var(--text-color);
-        margin-bottom: 20px;
-        line-height: 1.4;
-    }
-    
-    /* Inputs aprimorados */
-    input[type="text"] {
-        width: 100%;
-        padding: 12px;
-        margin-bottom: 15px;
-        border: 1px solid var(--input-border);
-        border-radius: 6px;
-        background-color: #333; /* Fundo do input escuro */
-        color: var(--text-color); /* Texto branco */
-        box-sizing: border-box;
-        transition: border-color 0.3s, box-shadow 0.3s;
-    }
-    input[type="text"]::placeholder {
-        color: #999;
-    }
-    input[type="text"]:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(144, 16, 144, 0.5); /* Efeito de foco magenta */
-        outline: none;
-    }
-    
-    /* Botão de Acesso */
-    button {
-        width: 100%;
-        padding: 12px;
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 1.1em;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s, transform 0.1s;
-    }
-    button:hover {
-        background-color: #7a0d7a; /* Magenta mais escuro no hover */
-        transform: translateY(-1px); /* Leve levantamento */
-    }
-    button:disabled {
-        background-color: #555;
-        cursor: not-allowed;
-    }
-    
-    #message {
-        margin-top: 15px;
-        color: #ffc107; /* Amarelo para mensagens de erro */
-        font-weight: bold;
-    }
-    #expiration-alert {
-        color: #ff7f50; /* Coral para alerta de expiração */
-        font-weight: bold;
-        margin-bottom: 15px;
-        padding: 10px;
-        border: 1px solid #ff7f50;
-        border-radius: 4px;
-        display: none; 
-        background-color: rgba(255, 127, 80, 0.1);
-    }
-</style>
+    <style>
+        
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #c1c1c1;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            background: black;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #ffffff
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; 
+            font-size: 16px;
+        }
+        button {
+            background-color: #901090;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #901090;
+        }
+        #message {
+            margin-top: 15px;
+            color: red;
+            font-weight: bold;
+        }
+        #expiration-alert {
+            color: darkorange;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid darkorange;
+            border-radius: 4px;
+            display: none; 
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -132,8 +96,6 @@
     </script>
 </body>
 </html>
-
-
 
 
 
