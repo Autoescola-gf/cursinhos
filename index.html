@@ -13,24 +13,24 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #e9ecef; /* CORREÇÃO: Fundo mais suave */
+            background-color: #e9ecef; /* MODIFICADO: Fundo mais suave e consistente */
             margin: 0;
             text-align: center;
         }
         .container {
-            background: #1c1c1c; /* CORREÇÃO: Preto mais suave */
+            background: #1c1c1c; /* MODIFICADO: Preto suave */
             padding: 30px;
-            border-radius: 12px; /* CORREÇÃO: Cantos mais arredondados */
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* CORREÇÃO: Sombra mais profunda */
+            border-radius: 12px; /* MODIFICADO: Mais arredondado */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* MODIFICADO: Sombra mais destacada */
             width: 90%;
             max-width: 400px;
         }
         h1 {
-            color: white; /* CORREÇÃO: Cor do título para fundo escuro */
+            color: white; /* CORRIGIDO: Cor do título para fundo escuro */
             margin-bottom: 20px;
         }
         p {
-            color: #cccccc; /* CORREÇÃO: Cor do texto mais clara */
+            color: #cccccc; /* MODIFICADO: Texto mais claro */
         }
         input[type="text"] {
             width: 100%;
@@ -40,11 +40,11 @@
             border-radius: 4px;
             box-sizing: border-box; 
             font-size: 16px;
-            transition: border-color 0.3s, box-shadow 0.3s; /* NOVO: Transição para foco */
+            transition: border-color 0.3s, box-shadow 0.3s; /* NOVO: Adicionar transição */
         }
         input[type="text"]:focus {
-            border-color: #901090; /* NOVO: Borda magenta no foco */
-            box-shadow: 0 0 0 3px rgba(144, 16, 144, 0.2); /* NOVO: Sombra suave no foco */
+            border-color: #901090;
+            box-shadow: 0 0 0 3px rgba(144, 16, 144, 0.2);
             outline: none;
         }
         button {
@@ -56,10 +56,10 @@
             cursor: pointer;
             font-size: 16px;
             width: 100%;
-            transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s; /* CORREÇÃO: Transição completa */
+            transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s; /* MODIFICADO: Transições completas */
         }
         button:hover {
-            background-color: #a01aa0; /* CORREÇÃO: Cor mais clara no hover */
+            background-color: #a01aa0; /* MODIFICADO: Cor de hover */
             transform: translateY(-1px); /* NOVO: Efeito de elevação */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* NOVO: Sombra no hover */
         }
@@ -96,8 +96,11 @@
     <script src="script.js"></script>
 
     <script>
-        // Inicializa a máscara de CPF e o estado
-        document.addEventListener('DOMContentLoaded', initializePage);
+        // Lógica para exibir a mensagem de expiração na URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('expired') === 'true') {
+            document.getElementById('expiration-alert').style.display = 'block';
+        }
     </script>
 </body>
 </html>
