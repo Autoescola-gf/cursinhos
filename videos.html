@@ -8,15 +8,57 @@
     <style>
         /* Cores Base */
         :root {
-            /* ... manter cores ... */
-            --bg-color-main: #e9ecef; /* Fundo mais suave e consistente */
-            /* ... manter o resto ... */
+            --primary-color: #901090; /* Magenta de Destaque */
+            --secondary-color: #dc3545; /* Vermelho para Sair */
+            --success-color: #28a745; /* Verde para Presença */
+            --log-color: #0077B5; /* Azul para o Log */
+            --bg-color-main: #e9ecef; /* MODIFICADO: Fundo mais suave */
+            --bg-color-wrapper: #1c1c1c; /* Preto Suave (Dark Theme) */
         }
-    
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color-main); /* Aplicar novo fundo */
+            background-color: var(--bg-color-main);
             padding: 20px;
+        }
+        
+        /* Controles do Cabeçalho */
+        .header-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .header-controls button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            color: white;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+        
+        /* Estilos dos Botões de Controle */
+        #logoutButton {
+            background-color: var(--secondary-color); 
+        }
+        #logoutButton:hover {
+            background-color: #c82333;
+        }
+        #logButton {
+            background-color: var(--log-color); /* Azul para o Log */
+        }
+        #logButton:hover {
+            background-color: #005f92;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color); 
+            margin-bottom: 20px;
+            font-weight: 800;
         }
         
         /* Container Principal (Dark Theme) */
@@ -26,49 +68,85 @@
             background: var(--bg-color-wrapper);
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6); /* Sombra mais destacada */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6); /* MODIFICADO: Sombra mais destacada */
             color: #cccccc;
         }
-    
-        /* Estilos para a Navegação de Aulas */
-        .nav-buttons button {
-            background-color: #404040; 
+        #lessonTitle {
             color: white;
-            padding: 12px 18px; /* Mais preenchimento */
-            border: none;
-            border-radius: 6px; /* Mais arredondamento */
-            cursor: pointer;
-            font-size: 15px;
-            transition: all 0.3s;
-        }
-        .nav-buttons button:hover {
-            background-color: #606060;
-        }
-        .nav-buttons button.active {
-            background-color: var(--primary-color);
-            box-shadow: 0 0 10px rgba(144, 16, 144, 0.8);
-            transform: scale(1.02); /* Sutil aumento de escala */
-        }
-    
-        /* Botão Catálogo */
-        #catalogLink {
-            background-color: #00699c !important; /* Azul mais escuro e profissional */
-        }
-        #catalogLink:hover {
-            background-color: #0087c5 !important;
-        }
-    
-        /* Seção de Presença (Novo fundo sutil para destaque) */
-        .presence-section {
-            background-color: #2a2a2a; /* Fundo sutil */
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
-            border-top: 1px solid #3a3a3a;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
             text-align: center;
         }
-        #markPresenceButton:hover {
-            background-color: #38c755; /* Ligeiramente mais claro para hover */
+        /* Contêiner que garante a proporção 16:9 */
+        .video-container {
+            position: relative; /* CRUCIAL: Mantém os filhos (vídeo) dentro deste limite */
+            width: 100%;
+            padding-top: 56.25%; /* Proporção 16:9 (9/16 * 100) */
+            margin-bottom: 20px;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        /* Estilos para o Player de Vídeo (Garante responsividade) */
+        /* Aplica ao elemento <video> (e ao <iframe> se você ainda o tiver) */
+        .video-container video,
+        .video-container source { 
+            position: absolute; /* Permite que o vídeo preencha o contêiner 16:9 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block; /* Garante que o elemento seja tratado como bloco */
+        }
+        
+       /* Estilos para a Navegação de Aulas */
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 8px;
+        }
+        .nav-buttons button {
+            background-color: #505050;
+            color: white;
+            padding: 12px 18px; /* MODIFICADO: Mais preenchimento */
+            border: none;
+            border-radius: 6px; /* MODIFICADO: Mais arredondamento */
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s; /* MODIFICADO: all para transições mais suaves */
+        }
+        .nav-buttons button:hover {
+            background-color: #707070;
+        }
+        .nav-buttons button.active {
+            background-color: var(--primary-color); 
+            box-shadow: 0 0 10px rgba(144, 16, 144, 0.8); /* MODIFICADO: Sombra mais forte */
+            transform: scale(1.02); /* NOVO: Sutil aumento de escala */
+        }
+        
+        /* Botão Catálogo */
+        #catalogLink {
+             background-color: #00699c !important; /* MODIFICADO: Azul mais escuro e profissional */
+             transition: background-color 0.3s, transform 0.3s;
+        }
+        #catalogLink:hover {
+            background-color: #0087c5 !important; /* NOVO: Hover para botão azul */
+        }
+        
+        /* Estilos para o Botão de Presença */
+        .presence-section {
+             text-align: center;
+             padding: 15px; /* NOVO: Padding interno */
+             margin-top: 20px; /* NOVO: Margem superior */
+             background-color: #2a2a2a; /* NOVO: Fundo sutil para destaque */
+             border-radius: 8px; /* NOVO: Arredondamento */
+             border-top: 1px solid #3a3a3a; /* MODIFICADO: Borda superior mais suave */
         }
         #presencaButton {
             background-color: var(--success-color);
@@ -82,7 +160,7 @@
             transition: background-color 0.3s;
         }
         #presencaButton:hover:not(:disabled) {
-            background-color: #1e7e34;
+            background-color: #38c755; /* MODIFICADO: Cor de hover ligeiramente mais clara */
         }
         #presencaButton:disabled {
             background-color: var(--primary-color); 
@@ -131,11 +209,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
