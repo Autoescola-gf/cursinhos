@@ -19,64 +19,40 @@
             font-weight: 800;
             font-size: 2.2em;
         }
-        /* Container principal do conteúdo (cor preta/escura) */
+    /* Container principal do conteúdo (cor preta/escura) */
         .content-wrapper {
             max-width: 900px;
             margin: 20px auto;
-            background: #1c1c1c; /* Preto suave (Dark Theme) */
+            background: #1c1c1c; 
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
-            color: #cccccc; /* Texto padrão cinza claro */
+            border-radius: 12px; /* Mais arredondamento para consistência */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6); /* Sombra mais destacada */
+            color: #cccccc;
         }
-        h2 {
-            color: white;
-            margin-bottom: 10px;
-            font-size: 1.6em;
-            border-bottom: 2px solid #901090; /* Separador Magenta */
-            padding-bottom: 8px;
-            margin-top: 40px;
-            font-weight: 600;
-        }
-        
+    
         /* Estilo dos links de aula */
-        .aula-list {
-            list-style: none;
-            padding: 0;
-        }
         .aula-list li {
-            background-color: #333333; /* Fundo do item mais escuro */
-            margin-bottom: 8px;
-            border-radius: 6px;
-            transition: background-color 0.3s, transform 0.2s;
+            background-color: #2a2a2a; /* Ligeiramente mais escuro para maior contraste */
+            margin-bottom: 10px; /* Mais espaçamento */
+            border-radius: 8px; 
+            border-left: 5px solid transparent; /* Barra lateral invisível */
+            transition: all 0.3s;
         }
         .aula-list li:hover {
-            background-color: #901090; /* Destaque Magenta no hover */
+            background-color: #901090; 
+            border-left: 5px solid white; /* Efeito de barra lateral no hover */
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(144, 16, 144, 0.5);
+            box-shadow: 0 4px 10px rgba(144, 16, 144, 0.7);
         }
         .aula-list a {
             display: block;
-            padding: 15px;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1em;
+            padding: 18px; /* Mais preenchimento */
+            /* ... código restante ... */
         }
-
+    
         /* Botão Voltar */
-        #backButton {
-            display: block;
-            margin: 0 auto 30px auto;
-            background-color: #dc3545; /* Vermelho */
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: background-color 0.3s;
+        #backButton:hover {
+            background-color: #e44d5d; /* Ligeiramente mais claro para hover */
         }
         #backButton:hover {
             background-color: #c82333;
@@ -135,5 +111,6 @@
     </script>
 </body>
 </html>
+
 
 
