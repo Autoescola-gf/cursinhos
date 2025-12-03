@@ -5,168 +5,173 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AUTO ESCOLA GUARDA | MINHAS AULAS</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <style>
-        /* Cores Base */
-        :root {
-            --primary-color: #901090; /* Magenta de Destaque */
-            --secondary-color: #dc3545; /* Vermelho para Sair */
-            --success-color: #28a745; /* Verde para Presença */
-            --log-color: #0077B5; /* Azul para o Log */
-            --bg-color-main: #c1c1c1;
-            --bg-color-wrapper: #1c1c1c; /* Preto Suave (Dark Theme) */
-        }
+<style>
+    /* Cores Base Aprimoradas */
+    :root {
+        --primary-color: #901090; /* Magenta */
+        --secondary-color: #dc3545; /* Vermelho para Sair */
+        --success-color: #28a745; /* Verde para Presença OK */
+        --log-color: #0077B5; /* Azul para Marcar Presença */
+        --bg-color-main: #c1c1c1;
+        --bg-color-wrapper: #1c1c1c; 
+        --text-color: #ccc;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color-main);
-            padding: 20px;
-        }
-        
-        /* Controles do Cabeçalho */
-        .header-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .header-controls button, 
-        #presencaButton,
-        #btn-catalogo {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s, opacity 0.3s;
-            margin-top: 5px; /* Adicionado para separar um pouco */
-        }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-color-main);
+        padding: 20px;
+    }
+    
+    /* Controles do Cabeçalho e Título Principal */
+    .header-controls {
+        display: flex;
+        justify-content: flex-end; /* Alinha o botão Sair à direita */
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    
+    h1 {
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 1.8em;
+        padding: 5px 0;
+    }
 
-        .header-controls button:nth-child(1) { /* Botão Sair */
-            background-color: var(--secondary-color);
-            color: white;
-        }
-        .header-controls button:nth-child(1):hover {
-            background-color: #c82333;
-        }
+    /* Container Principal do Conteúdo */
+    .video-content-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: var(--bg-color-wrapper); 
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        color: var(--text-color);
+    }
 
-        /* Container Principal do Conteúdo */
-        .video-content-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: var(--bg-color-wrapper); 
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            color: #ccc;
-        }
+    /* Título da Aula */
+    h2 {
+        color: white;
+        margin-top: 20px;
+        border-bottom: 2px solid var(--primary-color); /* Separador magenta */
+        padding-bottom: 5px;
+        font-size: 1.4em;
+    }
 
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-        }
-        
-        h2 {
-            color: white;
-            margin-top: 20px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 5px;
-            font-size: 1.4em;
-        }
+    /* Botões de Navegação das Aulas */
+    .nav-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+        justify-content: center;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #333;
+    }
+    .nav-buttons button {
+        background-color: #333;
+        color: white;
+        padding: 8px 12px;
+        font-size: 0.9em;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .nav-buttons button:hover:not(.active):not(:disabled) {
+        background-color: #555;
+    }
+    .nav-buttons button.active {
+        background-color: var(--primary-color);
+        font-weight: bold;
+    }
+    
+    /* Player de Vídeo */
+    .video-container {
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%; /* Proporção 16:9 */
+        background-color: black;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-top: 15px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    }
+    /* Estilo para todos os botões no header e na navegação */
+    .header-controls button, 
+    .nav-buttons button,
+    #presencaButton,
+    #btn-catalogo {
+        transition: background-color 0.3s, opacity 0.3s, transform 0.1s;
+    }
 
-        /* Botões de Navegação das Aulas */
+
+    /* Seção de Presença - DESTAQUE VISUAL */
+    .presenca-section {
+        text-align: center;
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #2a2a2a; /* Fundo ligeiramente mais claro para destacar */
+        border: 2px solid var(--primary-color);
+        border-radius: 8px;
+    }
+    
+    #presencaButton {
+        background-color: var(--log-color);
+        color: white;
+        font-size: 1.1em;
+        padding: 12px 20px;
+    }
+    #presencaButton:hover:not(:disabled) {
+        background-color: #005691;
+    }
+    #presencaButton:disabled {
+        background-color: var(--success-color); /* Verde quando marcada */
+        cursor: not-allowed;
+        opacity: 0.9;
+        font-weight: 500;
+    }
+
+    #btn-catalogo {
+        background-color: var(--primary-color); /* Botão de catálogo magenta */
+        color: white;
+        font-size: 0.95em;
+        font-weight: bold;
+        padding: 10px 15px;
+        margin-top: 5px;
+    }
+    #btn-catalogo:hover:not(:disabled) {
+        background-color: #7a0d7a;
+    }
+    #btn-catalogo:disabled {
+        background-color: #555;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    /* Ajuste para o Display de Expiração */
+    #tokenExpirationDisplay {
+        text-align: center; 
+        margin-top: 10px; 
+        margin-bottom: 20px; 
+        font-weight: bold; 
+        font-size: 1.1em; 
+        color: orange; /* Cor de alerta mais suave */
+    }
+
+
+    /* Media Queries para Responsividade */
+    @media (max-width: 768px) {
         .nav-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 20px;
             justify-content: center;
         }
         .nav-buttons button {
-            background-color: #333;
-            color: white;
-            padding: 8px 12px;
-            font-size: 0.9em;
+            flex-grow: 0; 
+            min-width: 45%; /* Garante que dois botões caibam lado a lado */
         }
-        .nav-buttons button:hover {
-            background-color: #555;
-        }
-        .nav-buttons button.active {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: bold;
-        }
-
-        /* Player de Vídeo */
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-top: 56.25%; /* Proporção 16:9 */
-            background-color: black;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-top: 15px;
-        }
-        .video-container iframe,
-        .video-container video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        
-        /* Seção de Presença */
-        .presenca-section {
-            text-align: center;
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px dashed var(--primary-color);
-            border-radius: 8px;
-        }
-        
-        #presencaButton {
-            background-color: var(--log-color);
-            color: white;
-            font-size: 1.1em;
-        }
-        #presencaButton:hover:not(:disabled) {
-            background-color: #005691;
-        }
-        #presencaButton:disabled {
-            background-color: #555;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        
-        #btn-catalogo {
-            background-color: #5cb85c; /* Cor de sucesso ou alternativa */
-            color: white;
-            font-size: 0.9em;
-        }
-        #btn-catalogo:hover:not(:disabled) {
-            background-color: #4cae4c;
-        }
-        #btn-catalogo:disabled {
-            background-color: #555;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        /* Media Queries para Responsividade */
-        @media (max-width: 768px) {
-            .nav-buttons {
-                justify-content: space-around;
-            }
-            .nav-buttons button {
-                flex-grow: 1; /* Permite que os botões se expandam */
-                font-size: 0.8em;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
     
@@ -206,3 +211,4 @@
 
 </body>
 </html>
+
