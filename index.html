@@ -4,72 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acesso às Aulas | Login</title>
-     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <style>
-        
         body {
-            font-family: sans-serif;
+            /* Fundo mais suave e consistente */
+            background-color: #e9ecef; 
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #c1c1c1;
             margin: 0;
             text-align: center;
         }
         .container {
-            background: black;
+            /* Preto suave e cantos mais arredondados */
+            background: #1c1c1c;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
             width: 90%;
             max-width: 400px;
         }
         h1 {
-            color: #333;
+            /* CORRIGIDO: Cor do título para fundo escuro */
+            color: white; 
             margin-bottom: 20px;
         }
         p {
-            color: #ffffff
+            /* Texto mais claro no fundo escuro */
+            color: #cccccc;
         }
         input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box; 
-            font-size: 16px;
+            /* ... código anterior ... */
+            transition: border-color 0.3s, box-shadow 0.3s; /* Adicionar transição */
+        }
+        input[type="text"]:focus {
+            border-color: #901090;
+            box-shadow: 0 0 0 3px rgba(144, 16, 144, 0.2);
+            outline: none;
         }
         button {
             background-color: #901090;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-            transition: background-color 0.3s;
+            /* ... código anterior ... */
+            transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
         }
         button:hover {
-            background-color: #901090;
+            /* Efeito de hover aprimorado */
+            background-color: #a01aa0; 
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         #message {
-            margin-top: 15px;
-            color: red;
-            font-weight: bold;
-        }
+                margin-top: 15px;
+                color: red;
+                font-weight: bold;
+         }
         #expiration-alert {
-            color: darkorange;
-            font-weight: bold;
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid darkorange;
-            border-radius: 4px;
-            display: none; 
-        }
-    </style>
+                color: darkorange;
+                font-weight: bold;
+                margin-bottom: 15px;
+                padding: 10px;
+                border: 1px solid darkorange;
+                border-radius: 4px;
+                display: none; 
+            }
+        </style>
 </head>
 <body>
     <div class="container">
@@ -96,6 +95,7 @@
     </script>
 </body>
 </html>
+
 
 
 
