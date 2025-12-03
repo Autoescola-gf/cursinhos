@@ -26,9 +26,12 @@
     /* Controles do Cabeçalho e Título Principal */
     .header-controls {
         display: flex;
-        justify-content: flex-end; /* Alinha o botão Sair à direita */
-        gap: 10px;
-        margin-bottom: 10px;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+        justify-content: center;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #333;
     }
     
     h1 {
@@ -176,7 +179,7 @@
 <body>
     
     <div class="header-controls">
-        <button onclick="logout()">Sair</button>
+        <button id="btn-sair" onclick="logout()">Sair</button>
     </div>
 
     <p id="tokenExpirationDisplay" style="text-align: center; margin-top: 10px; margin-bottom: 20px; font-weight: bold; font-size: 1.1em; color: #dc3545;"></p>
@@ -211,4 +214,5 @@
 
 </body>
 </html>
+
 
