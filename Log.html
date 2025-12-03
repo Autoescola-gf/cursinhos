@@ -6,68 +6,62 @@
     <title>Relatório de Presença - ADMIN</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
-    body {
+   body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #c1c1c1; /* Fundo ligeiramente mais claro */
+        background-color: #e9ecef; /* Unificar fundo */
         padding: 20px;
         text-align: center;
     }
     .container {
         max-width: 1000px;
         margin: 20px auto;
-        background: black;
-        padding: 25px; /* Mais preenchimento */
-        border-radius: 12px; /* Cantos mais arredondados */
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Sombra mais destacada */
+        background: #1c1c1c; /* Preto suave para consistência */
+        padding: 30px; 
+        border-radius: 12px; 
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); 
         display: none; 
     }
     h1 {
-        color: #901090; /* Cor da tabela */
-        font-weight: 600;
-        margin-bottom: 5px;
+        color: #901090;
+        /* ... manter o resto ... */
     }
     p {
-        color: #6c757d;
+        color: #cccccc; /* Melhor leitura no fundo escuro */
     }
     
     /* --- Estilos da Tabela Melhorados --- */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 25px;
-        border-radius: 8px; /* Arredonda cantos da tabela */
-        overflow: hidden; /* Garante que os cantos arredondados sejam aplicados */
-    }
-    th, td {
-        border: none; /* Remove bordas internas para visual mais limpo */
-        padding: 15px 12px; /* Mais preenchimento */
-        text-align: left;
-        font-size: 15px; /* Fonte ligeiramente maior */
-    }
-    th {
-        background-color: #901090;
-        color: white;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 700;
-    }
+    /* ... manter estilos de table, th, td ... */
     
     /* Linhas pares (cor de fundo mais clara) */
     tr:nth-child(even) {
-        background-color: #f8f9fa; 
+        background-color: #f0f0f0; 
     }
     /* Linhas ímpares (cor de fundo branca) */
     tr:nth-child(odd) {
-        background-color: white; 
+        background-color: #ffffff; 
     }
 
-    /* Efeito ao passar o mouse: essencial para rastreamento */
+    /* Efeito ao passar o mouse: Usar cor da marca */
     tr:hover {
-        background-color: #e2e6ea; /* Um azul muito claro ao passar o mouse */
-        cursor: default;
+        background-color: #ffd8ff; 
+        cursor: pointer;
         transition: background-color 0.2s ease;
     }
-
+    
+    /* Novo estilo para o input de busca (Remova o 'style' inline do HTML) */
+    #searchInput {
+        padding: 12px;
+        width: 300px;
+        border: 2px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    #searchInput:focus {
+        border-color: #901090;
+        box-shadow: 0 0 0 3px rgba(144, 16, 144, 0.2);
+        outline: none;
+    }
     #loading {
         font-size: 18px;
         color: #555;
@@ -258,3 +252,4 @@
 </body>
 
 </html>
+
