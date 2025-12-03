@@ -29,86 +29,88 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
             color: #cccccc; /* Texto padrão cinza claro */
         }
-        h2 {
-            color: white;
-            margin-bottom: 10px;
-            font-size: 1.6em;
-            border-bottom: 2px solid #901090; /* Separador Magenta */
-            padding-bottom: 8px;
-            margin-top: 40px;
-            font-weight: 600;
+
+        /* Estilos dos Títulos de Módulo */
+        .content-wrapper h2 {
+            color: #ff00ff; /* Cor de destaque para títulos */
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.8em;
         }
-        
-        /* Estilo dos links de aula */
+
+        /* Estilos da Lista de Aulas */
         .aula-list {
             list-style: none;
             padding: 0;
+            margin: 0 0 30px 0;
         }
         .aula-list li {
-            background-color: #333333; /* Fundo do item mais escuro */
             margin-bottom: 8px;
+            padding: 10px;
+            background-color: #333;
             border-radius: 6px;
-            transition: background-color 0.3s, transform 0.2s;
+            transition: background-color 0.2s;
         }
         .aula-list li:hover {
-            background-color: #901090; /* Destaque Magenta no hover */
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(144, 16, 144, 0.5);
+            background-color: #444;
         }
-        .aula-list a {
-            display: block;
-            padding: 15px;
-            color: white;
+        .aula-list li a {
+            color: #cccccc;
             text-decoration: none;
-            font-weight: bold;
+            display: block;
             font-size: 1.1em;
+            font-weight: 400;
+        }
+        .aula-list li a:hover {
+            color: white;
+            text-decoration: underline;
         }
 
-        /* Botão Voltar */
-        #backButton {
+        .back-button {
             display: block;
+            width: 200px;
             margin: 0 auto 30px auto;
-            background-color: #dc3545; /* Vermelho */
+            padding: 10px;
+            background-color: #dc3545;
             color: white;
-            padding: 12px 25px;
-            border: none;
+            text-align: center;
+            text-decoration: none;
             border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: background-color 0.3s;
+            font-weight: bold;
+            transition: background-color 0.2s;
         }
-        #backButton:hover {
+        .back-button:hover {
             background-color: #c82333;
         }
-        
+
     </style>
 </head>
 <body>
-    <button id="backButton" onclick="window.location.href='videos.html'">⬅️ Voltar para Aulas de Hoje</button>
+    <a href="videos.html" class="back-button">← Voltar para a Última Aula</a>
 
     <h1>📚 Catálogo Completo de Aulas</h1>
 
     <div class="content-wrapper">
-        <p>Clique no título da aula para assistir. Você será redirecionado para a página principal de aulas.</p>
         
-        <h2>🚦 Legislação de Trânsito</h2>
+        <h2>🏥 Primeiros Socorros</h2>
         <ul class="aula-list">
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula1')">Aula 1: Infrações e Penalidades (Video 1)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula2')">Aula 2: Infrações e Penalidades (Video 2)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula3')">Aula 3: Infrações e Penalidades (Video 3)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula4')">Aula 4: Infrações e Penalidades (Video 4)</a></li>
-        </ul>
-        
-        <h2>🚦 Sinalização </h2>
-        <ul class="aula-list">
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula5')">Aula 5: Sinalização (Video 1)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula6')">Aula 6: Sinalização (Video 2)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula7')">Aula 7: Sinalização (Video 3)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula8')">Aula 8: Sinalização (Video 4)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula1')">Aula 1: Primeiros Socorros (Video 1)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula2')">Aula 2: Primeiros Socorros (Video 2)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula3')">Aula 3: Primeiros Socorros (Video 3)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula4')">Aula 4: Primeiros Socorros (Video 4)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula5')">Aula 5: Primeiros Socorros (Video 5)</a></li>
         </ul>
 
-        <h2>❌ Infrações e Penalidades </h2>
+        <h2>🛡️ Direção Defensiva</h2>
+        <ul class="aula-list">
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula6')">Aula 6: Direção Defensiva (Video 1)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula7')">Aula 7: Direção Defensiva (Video 2)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula8')">Aula 8: Direção Defensiva (Video 3)</a></li>
+        </ul>
+
+        <h2>🚨 Infrações e Penalidades</h2>
         <ul class="aula-list">
             <li><a href="javascript:void(0)" onclick="redirectToVideo('aula9')">Aula 9: Infrações e Penalidades (Video 1)</a></li>
             <li><a href="javascript:void(0)" onclick="redirectToVideo('aula10')">Aula 10: Infrações e Penalidades (Video 2)</a></li>
@@ -125,15 +127,13 @@
             <li><a href="javascript:void(0)" onclick="redirectToVideo('aula17')">Aula 17: Normas e condutas (Video 5)</a></li>
         </ul>
 
-        <p style="margin-top: 30px; text-align: center; color: #777;">**O acesso a cada aula é liberado após a conclusão e registro de presença na aula anterior, conforme a ordem do seu curso.</p>
+        <p style="margin-top: 30px; text-align: center; color: #777;">**O acesso a este catálogo é liberado após o registro de presença diária.**</p>
     </div>
     
+    <script src="script.js"></script>
     <script>
-        function redirectToVideo(lessonId) {
-            window.location.href = `videos.html?lesson=${lessonId}`;
-        }
+        // Acesso só é checado em index.html e videos.html.
+        // O acesso a esta página é controlado pela função abrirAulas() no script.js.
     </script>
 </body>
 </html>
-
-
