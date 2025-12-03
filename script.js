@@ -1,5 +1,5 @@
 // =======================================================
-// ARQUIVO: script.js - VERSÃO FINAL CORRIGIDA (Cross-Device)
+// ARQUIVO: script.js - VERSÃO FINAL CORRIGIDA (Player Nativo)
 // =======================================================
 
 // 🚨 IMPORTANTE: Mantenha sua URL de Apps Script aqui
@@ -9,41 +9,39 @@ const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5
 const PRESENCE_LOG_API_URL = `${SHEETDB_API_URL}?action=marcar_presenca`;
 
 // Chaves de localStorage para o Timer de Acesso (24h)
-const ACCESS_KEY = 'vimeo_access_granted';
+const ACCESS_KEY = 'site_access_granted'; // Chave Genérica
 const EXPIRATION_KEY = 'access_expires_at';
-const CPF_KEY = 'vimeo_user_cpf';
-const TOKEN_KEY = 'vimeo_user_token';
-const NAME_KEY = 'vimeo_user_name';
+const CPF_KEY = 'site_user_cpf';     // Chave Genérica
+const TOKEN_KEY = 'site_user_token';   // Chave Genérica
+const NAME_KEY = 'site_user_name';     // Chave Genérica
 const DURATION_HOURS = 24;
-
-// 🚨 REMOVENDO: Chave de localStorage para a Presença Diária (Não é mais usada - Agora é Cross-Device via Apps Script)
-// const PRESENCE_DATE_KEY = 'lastPresenceDate'; 
 
 let countdownPresenceInterval = null;
 let countdownTokenInterval = null;
 
 
 // =======================================================
-// 🚨 MAPA DE VÍDEOS (INFORMAÇÕES FORNECIDAS PELO USUÁRIO)
+// 🚨 MAPA DE VÍDEOS (AJUSTADO PARA ARQUIVOS LOCAIS OU URLS DIRETAS)
 // =======================================================
+// Use 'videos/nome_do_arquivo.mp4' ou a URL direta dos seus vídeos
 const VIDEO_MAP = {
-    'aula1': { title: 'Aula 1: Primeiros Socorros (Video 1)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula2': { title: 'Aula 2: Primeiros Socorros (Video 2)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula3': { title: 'Aula 3: Primeiros Socorros (Video 3)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula4': { title: 'Aula 4: Primeiros Socorros (Video 4)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula5': { title: 'Aula 5: Primeiros Socorros (Video 5)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula6': { title: 'Aula 6: Direção Defensiva (Video 1)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula7': { title: 'Aula 7: Direção Defensiva (Video 2)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula8': { title: 'Aula 8: Direção Defensiva (Video 3)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula9': { title: 'Aula 9: Infrações e Penalidades (Video 1)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula10': { title: 'Aula 10: Infrações e Penalidades (Video 2)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula11': { title: 'Aula 11: Infrações e Penalidades (Video 3)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula12': { title: 'Aula 12: Infrações e Penalidades (Video 4)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula13': { title: 'Aula 13: Normas e condutas (Video 1)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula14': { title: 'Aula 14: Normas e condutas (Video 2)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula15': { title: 'Aula 15: Normas e condutas (Video 3)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula16': { title: 'Aula 16: Normas e condutas (Video 4)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
-    'aula17': { title: 'Aula 17: Normas e condutas (Video 5)', url: 'https://player.vimeo.com/video/941783856?h=f41551c6c6' },
+    'aula1': { title: 'Aula 1: Primeiros Socorros (Video 1)', url: 'videos/aula1.mp4' },
+    'aula2': { title: 'Aula 2: Primeiros Socorros (Video 2)', url: 'videos/aula2.mp4' },
+    'aula3': { title: 'Aula 3: Primeiros Socorros (Video 3)', url: 'videos/aula3.mp4' },
+    'aula4': { title: 'Aula 4: Primeiros Socorros (Video 4)', url: 'videos/aula4.mp4' },
+    'aula5': { title: 'Aula 5: Primeiros Socorros (Video 5)', url: 'videos/aula5.mp4' },
+    'aula6': { title: 'Aula 6: Direção Defensiva (Video 1)', url: 'videos/aula6.mp4' },
+    'aula7': { title: 'Aula 7: Direção Defensiva (Video 2)', url: 'videos/aula7.mp4' },
+    'aula8': { title: 'Aula 8: Direção Defensiva (Video 3)', url: 'videos/aula8.mp4' },
+    'aula9': { title: 'Aula 9: Infrações e Penalidades (Video 1)', url: 'videos/aula9.mp4' },
+    'aula10': { title: 'Aula 10: Infrações e Penalidades (Video 2)', url: 'videos/aula10.mp4' },
+    'aula11': { title: 'Aula 11: Infrações e Penalidades (Video 3)', url: 'videos/aula11.mp4' },
+    'aula12': { title: 'Aula 12: Infrações e Penalidades (Video 4)', url: 'videos/aula12.mp4' },
+    'aula13': { title: 'Aula 13: Normas e condutas (Video 1)', url: 'videos/aula13.mp4' },
+    'aula14': { title: 'Aula 14: Normas e condutas (Video 2)', url: 'videos/aula14.mp4' },
+    'aula15': { title: 'Aula 15: Normas e condutas (Video 3)', url: 'videos/aula15.mp4' },
+    'aula16': { title: 'Aula 16: Normas e condutas (Video 4)', url: 'videos/aula16.mp4' },
+    'aula17': { title: 'Aula 17: Normas e condutas (Video 5)', url: 'videos/aula17.mp4' },
 };
 
 
@@ -115,14 +113,12 @@ async function checkToken() {
     loginButton.disabled = true;
     loginButton.textContent = 'Verificando...';
 
-    // O Apps Script (doGet) recebe o CPF e o Token e retorna [ { data_aluno } ] se válido ou [ ] se inválido.
     const searchUrl = `${SHEETDB_API_URL}?cpf=${cpf}&token=${token}`;
 
     try {
         const response = await fetch(searchUrl);
         const data = await response.json();
         
-        // Verifica se o Apps Script retornou sucesso (array com dados)
         if (data && data.length > 0 && data[0].nome_aluno) {
             const now = new Date();
             const expirationTime = now.getTime() + (DURATION_HOURS * 60 * 60 * 1000); // 24 horas
@@ -159,29 +155,23 @@ function checkAccess() {
     const expiresAt = localStorage.getItem(EXPIRATION_KEY);
     const now = new Date().getTime();
     
-    // Verifica se há acesso e se não expirou (timer de 24h)
     if (hasAccess === 'true' && expiresAt && now < parseInt(expiresAt)) {
-        // Se o token estiver ativo, esconde o alerta e inicia o contador
         const expirationAlert = document.getElementById('expiration-alert');
         if(expirationAlert) expirationAlert.style.display = 'none';
 
-        // Obter o ID da aula da URL (lesson=aulaX)
         const urlParams = new URLSearchParams(window.location.search);
-        const lessonId = urlParams.get('lesson') || 'aula13'; // Padrão para aula13
+        const lessonId = urlParams.get('lesson') || 'aula13'; 
         
-        // Inicia a renderização do conteúdo apenas se estivermos em videos.html
         if(document.getElementById('videoPlayerContainer')) { 
-            showLesson(lessonId); // Carrega a aula específica (ou aula13)
-            verificarStatusPresenca(); // CHAMA A FUNÇÃO DE VERIFICAÇÃO ATUALIZADA (Cross-Device)
+            showLesson(lessonId); 
+            verificarStatusPresenca(); 
             iniciarContadorExpiracao(); 
         }
 
         return true;
     } else {
-        // Se não tiver acesso ou expirou, limpa tudo e volta para o login
         logout();
         
-        // Exibe o alerta apenas na página de login
         const expirationAlert = document.getElementById('expiration-alert');
         if(expirationAlert) expirationAlert.style.display = 'block';
         return false;
@@ -220,7 +210,7 @@ function iniciarContadorExpiracao() {
 
         if (tempoRestante <= 0) {
             clearInterval(countdownTokenInterval);
-            logout(); // Expira e desloga
+            logout(); 
             return;
         }
         
@@ -233,7 +223,7 @@ function iniciarContadorExpiracao() {
 
 
 // =======================================================
-// 4. EMBED DE VÍDEO (showLesson)
+// 4. EMBED DE VÍDEO (showLesson - AGORA COM PLAYER NATIVO)
 // =======================================================
 
 function showLesson(lessonId) {
@@ -249,17 +239,17 @@ function showLesson(lessonId) {
 
     lessonTitle.textContent = lesson.title;
 
-    // Usa um iframe VIMEO
+    // 🚨 Player de vídeo nativo (Revertido do iframe Vimeo)
     const videoCode = `
-        <iframe src="${lesson.url}&title=0&byline=0&portrait=0"
-                width="100%" height="100%" frameborder="0"
-                allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
-        </iframe>
+        <video width="100%" height="100%" controls autoplay>
+            <source src="${lesson.url}" type="video/mp4">
+            Seu navegador não suporta a tag de vídeo.
+        </video>
     `;
     
     playerContainer.innerHTML = videoCode; 
 
-    // Lógica de navegação original (Habilitar o botão da aula atual)
+    // Lógica de navegação original
     const allButtons = document.querySelectorAll('.nav-buttons button');
     allButtons.forEach(button => button.classList.remove('active'));
 
@@ -278,7 +268,6 @@ function showLesson(lessonId) {
  * Verifica se a presença de hoje está marcada no servidor (Cross-Device).
  */
 async function isPresenceMarked() {
-    // 🚨 AQUI, ESTAMOS ESPERANDO O FORMATO YYYY-MM-DD
     const todayKey = getCurrentDateKey(); 
     const token = localStorage.getItem(TOKEN_KEY);
     const cpf = localStorage.getItem(CPF_KEY);
@@ -311,7 +300,6 @@ async function verificarStatusPresenca() {
         countdownPresenceInterval = null;
     }
 
-    // 🚨 AQUI, ESTAMOS ESPERANDO O FORMATO YYYY-MM-DD
     const todayKey = getCurrentDateKey(); 
     const presencaButton = document.getElementById('presencaButton');
     const presencaMessage = document.getElementById('presencaMessage');
