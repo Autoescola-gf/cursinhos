@@ -3,271 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatório de Presença - ADMIN</title>
+    <title>AUTO ESCOLA GUARDA | TODAS AS AULAS</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-<style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #e9ecef; /* MODIFICADO: Unificar fundo */
-        padding: 20px;
-        text-align: center;
-    }
-    .container {
-        max-width: 1000px;
-        margin: 20px auto;
-        background: #1c1c1c; /* MODIFICADO: Preto suave para consistência */
-        padding: 25px; 
-        border-radius: 12px; 
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* MODIFICADO: Sombra mais destacada */
-        display: none; 
-    }
-    h1 {
-        color: #901090; 
-        font-weight: 600;
-        margin-bottom: 5px;
-    }
-    p {
-        color: #cccccc; /* MODIFICADO: Melhor leitura no fundo escuro */
-    }
-    
-    /* --- Estilos da Tabela Melhorados --- */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 25px;
-        border-radius: 8px; /* Arredonda cantos da tabela */
-        overflow: hidden; /* Garante que os cantos arredondados sejam aplicados */
-    }
-    th, td {
-        border: none; /* Remove bordas internas para visual mais limpo */
-        padding: 15px 12px; /* Mais preenchimento */
-        text-align: left;
-        font-size: 15px; /* Fonte ligeiramente maior */
-    }
-    th {
-        background-color: #901090;
-        color: white;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 700;
-    }
-    
-    /* Linhas pares (cor de fundo mais clara) */
-    tr:nth-child(even) {
-        background-color: #f8f9fa; 
-    }
-    /* Linhas ímpares (cor de fundo branca) */
-    tr:nth-child(odd) {
-        background-color: white; 
-    }
+    <style>
+        /* Estilos básicos */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef; /* Fundo suave */
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #901090; /* Magenta de destaque */
+            margin-bottom: 30px;
+            font-weight: 800;
+            font-size: 2.2em;
+        }
+        /* Container principal do conteúdo (cor preta/escura) */
+        .content-wrapper {
+            max-width: 900px;
+            margin: 20px auto;
+            background: #1c1c1c; /* Preto suave (Dark Theme) */
+            padding: 30px;
+            border-radius: 12px; /* MODIFICADO: Consistência */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6); /* MODIFICADO: Sombra mais destacada */
+            color: #cccccc; /* Texto padrão cinza claro */
+        }
+        h2 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1.6em;
+            border-bottom: 2px solid #901090; /* Separador Magenta */
+            padding-bottom: 8px;
+            margin-top: 40px;
+            font-weight: 600;
+        }
+        
+        /* Estilo dos links de aula */
+        .aula-list {
+            list-style: none;
+            padding: 0;
+        }
+        .aula-list li {
+            background-color: #2a2a2a; /* MODIFICADO: Fundo do item mais escuro para contraste */
+            margin-bottom: 10px; /* MODIFICADO: Mais espaçamento */
+            border-radius: 8px; /* MODIFICADO: Mais arredondado */
+            border-left: 5px solid transparent; /* NOVO: Barra lateral invisível */
+            transition: all 0.3s;
+        }
+        .aula-list li:hover {
+            background-color: #901090; /* Destaque Magenta no hover */
+            border-left: 5px solid white; /* NOVO: Efeito de barra lateral no hover */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(144, 16, 144, 0.7); /* MODIFICADO: Sombra mais intensa */
+        }
+        .aula-list a {
+            display: block;
+            padding: 18px; /* MODIFICADO: Mais preenchimento */
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
 
-    /* Efeito ao passar o mouse: essencial para rastreamento */
-    tr:hover {
-        background-color: #ffd8ff; /* MODIFICADO: Usa rosa/magenta claro da marca */
-        cursor: default;
-        transition: background-color 0.2s ease;
-    }
-    
-    /* NOVO: Estilo para o input de busca (removido do inline) */
-    #searchInput {
-        padding: 12px;
-        width: 300px;
-        border: 2px solid #ccc;
-        border-radius: 6px;
-        font-size: 16px;
-        transition: border-color 0.3s, box-shadow 0.3s;
-    }
-    #searchInput:focus {
-        border-color: #901090;
-        box-shadow: 0 0 0 3px rgba(144, 16, 144, 0.2);
-        outline: none;
-    }
-
-    #loading {
-        font-size: 18px;
-        color: #555;
-        margin-top: 30px;
-    }
-</style>
+        /* Botão Voltar */
+        #backButton {
+            display: block;
+            margin: 0 auto 30px auto;
+            background-color: #dc3545; /* Vermelho */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        #backButton:hover {
+            background-color: #e44d5d; /* MODIFICADO: Cor de hover mais clara */
+        }
+        
+    </style>
 </head>
 <body>
+    <button id="backButton" onclick="window.location.href='videos.html'">⬅️ Voltar para Aulas de Hoje</button>
 
-    <div class="container">
-        <h1>Relatório de Presença Diária</h1>
-        <p>Dados brutos de todos os registros de presença feitos via API. **(Acesso Admin)**</p>
-		
-		<div style="margin-bottom: 20px; text-align: right;">
-   		 <input type="text" id="searchInput" onkeyup="filterTable()" 
-           placeholder="Buscar por Nome ou CPF..."> </div>
-		
-        <div id="loading">Carregando dados da planilha...</div>
+    <h1>📚 Catálogo Completo de Aulas</h1>
 
-        <table id="presencaTable" style="display: none;">
-            <thead>
-                <tr>
-                    <th>Nome do Aluno</th>
-                    <th>CPF do Aluno</th>
-                    <th>Data do Registro</th>
-                    <th>Hora do Registro</th>
-                </tr>
-            </thead>
-            <tbody id="presencaData">
-                            </tbody>
-        </table>
+    <div class="content-wrapper">
+        <p>Clique no título da aula para assistir. Você será redirecionado para a página principal de aulas.</p>
+        
+        <h2>🚦 Legislação de Trânsito</h2>
+        <ul class="aula-list">
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula1')">Aula 1: Infrações e Penalidades (Video 1)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula2')">Aula 2: Infrações e Penalidades (Video 2)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula3')">Aula 3: Infrações e Penalidades (Video 3)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula4')">Aula 4: Infrações e Penalidades (Video 4)</a></li>
+        </ul>
+        
+        <h2>🚦 Sinalização </h2>
+        <ul class="aula-list">
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula5')">Aula 5: Sinalização (Video 1)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula6')">Aula 6: Sinalização (Video 2)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula7')">Aula 7: Sinalização (Video 3)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula8')">Aula 8: Sinalização (Video 4)</a></li>
+        </ul>
 
-        <p id="error" style="color: red; margin-top: 20px;"></p>
+        <h2>❌ Infrações e Penalidades </h2>
+        <ul class="aula-list">
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula9')">Aula 9: Infrações e Penalidades (Video 1)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula10')">Aula 10: Infrações e Penalidades (Video 2)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula11')">Aula 11: Infrações e Penalidades (Video 3)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula12')">Aula 12: Infrações e Penalidades (Video 4)</a></li>
+        </ul>
+        
+        <h2>👍 Normas e condutas</h2>
+        <ul class="aula-list">
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula13')">Aula 13: Normas e condutas (Video 1)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula14')">Aula 14: Normas e condutas (Video 2)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula15')">Aula 15: Normas e condutas (Video 3)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula16')">Aula 16: Normas e condutas (Video 4)</a></li>
+            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula17')">Aula 17: Normas e condutas (Video 5)</a></li>
+        </ul>
+
+        <p style="margin-top: 30px; text-align: center; color: #777;">**O acesso a cada aula é liberado após a conclusão e registro de presença na aula anterior, conforme a ordem do seu curso.</p>
     </div>
-
-   <script>
-    // 🚨 SEU URL CORRETO: (Mantenha o URL de Apps Script usado nas etapas anteriores)
-    const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5vT3lhS7QN03KJcr4weoU6NYLbbzcD17bbLiAh3C51vXoPvISeR40/exec';
-    // URL base para buscar o log
-    const ADMIN_API_URL = `${SHEETDB_API_URL}?action=get_log_presenca`;
-
-    /**
-     * 🚨 AJUSTADO PARA SOLICITAR CPF E CHAVE ADMIN
-     * E chamar a busca de dados.
-     */
-    function checkAdminAccess() {
-        const container = document.querySelector('.container');
-        document.getElementById('loading').style.display = 'none';
-
-        // Solicita o CPF e a Chave de Acesso
-        const adminCpf = prompt("🔐 Por favor, digite o seu CPF de administrador:");
-        if (!adminCpf) {
-            container.style.display = 'block';
-            container.innerHTML = '<h1>❌ Acesso Negado</h1><p>O CPF é obrigatório.</p>';
-            return;
-        }
-        
-        const adminKey = prompt("🔑 Por favor, digite a Chave de Acesso Admin:");
-        if (!adminKey) {
-            container.style.display = 'block';
-            container.innerHTML = '<h1>❌ Acesso Negado</h1><p>A Chave de Acesso é obrigatória.</p>';
-            return;
-        }
-
-        // Se ambos forem fornecidos, procede para a busca de dados
-        container.style.display = 'block';
-        fetchPresencaData(adminCpf, adminKey);
-    }
     
-    /**
-     * Busca todos os dados da planilha de presença e exibe-os em uma tabela.
-     */
-    async function fetchPresencaData(adminCpf, adminKey) {
-        const loading = document.getElementById('loading');
-        const table = document.getElementById('presencaTable');
-        const tbody = document.getElementById('presencaData');
-        const errorElement = document.getElementById('error');
-        
-        loading.style.display = 'block';
-        table.style.display = 'none';
-        errorElement.textContent = '';
-        tbody.innerHTML = ''; // Limpa dados anteriores
-
-        // Constrói a URL com as credenciais para o backend validar
-        const API_URL_WITH_CREDS = `${ADMIN_API_URL}&admin_cpf=${encodeURIComponent(adminCpf)}&admin_key=${encodeURIComponent(adminKey)}`;
-        
-        try {
-            // 1. Faz uma requisição GET para buscar TODOS os dados do log
-            const response = await fetch(API_URL_WITH_CREDS);
-            
-            if (!response.ok) {
-                throw new Error(`Falha na API: Status ${response.status}`);
-            }
-            
-            const responseData = await response.json();
-            
-            // 2. Verifica a resposta de sucesso do Apps Script
-            if (!responseData.success) {
-                // Exibe a mensagem de erro retornada pelo Apps Script
-                errorElement.textContent = `Acesso negado: ${responseData.message || 'Verifique suas credenciais de administrador.'}`;
-                return;
-            }
-
-            const data = responseData.data; // Pega o array de dados reais
-            
-            if (!data || data.length === 0) {
-                errorElement.textContent = 'Nenhum registro de presença encontrado na planilha.';
-                return;
-            }
-            
-            // 3. Itera sobre os dados e preenche a tabela
-            data.forEach(record => {
-                const row = tbody.insertRow();
-                
-                let dataFormatada = 'N/A';
-                let horaFormatada = 'N/A';
-
-                const dataCompleta = record.data_registro || '';
-
-                if (dataCompleta) {
-                    try {
-                        const dateObj = new Date(dataCompleta);
-
-                        if (!isNaN(dateObj.getTime())) { 
-                            dataFormatada = dateObj.toLocaleDateString('pt-BR');
-                            horaFormatada = dateObj.toLocaleTimeString('pt-BR', {
-                                hour: '2-digit', 
-                                minute: '2-digit'
-                            });
-                        }
-                    } catch (e) {
-                        console.error("Erro ao formatar data/hora:", e);
-                    }
-                }
-
-                const searchableText = `${record.nome_aluno || ''} ${record.cpf || ''}`.toLowerCase();
-                row.setAttribute('data-search', searchableText);
-
-                row.insertCell().textContent = record.nome_aluno || 'N/A';
-                row.insertCell().textContent = record.cpf || 'N/A';
-                row.insertCell().textContent = dataFormatada;
-                row.insertCell().textContent = horaFormatada;
-            });
-
-            // 4. Exibe a tabela
-            table.style.display = 'table';
-
-        } catch (error) {
-            console.error("Erro ao carregar relatório:", error);
-            errorElement.textContent = `Erro ao carregar relatório. Detalhes: ${error.message}`;
-        } finally {
-            loading.style.display = 'none';
+    <script>
+        function redirectToVideo(lessonId) {
+            window.location.href = `videos.html?lesson=${lessonId}`;
         }
-    }
-
-
-    /**
-     * Filtra a tabela em tempo real com base no texto digitado.
-     */
-    function filterTable() {
-        const input = document.getElementById('searchInput');
-        const filter = input.value.toLowerCase();
-        
-        const tbody = document.getElementById('presencaData');
-        const tr = tbody.getElementsByTagName('tr');
-
-        for (let i = 0; i < tr.length; i++) {
-            const row = tr[i];
-            const searchData = row.getAttribute('data-search'); 
-
-            if (searchData) {
-                if (searchData.indexOf(filter) > -1) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            }
-        }
-    }
-
-
-    // Inicia o cheque de acesso ao carregar a página
-    window.onload = checkAdminAccess;
-
-</script>
+    </script>
 </body>
-
 </html>
