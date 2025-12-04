@@ -317,7 +317,7 @@ function checkAccess() {
 
     // Obter o ID da aula da URL (lesson=aulaX)
     const urlParams = new URLSearchParams(window.location.search);
-    const lessonId = urlParams.get('lesson') || 'aula13'; // Padrão para aula1
+    const lessonId = urlParams.get('lesson') || 'aula18'; // Padrão para aula1
     
     // Inicia a renderização do conteúdo apenas se estivermos em videos.html
     // 🚨 CORREÇÃO: Usando o novo ID do contêiner principal para verificar
@@ -580,6 +580,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
