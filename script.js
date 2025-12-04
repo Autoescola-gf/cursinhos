@@ -39,7 +39,7 @@ const VIDEO_MAP = {
     },
     'aula3': { 
         title: 'Aula 3: Legislação',
-        embedUrl: 'https://www.dropbox.com/scl/fi/mj4xgb1kk6w5gbjbsy5vb/03-LEGISLA-O.mp4?rlkey=49kb0wvhr6aqi31w38ql2yrvz&st=3l4uj8m0&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/t1amkg7v407ri67v1iumb/03-LEGISLA-O.mp4?rlkey=4yxt874do6ng9alv8ag9bdzfj&st=wxhpbt0s&raw=1' 
     },
     'aula4': { 
         title: 'Aula 4: Legislação',
@@ -552,6 +552,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
