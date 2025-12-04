@@ -106,27 +106,27 @@ const VIDEO_MAP = {
     },
 
    // Direção defensiva
-    'aula13': {
+    'aula18': {
         title: 'Aula 18: Direção Defensiva',
         embedUrl: 'https://www.dropbox.com/scl/fi/9hp1nt9b08546gu1229p7/18-DIRE-O-DEFENSIVA.mp4?rlkey=p2p4gwpnbo3p4nygc12rw8trx&st=cm6lcuqe&raw=1' 
     },
-    'aula14': { 
+    'aula19': { 
         title: 'Aula 19: Direção Defensiva',
         embedUrl: 'https://www.dropbox.com/scl/fi/9ch9zi0xd2w97ybvt9uaj/19-DIRE-O-DEFENSIVA.mp4?rlkey=3n1cjfxc1r0yz1y9i8lui81jh&st=smw9o5kz&raw=1' 
     },
-    'aula15': { 
+    'aula20': { 
         title: 'Aula 20: Direção Defensiva',
         embedUrl: 'https://www.dropbox.com/scl/fi/1nkxoifxczy0cnqe1qths/20-DIRE-O-DEFENSIVA.mp4?rlkey=j43unqxy8brwo8othv05f9xox&st=lmd5b9az&raw=1' 
     },
-    'aula16': { 
+    'aula21': { 
         title: 'NÃO DISPONIVEL',
         embedUrl: '' 
     },
-    'aula17': { 
+    'aula22': { 
         title: 'NÃO DISPONIVEL',
         embedUrl: '' 
     },
-    'aula18': { 
+    'aula23': { 
         title: 'NÃO DISPONIVEL',
         embedUrl: '' 
     },
@@ -580,6 +580,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
