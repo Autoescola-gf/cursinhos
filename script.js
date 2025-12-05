@@ -31,7 +31,7 @@ const VIDEO_MAP = {
     // LEGISLAÇÃO
     'aula1': { 
         title: 'Aula 1: Legislação(Aula faltando)',
-        embedUrl: 'https://www.dropbox.com/scl/fi/9o814415zdw9mhqgn2bf7/01-LEGISLA-O.mp4?rlkey=p6ztt8mbb8hy2k4edjmdvc1em&st=mhcyzy4t&dl=0'
+        embedUrl: ''
     },
     'aula2': { 
         title: 'Aula 2: Legislação',
@@ -579,6 +579,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
