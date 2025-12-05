@@ -49,38 +49,37 @@ const VIDEO_MAP = {
       // SINALIZAÇÃO
     'aula5': { 
         title: 'Aula 5: Sinalização',
-        embedUrl: 'https://www.dropbox.com/scl/fi/srykoh773chkf3ieuvyuh/05-SINALIZA-O.mp4?rlkey=iaxh02y2dbv8h0d84wc2a13at&st=57tydwo2&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/k3w63lrirvstkoi0abfav/05-SINALIZA-O.mp4?rlkey=9yrqojpomtc7ti2wied7sk1wx&st=l7zgv1l9&raw=1' 
     },
-    
     'aula6': { 
         title: 'Aula 6: Sinalização',
-        embedUrl: 'https://www.dropbox.com/scl/fi/wrd4t03sp7dj5ymjwpk0z/06-SINALIZA-O.mp4?rlkey=w3384i5co4487osxv5iym87tw&st=ar3r7avb&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/h5k0i6p3qld5s3mlpkq1s/06-SINALIZA-O.mp4?rlkey=tykepxntrqpxjtletnbwr68ra&st=x9g2nly6&raw=1' 
     },
     'aula7': { 
         title: 'Aula 7: Sinalização',
-        embedUrl: 'https://www.dropbox.com/scl/fi/f5dstcsiqh583gise2o7i/07-SINALIZA-O.mp4?rlkey=85vw1dmpuxp0ybw3oa36scsos&st=cmj9rud4&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/wdcw32037vhnd4no2koso/07-SINALIZA-O.mp4?rlkey=d3hvj93zwoq400lz2h7eqo7yx&st=t08ph9e1&raw=1' 
     },
     'aula8': { 
         title: 'Aula 8: Sinalização',
-        embedUrl: 'https://www.dropbox.com/scl/fi/6g8g6at1kj4low2aoln0o/08-SINALIZA-O.mp4?rlkey=m2jyacqwop97h2nkopi6zyrr9&st=0i453ie6&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/05cs21an3v96znuyxt1s1/08-SINALIZA-O.mp4?rlkey=jeqagbfl1uu38n0kqy160x8ss&st=nurxqroc&raw=1' 
     },
     
     // Infraçoes e penalidades
     'aula9': {
         title: 'Aula 9: Infrações e Penalidades',
-        embedUrl: 'https://www.dropbox.com/scl/fi/aptuctp47uvq1s0fdd6we/09-INFRA-ES.mp4?rlkey=7gaxdp3oa7giba8bvptwpc8ri&st=ixunp96n&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/va827yqp7a36oj1qvp7hk/09-INFRA-ES.mp4?rlkey=f2m041w9zar4lh04f040f0cvx&st=b2gw1fwn&raw=1' 
     },
     'aula10': { 
         title: 'Aula 10: Infrações e Penalidades',
-        embedUrl: 'https://www.dropbox.com/scl/fi/s4y6bv770avosgta4603e/10-INFRA-ES.mp4?rlkey=kp605rhpi364ayhs24d4s3hs7&st=1hq0j0li&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/1i96iu1gzdjb2rrw2jq9p/10-INFRA-ES.mp4?rlkey=7xnldn35yxsjgpoqq9i20vsee&st=a6hard5y&raw=1' 
     },
     'aula11': { 
         title: 'Aula 11: Infrações e Penalidades',
-        embedUrl: 'https://www.dropbox.com/scl/fi/69bs9nprwyjdhj4lkofgn/11-INFRA-ES.mp4?rlkey=q1ufj79pohytwknsw8ncfidv2&st=v174abb3&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/dfxtfkagy7ekv04vq4y1s/11-INFRA-ES.mp4?rlkey=a9dtcfrkdq2vfje6fyveqf9qj&st=nvmn2agw&raw=1' 
     },
     'aula12': { 
-        title: 'Aula 12: Infrações e Penalidades (AULA FALTANDO)',
-        embedUrl: '' 
+        title: 'Aula 12: Infrações e Penalidades',
+        embedUrl: 'https://www.dropbox.com/scl/fi/eyqbltxxfgvomy0t34y7w/12-INFRA-ES.mp4?rlkey=pzr1uhx3aow2t84rxzie6rxby&st=tr535ria&raw=1' 
     },
     
     // Normas e condutas
@@ -119,16 +118,16 @@ const VIDEO_MAP = {
         embedUrl: 'https://www.dropbox.com/scl/fi/1nkxoifxczy0cnqe1qths/20-DIRE-O-DEFENSIVA.mp4?rlkey=j43unqxy8brwo8othv05f9xox&st=lmd5b9az&raw=1' 
     },
     'aula21': { 
-        title: 'NÃO DISPONIVEL',
-        embedUrl: '' 
+        title: 'Aula 21: Direção Defensiva',
+        embedUrl: 'https://www.dropbox.com/scl/fi/wb1s6sdes8h0flnywgekc/21-DIRE-O-DEFENSIVA.mp4?rlkey=whyernmrz11l3h9e488pm39nq&st=z8d2c3po&raw=1' 
     },
     'aula22': { 
-        title: 'NÃO DISPONIVEL',
-        embedUrl: '' 
+        title: 'Aula 22: Direção Defensiva',
+        embedUrl: 'https://www.dropbox.com/scl/fi/r30gp475xx6628tnqvnxn/22-DIRE-O-DEFENSIVA.mp4?rlkey=vtht8dd2bfcgp0ziv2p4m2jbp&st=o8t0pfu8&raw=1' 
     },
     'aula23': { 
-        title: 'NÃO DISPONIVEL',
-        embedUrl: '' 
+        title: 'Aula 23: Direção Defensiva',
+        embedUrl: 'https://www.dropbox.com/scl/fi/bz0chb83omcs3voafx8p3/23-DIRE-O-DEFENSIVA-cut.mp4?rlkey=sle83hwrplsprfsu5dnsm0k7i&st=tj660mie&raw=1' 
     },
     
     
@@ -315,9 +314,9 @@ function checkAccess() {
         return false;
     }
 
-    // Obter o ID da aula da URL (lesson=aulaX)
+    // Obter o ID da  da URL (lesson=X)
     const urlParams = new URLSearchParams(window.location.search);
-    const lessonId = urlParams.get('lesson') || 'aula18'; // Padrão para aula1
+    const lessonId = urlParams.get('lesson') || 'aula21'; // Padrão para aula1
     
     // Inicia a renderização do conteúdo apenas se estivermos em videos.html
     // 🚨 CORREÇÃO: Usando o novo ID do contêiner principal para verificar
@@ -580,6 +579,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
