@@ -30,20 +30,20 @@ const VIDEO_MAP = {
     // URLs de Vimeo fornecidas
     // LEGISLAÇÃO
     'aula1': { 
-        title: 'Aula 1: Legislação',
+        title: 'Aula 1: Legislação(Aula faltando)',
         embedUrl: 'https://www.dropbox.com/scl/fi/9o814415zdw9mhqgn2bf7/01-LEGISLA-O.mp4?rlkey=p6ztt8mbb8hy2k4edjmdvc1em&st=mhcyzy4t&dl=0'
     },
     'aula2': { 
         title: 'Aula 2: Legislação',
-        embedUrl: 'https://www.dropbox.com/scl/fi/ldyz6evyxmgxs8daic9wi/02-LEGISLA-O.mp4?rlkey=cf1btomjkl0e0wq5k9g451819&st=pbb322hc&raw=1'
+        embedUrl: 'https://www.dropbox.com/scl/fi/q2d25lqww46i62osqopdw/02-LEGISLA-O.mp4?rlkey=2lfmybi5ro6pa386s8vt98lbp&st=cpr67uu6&raw=1'
     },
     'aula3': { 
         title: 'Aula 3: Legislação',
-        embedUrl: 'https://www.dropbox.com/scl/fi/t1amkg7v407ri67v1iumb/03-LEGISLA-O.mp4?rlkey=4yxt874do6ng9alv8ag9bdzfj&st=wxhpbt0s&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/2v3a9lvtu0hma4ktojjlq/03-LEGISLA-O.mp4?rlkey=5giu774jbf1mmdf2x8v9paqkw&st=sicxr58h&raw=1' 
     },
     'aula4': { 
         title: 'Aula 4: Legislação',
-        embedUrl: 'https://www.dropbox.com/scl/fi/dos0tzdmvf78qylfdx8bb/04-LEGISLA-O.mp4?rlkey=ke2dm1itat5p3jt26der72pg8&st=xim554v4&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/pc4c6x8cafki0bc8tikhm/04-LEGISLA-O.mp4?rlkey=mzs0ps4nyyb23qm1gqvqtwz78&st=wkflvbbf&raw=1' 
     },
 
       // SINALIZAÇÃO
@@ -579,6 +579,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
