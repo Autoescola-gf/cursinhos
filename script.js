@@ -146,17 +146,8 @@ const VIDEO_MAP = {
     },
     'aula27': { 
         title: 'Aula 27: Primeiros Socorros',
-        embedUrl: '' 
-    },
-    'aula28': { 
-        title: 'Aula 28: Primeiros Socorros',
-        embedUrl: '' 
-    },
-    'aula29': { 
-        title: 'Aula 29:Primeiros Socorros',
-        embedUrl: '' 
-    },
-    
+        embedUrl: 'https://www.dropbox.com/scl/fi/uleso3vy033f6r2r86boh/27-PRIMEIROS-SOCORROS-QUEST-ES-cut.mp4?rlkey=xdrlfufqidartr4y2jmdjvdsf&st=59yui7b3&raw=1' 
+    },  
 };
 
 
@@ -605,6 +596,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
