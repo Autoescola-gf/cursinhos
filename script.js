@@ -129,7 +129,33 @@ const VIDEO_MAP = {
         title: 'Aula 23: Direção Defensiva',
         embedUrl: 'https://www.dropbox.com/scl/fi/bz0chb83omcs3voafx8p3/23-DIRE-O-DEFENSIVA-cut.mp4?rlkey=sle83hwrplsprfsu5dnsm0k7i&st=tj660mie&raw=1' 
     },
+
     
+    // Primeiros Socorros
+    'aula24': {
+        title: 'Aula 24: Primeiros Socorros',
+        embedUrl: 'https://www.dropbox.com/scl/fi/8eh70ydl7nw0b3tkj41qu/24-PRIMEIROS-SOCORROS.mp4?rlkey=4rnirtm44t99owt5rc87m513g&st=gbark4md&raw=1' 
+    },
+    'aula25': { 
+        title: 'Aula 25: Primeiros Socorros',
+        embedUrl: 'https://www.dropbox.com/scl/fi/0v4coveq5b7h7etojsvkn/25-PRIMEIROS-SOCORROS.mp4?rlkey=os8eo3z7ansascflh29e1vh1n&st=iq7yopg1&raw=1' 
+    },
+    'aula26': { 
+        title: 'Aula 26: Primeiros Socorros',
+        embedUrl: 'https://www.dropbox.com/scl/fi/aqmvod20rt7xhkjqvc54c/26-PRIMEIROS-SOCORROS.mp4?rlkey=jaizi1ifkkd3t3h3lmjefk42a&st=7dbyuhng&raw=1' 
+    },
+    'aula27': { 
+        title: 'Aula 27: Primeiros Socorros',
+        embedUrl: '' 
+    },
+    'aula28': { 
+        title: 'Aula 28: Primeiros Socorros',
+        embedUrl: '' 
+    },
+    'aula29': { 
+        title: 'Aula 29:Primeiros Socorros',
+        embedUrl: '' 
+    },
     
 };
 
@@ -316,7 +342,7 @@ function checkAccess() {
 
     // Obter o ID da  da URL (lesson=X)
     const urlParams = new URLSearchParams(window.location.search);
-    const lessonId = urlParams.get('lesson') || 'aula21'; // Padrão para aula1
+    const lessonId = urlParams.get('lesson') || 'aula24'; // Padrão para aula1
     
     // Inicia a renderização do conteúdo apenas se estivermos em videos.html
     // 🚨 CORREÇÃO: Usando o novo ID do contêiner principal para verificar
@@ -579,6 +605,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
