@@ -148,6 +148,17 @@ const VIDEO_MAP = {
         title: 'Aula 27: Primeiros Socorros',
         embedUrl: 'https://www.dropbox.com/scl/fi/uleso3vy033f6r2r86boh/27-PRIMEIROS-SOCORROS-cut.mp4?rlkey=xdrlfufqidartr4y2jmdjvdsf&st=as8gs13l&raw=1' 
     },  
+
+
+     // Meio Ambiente
+    'aula28': {
+        title: 'Aula 28: Meio Ambiente',
+        embedUrl: 'https://www.dropbox.com/scl/fi/b45sf0r74ym7xh81axw0w/28-MEIO-AMBIENTE.mp4?rlkey=4ccmyv257qw25v2nq40g6efyn&st=yps7zupj&raw=1' 
+    },
+    'aula29': { 
+        title: 'Aula 29: Meio Ambiente',
+        embedUrl: 'https://www.dropbox.com/scl/fi/flouxhzn9diksebb5gik1/29-MEIO-AMBIENTE.mp4?rlkey=p3t4fsj7zxiduz3qrrov0mu2i&st=cldbz8p8&raw=1' 
+    },
 };
 
 
@@ -333,7 +344,7 @@ function checkAccess() {
 
     // Obter o ID da  da URL (lesson=X)
     const urlParams = new URLSearchParams(window.location.search);
-    const lessonId = urlParams.get('lesson') || 'aula24'; // Padrão para aula1
+    const lessonId = urlParams.get('lesson') || 'aula28'; // Padrão para aula1
     
     // Inicia a renderização do conteúdo apenas se estivermos em videos.html
     // 🚨 CORREÇÃO: Usando o novo ID do contêiner principal para verificar
@@ -598,6 +609,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
