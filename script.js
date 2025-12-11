@@ -149,6 +149,7 @@ const VIDEO_MAP = {
         embedUrl: 'https://www.dropbox.com/scl/fi/uleso3vy033f6r2r86boh/27-PRIMEIROS-SOCORROS-cut.mp4?rlkey=xdrlfufqidartr4y2jmdjvdsf&st=as8gs13l&raw=1' 
     },  
 
+    
 
      // Meio Ambiente
     'aula28': {
@@ -158,6 +159,24 @@ const VIDEO_MAP = {
     'aula29': { 
         title: 'Aula 29: Meio Ambiente',
         embedUrl: 'https://www.dropbox.com/scl/fi/flouxhzn9diksebb5gik1/29-MEIO-AMBIENTE.mp4?rlkey=p3t4fsj7zxiduz3qrrov0mu2i&st=cldbz8p8&raw=1' 
+    },
+
+     // MECANICA
+    'aula30': {
+        title: 'Aula 30: Mecanica',
+        embedUrl: 'https://www.dropbox.com/scl/fi/tkeuf9l70691ih6u0j7s7/30-MEC-NICA.mp4?rlkey=t0l7d2nnh8haaz3hvo64cxkqk&st=ll8itt8m&raw=1' 
+    },
+    'aula31': { 
+        title: 'Aula 31: Mecanica',
+        embedUrl: 'https://www.dropbox.com/scl/fi/oe6nr8sy506vcn722w5oo/31-MEC-NICA.mp4?rlkey=1vdi44d00368aw75afrfy37es&st=v1x7mfzo&raw=1' 
+    },
+    'aula32': { 
+        title: 'Aula 32: DISPONIVEL AMANHA',
+        embedUrl: '' 
+    },
+    'aula33': { 
+        title: 'Aula 33: DISPONIVEL AMANHA',
+        embedUrl: '' 
     },
 };
 
@@ -344,7 +363,7 @@ function checkAccess() {
 
     // Obter o ID da  da URL (lesson=X)
     const urlParams = new URLSearchParams(window.location.search);
-    const lessonId = urlParams.get('lesson') || 'aula28'; // Padrão para aula1
+    const lessonId = urlParams.get('lesson') || 'aula30'; // Padrão para aula1
     
     // Inicia a renderização do conteúdo apenas se estivermos em videos.html
     // 🚨 CORREÇÃO: Usando o novo ID do contêiner principal para verificar
@@ -609,6 +628,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
