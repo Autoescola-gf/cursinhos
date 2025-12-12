@@ -163,20 +163,20 @@ const VIDEO_MAP = {
 
      // MECANICA
     'aula30': {
-        title: 'Aula 30: Mecanica',
+        title: 'Aula 30: Mecânica',
         embedUrl: 'https://www.dropbox.com/scl/fi/tkeuf9l70691ih6u0j7s7/30-MEC-NICA.mp4?rlkey=t0l7d2nnh8haaz3hvo64cxkqk&st=ll8itt8m&raw=1' 
     },
     'aula31': { 
-        title: 'Aula 31: Mecanica',
+        title: 'Aula 31: Mecânica',
         embedUrl: 'https://www.dropbox.com/scl/fi/oe6nr8sy506vcn722w5oo/31-MEC-NICA.mp4?rlkey=1vdi44d00368aw75afrfy37es&st=v1x7mfzo&raw=1' 
     },
     'aula32': { 
-        title: 'Aula 32: DISPONIVEL AMANHA',
-        embedUrl: '' 
+        title: 'Aula 32: Mecânica',
+        embedUrl: 'https://www.dropbox.com/scl/fi/s44zst06jes84sjvfc9sd/32-MEC-NICA.mp4?rlkey=rgrtvn7v0zbijbscxav3xx922&st=qifdf215&raw=1' 
     },
     'aula33': { 
-        title: 'Aula 33: DISPONIVEL AMANHA',
-        embedUrl: '' 
+        title: 'Aula 33: Mecânica',
+        embedUrl: 'https://www.dropbox.com/scl/fi/6121osnobovdbxbs9bx7q/33-MEC-NICA-QUEST-ES-cut.mp4?rlkey=ecr148b6dwz6dkxr2bmr0stsf&st=2c5at6xz&raw=1' 
     },
 };
 
@@ -628,6 +628,7 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
 
 
