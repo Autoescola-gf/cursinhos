@@ -104,14 +104,23 @@
             font-size: 0.85rem;
             min-height: 20px;
         }
-        #buyButton {
-            background: transparent; /* Remove o fundo roxo */
-            border: 1px solid rgba(168, 85, 247, 0.4); /* Borda fina e semi-transparente */
-            color: #a855f7; /* Texto na cor roxa do tema */
-            box-shadow: none; /* Remove a sombra pesada */
-            margin-top: 20px;
-            font-size: 0.85rem; /* Um pouco menor que o principal */
-            opacity: 0.8;
+
+        /* Botão Flutuante no canto inferior */
+        #buyButton.whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #25d366;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 100;
         }
         #buyButton:hover {
             background: rgba(168, 85, 247, 0.1); /* Fundo sutil ao passar o mouse */
@@ -143,6 +152,7 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
