@@ -4,6 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de Aulas | Auto Escola Guarda</title>
+    
+    <header>
+    <h1>Catálogo de Aulas</h1>
+        <div id="next-release-container" style="background: rgba(168, 85, 247, 0.1); padding: 15px; border-radius: 12px; display: inline-block; margin-top: 10px; border: 1px solid var(--primary);">
+            <p id="progress-info" style="margin: 0; font-weight: bold; color: var(--primary);">Carregando dia de curso...</p>
+            <p id="timer-display" style="margin: 5px 0 0 0; font-size: 0.9rem; color: #94a3b8;">
+                Próxima aula em: <span id="countdown-timer" style="color: #fff; font-family: monospace; font-size: 1.1rem;">00:00:00</span>
+            </p>
+        </div>
+    </header>
+    
+    <script>
+        // Adicione esta função ao final do script do Aulas.html ou no script.js
+        function startReleaseTimer() {
+            const timerElement = document.getElementById('countdown-timer');
+            
+            setInterval(() => {
+                const remainingMs = getTimeUntilNextRelease();
+                if (remainingMs <= 0) {
+                    timerElement.textContent = "Disponível! Recarregue a página.";
+                    timerElement.style.color = "#22c55e";
+                } else {
+                    timerElement.textContent = formatarTempoRestante(remainingMs);
+                }
+            }, 1000);
+        }
+    
+        // Chame a função no window.onload
+        window.onload = () => {
+            renderCatalog(); // Função que já criamos antes
+            startReleaseTimer();
+        };
+    </script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -142,3 +176,4 @@
     </script>
 </body>
 </html>
+
