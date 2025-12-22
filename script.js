@@ -8,6 +8,7 @@ const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5
 // URL para a ação de Marcar Presença (POST com action no Apps Script)
 const PRESENCE_LOG_API_URL = `${SHEETDB_API_URL}?action=marcar_presenca`;
 
+
 // Chaves de localStorage para o Timer de Acesso (24h)
 const ACCESS_KEY = 'vimeo_access_granted';
 const EXPIRATION_KEY = 'access_expires_at';
@@ -248,6 +249,48 @@ function formatarTempoRestante(milissegundos) {
     return `${pad(horas)}h ${pad(minutos)}m ${pad(segundos)}s`;
 }
 
+const FIRST_ACCESS_KEY = 'vimeo_first_access_date'; // Chave para salvar o dia que ele começou
+
+// =======================================================
+// LÓGICA DE LIBERAÇÃO POR DIA
+// =======================================================
+
+function getDaysPassed() {
+    let firstAccess = localStorage.getItem(FIRST_ACCESS_KEY);
+    
+    // Se não existe data de primeiro acesso, define como HOJE
+    if (!firstAccess) {
+        firstAccess = new Date().toISOString();
+        localStorage.setItem(FIRST_ACCESS_KEY, firstAccess);
+    }
+
+    const startDate = new Date(firstAccess);
+    const today = new Date();
+    
+    // Diferença em milissegundos convertida para dias
+    const diffTime = Math.abs(today - startDate);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    return diffDays + 1; // Retorna 1 no primeiro dia, 2 no segundo...
+}
+
+function isLessonAvailable(lessonId) {
+    // Extrai o número da aula (ex: "aula15" -> 15)
+    const lessonNumber = parseInt(lessonId.replace('aula', ''));
+    const daysAllowed = getDaysPassed();
+    
+    return lessonNumber <= daysAllowed;
+}
+
+// Atualização da função de redirecionamento para segurança
+function redirectToVideo(lessonId) {
+    if (isLessonAvailable(lessonId)) {
+        window.location.href = `videos.html?lesson=${lessonId}`;
+    } else {
+        alert("🔒 Esta aula ainda não está liberada. Volte amanhã!");
+    }
+}
+
 // =======================================================
 // 2. LÓGICA DE LOGIN (checkToken - Sem alterações estruturais)
 // =======================================================
@@ -276,7 +319,10 @@ async function checkToken() {
         const searchUrl = `${SHEETDB_API_URL}?token=${tokenInput}&cpf=${cpfInput}`;
         const response = await fetch(searchUrl);
         const data = await response.json();
-
+        if (!localStorage.getItem(FIRST_ACCESS_KEY)) {
+            localStorage.setItem(FIRST_ACCESS_KEY, new Date().toISOString());
+        }
+        
         if (!data || data.length === 0 || data.length > 1) {
             messageElement.textContent = 'Erro: Token ou CPF inválido. Aluno não encontrado na base.';
             return;
@@ -628,7 +674,6 @@ function initializePage() {
 }
 
 window.onload = initializePage;
-
 
 
 
