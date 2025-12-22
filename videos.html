@@ -90,29 +90,40 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
     <script>
-        // Função interna para aplicar os cadeados visualmente na barra lateral
+        // Esta função varre os botões da lateral e pergunta ao script.js se estão liberados
         function updateSidebarLocks() {
-            document.querySelectorAll('.nav-buttons button[id^="btn-"]').forEach(btn => {
-                const id = btn.id.replace('btn-', '');
-                if (!isLessonAvailable(id)) {
-                    btn.classList.add('locked');
-                    btn.title = "Aguarde o dia de liberação";
+            // Seleciona todos os botões que começam com "btn-aula"
+            document.querySelectorAll('.nav-buttons button[id^="btn-aula"]').forEach(btn => {
+                const id = btn.id.replace('btn-', ''); // Ex: extrai 'aula3'
+                
+                // CHAMA A FUNÇÃO QUE ESTÁ NO SCRIPT.JS
+                const liberada = isLessonAvailable(id); 
+
+                if (!liberada) {
+                    btn.classList.add('locked'); // Adiciona o cadeado (CSS)
+                    btn.onclick = function(e) {
+                        e.preventDefault();
+                        alert("Esta aula ainda não está disponível para o seu progresso atual.");
+                    };
                 } else {
                     btn.classList.remove('locked');
+                    // Garante que o clique funcione normalmente se estiver liberada
+                    btn.onclick = () => showLesson(id);
                 }
             });
         }
 
-        // Estendemos a inicialização para incluir o check de travas
+        // IMPORTANTE: Redefinir a inicialização para garantir que os cadeados rodem
         const originalInit = initializePage;
         initializePage = function() {
-            originalInit();
-            updateSidebarLocks();
+            if (typeof originalInit === 'function') originalInit();
+            updateSidebarLocks(); // Aplica os bloqueios na lateral
         };
     </script>
 </body>
 </html>
+
 
 
