@@ -22,40 +22,37 @@
             max-width: 1100px; margin: 0 auto 30px; gap: 15px; flex-wrap: wrap; 
         }
 
-        /* ESTILO DOS BOTÕES E INTERAÇÕES */
         .btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
 
         button {
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            padding: 10px 20px; border-radius: 10px; border: none; font-weight: 600;
+            cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px;
         }
 
-        button:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        button:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         button:active { transform: translateY(0); }
 
         #presenceButton { background: #3b82f6; color: white; }
         #presenceButton:disabled { background: var(--success); cursor: not-allowed; }
         
         .nav-btn { background: #334155; color: white; }
-        .log-btn { background: var(--admin); color: white; } /* Botão de Log */
+        .log-btn { background: var(--admin); color: white; }
         #logoutButton { background: #ef4444; color: white; }
 
-        /* Sidebar Interativa */
         .video-content-wrapper { display: grid; grid-template-columns: 280px 1fr; gap: 30px; max-width: 1100px; margin: 0 auto; background: var(--surface); padding: 25px; border-radius: 20px; }
-        .nav-buttons { display: flex; flex-direction: column; gap: 10px; }
         
+        .nav-buttons { display: flex; flex-direction: column; gap: 10px; }
         .nav-buttons button { 
             background: rgba(255,255,255,0.05); color: #94a3b8; text-align: left; 
-            border: 1px solid transparent; width: 100%;
+            border: 1px solid transparent; width: 100%; position: relative;
         }
         
+        /* ESTILO AULA BLOQUEADA */
+        .nav-buttons button.locked { 
+            opacity: 0.5; cursor: not-allowed; filter: grayscale(1); pointer-events: none;
+        }
+        .nav-buttons button.locked::after { content: "🔒"; position: absolute; right: 15px; }
+
         .nav-buttons button.active { 
             background: rgba(168, 85, 247, 0.2); color: var(--primary); border-color: var(--primary); 
         }
@@ -86,12 +83,32 @@
         <div class="main">
             <h2 id="lessonTitle" style="margin-top:0">Selecione uma aula</h2>
             <div id="videoPlayerContainer" class="video-container">
-                <p style="text-align:center; padding-top:20%">Aguardando seleção de vídeo...</p>
+                <p style="text-align:center; padding-top:20%">Escolha um vídeo ao lado para começar.</p>
             </div>
         </div>
     </div>
+
     <script src="script.js"></script>
+    <script>
+        // Função interna para aplicar os cadeados visualmente na barra lateral
+        function updateSidebarLocks() {
+            document.querySelectorAll('.nav-buttons button[id^="btn-"]').forEach(btn => {
+                const id = btn.id.replace('btn-', '');
+                if (!isLessonAvailable(id)) {
+                    btn.classList.add('locked');
+                    btn.title = "Aguarde o dia de liberação";
+                } else {
+                    btn.classList.remove('locked');
+                }
+            });
+        }
+
+        // Estendemos a inicialização para incluir o check de travas
+        const originalInit = initializePage;
+        initializePage = function() {
+            originalInit();
+            updateSidebarLocks();
+        };
+    </script>
 </body>
 </html>
-
-
