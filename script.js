@@ -1,23 +1,17 @@
-// =======================================================
-// ARQUIVO: script.js (CORRIGIDO)
-// =======================================================
-
+// CONFIGURAÇÕES GERAIS
 const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5vT3lhS7QN03KJcr4weoU6NYLbbzcD17bbLiAh3C51vXoPvISeR40/exec';
 const FIRST_ACCESS_KEY = 'vimeo_first_access_date';
-const EXPIRATION_KEY = 'access_expires_at';
-const ACCESS_KEY = 'vimeo_access_granted';
 const CPF_KEY = 'vimeo_user_cpf';
 const TOKEN_KEY = 'vimeo_user_token';
 const NAME_KEY = 'vimeo_user_name';
 const PRESENCE_DATE_KEY = 'lastPresenceDate';
 
-
 const VIDEO_MAP = {
     // URLs de Vimeo fornecidas
     // LEGISLAÇÃO
     'aula1': { 
-        title: 'Aula 1: Legislação',
-        embedUrl: 'https://www.dropbox.com/scl/fi/bwmtelaaeqio6x0rgw07y/01-LEGISLA-O.mp4?rlkey=z8kaw1fnqyed87pjnz5w1sdwe&st=02dcglya&raw=1'
+        title: 'Aula 1: Introdução a Legislação',
+        embedUrl: 'https://www.dropbox.com/scl/fi/bwmtelaaeqio6x0rgw07y/01-LEGISLA-O.mp4?rlkey=z8kaw1fnqyed87pjnz5w1sdwe&st=p0an9cc5&raw=1'
     },
     'aula2': { 
         title: 'Aula 2: Legislação',
@@ -135,6 +129,8 @@ const VIDEO_MAP = {
         embedUrl: 'https://www.dropbox.com/scl/fi/uleso3vy033f6r2r86boh/27-PRIMEIROS-SOCORROS-cut.mp4?rlkey=xdrlfufqidartr4y2jmdjvdsf&st=as8gs13l&raw=1' 
     },  
 
+    
+
      // Meio Ambiente
     'aula28': {
         title: 'Aula 28: Meio Ambiente',
@@ -164,39 +160,7 @@ const VIDEO_MAP = {
     },
 };
 
-// --- LÓGICA DE TEMPO ---
-function getDaysPassed() {
-    let start = localStorage.getItem(FIRST_ACCESS_KEY);
-    if (!start) return 1;
-    const diff = new Date() - new Date(start);
-    return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
-}
-
-function getTimeUntilNextRelease() {
-    let start = localStorage.getItem(FIRST_ACCESS_KEY);
-    if (!start) return 0;
-    const nextDate = new Date(new Date(start).getTime() + (getDaysPassed() * 24 * 60 * 60 * 1000));
-    return nextDate - new Date();
-}
-
-function isLessonAvailable(id) {
-    const num = parseInt(id.replace('aula', ''));
-    if (num >= 30) { 
-        // Exemplo: Mecânica (30-33) libera após o dia 5
-        return getDaysPassed() >= 5; 
-    }
-    return num <= getDaysPassed();
-}
-
-function formatarTempoRestante(ms) {
-    const s = Math.floor(ms / 1000);
-    const h = Math.floor(s / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    const seg = s % 60;
-    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`;
-}
-
-// --- CPF MÁSCARA ---
+// MÁSCARA DE CPF
 function formatCPF(v) {
     v = v.replace(/\D/g, "");
     v = v.replace(/(\d{3})(\d)/, "$1.$2");
@@ -205,10 +169,44 @@ function formatCPF(v) {
     return v;
 }
 
-// --- PRESENÇA ---
+// INICIALIZAÇÃO
+function initializePage() {
+    // 1. Ativa máscara de CPF se estiver na index
+    const cpfInput = document.getElementById('cpfInput');
+    if (cpfInput) {
+        cpfInput.addEventListener('input', (e) => {
+            e.target.value = formatCPF(e.target.value);
+        });
+    }
+
+    // 2. Carrega vídeo se houver parâmetro na URL
+    if(window.location.pathname.includes('videos.html')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const lessonId = urlParams.get('lesson') || 'aula1';
+        showLesson(lessonId);
+        verificarStatusPresenca();
+    }
+}
+
+// TROCA DE AULA COM ESTILO ATIVO
+function showLesson(id) {
+    const aula = VIDEO_MAP[id];
+    if(!aula) return;
+
+    document.getElementById('lessonTitle').innerText = aula.title;
+    document.getElementById('videoPlayerContainer').innerHTML = `
+        <video controls autoplay>
+            <source src="${aula.embedUrl}" type="video/mp4">
+        </video>`;
+    
+    // Atualiza botões da sidebar
+    document.querySelectorAll('.nav-buttons button').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`btn-${id}`)?.classList.add('active');
+}
+
+// MARCAR PRESENÇA
 async function marcarPresenca() {
     const btn = document.getElementById('presenceButton');
-    if (!btn) return;
     btn.disabled = true;
     btn.textContent = '⏳ Gravando...';
 
@@ -220,12 +218,14 @@ async function marcarPresenca() {
             data_registro: new Date().toLocaleDateString(),
             action: 'marcar_presenca'
         });
+
         await fetch(SHEETDB_API_URL, { method: 'POST', body: payload });
         localStorage.setItem(PRESENCE_DATE_KEY, new Date().toLocaleDateString());
         verificarStatusPresenca();
-    } catch (e) { 
-        btn.disabled = false; 
-        btn.textContent = 'Tentar Novamente'; 
+        alert("Presença confirmada!");
+    } catch (e) {
+        btn.disabled = false;
+        btn.textContent = '📍 Marcar Presença';
     }
 }
 
@@ -233,61 +233,12 @@ function verificarStatusPresenca() {
     const btn = document.getElementById('presenceButton');
     if(btn && localStorage.getItem(PRESENCE_DATE_KEY) === new Date().toLocaleDateString()) {
         btn.disabled = true;
-        btn.textContent = '✅ Presença Confirmada';
+        btn.innerHTML = '✅ Presença Confirmada';
         btn.style.background = '#10b981';
     }
 }
 
-// --- LOGIN ---
-async function checkToken() {
-    const token = document.getElementById('tokenInput').value.trim();
-    const cpf = document.getElementById('cpfInput').value.trim();
-    const msg = document.getElementById('message');
-
-    try {
-        const resp = await fetch(`${SHEETDB_API_URL}?token=${token}&cpf=${cpf}`);
-        const data = await resp.json();
-        if(data.length > 0) {
-            localStorage.setItem(ACCESS_KEY, 'true');
-            localStorage.setItem(TOKEN_KEY, token);
-            localStorage.setItem(CPF_KEY, cpf);
-            localStorage.setItem(NAME_KEY, data[0].nome_aluno);
-            localStorage.setItem(EXPIRATION_KEY, Date.now() + 86400000);
-            if(!localStorage.getItem(FIRST_ACCESS_KEY)) localStorage.setItem(FIRST_ACCESS_KEY, new Date().toISOString());
-            window.location.href = 'videos.html';
-        } else { msg.innerText = "Token ou CPF inválidos."; }
-    } catch(e) { msg.innerText = "Erro de conexão."; }
-}
-
-// --- INICIALIZAÇÃO ---
-function initializePage() {
-    const cpfInput = document.getElementById('cpfInput');
-    if (cpfInput) {
-        cpfInput.addEventListener('input', (e) => {
-            e.target.value = formatCPF(e.target.value);
-        });
-    }
-
-    if(window.location.pathname.includes('videos.html')) {
-        const urlParams = new URLSearchParams(window.location.search);
-        showLesson(urlParams.get('lesson') || 'aula1');
-        verificarStatusPresenca();
-    }
-}
-
-function showLesson(id) {
-    const aula = VIDEO_MAP[id];
-    if(!aula) return;
-    document.getElementById('lessonTitle').innerText = aula.title;
-    document.getElementById('videoPlayerContainer').innerHTML = `
-        <video controls poster="icon.png" style="width:100%; height:100%; border-radius:12px;">
-            <source src="${aula.embedUrl}" type="video/mp4">
-        </video>`;
-}
-
-window.onload = initializePage;
 function logout() { localStorage.clear(); window.location.href = 'index.html'; }
 function abrirAulas() { window.location.href = 'Aulas.html'; }
-function redirectToVideo(id) { window.location.href = `videos.html?lesson=${id}`; }(/(\d{3})(\d)/,"$1.$2"); v=v.replace(/(\d{3})(\d{1,2})$/,"$1-$2"); return v; }
 
-
+window.onload = initializePage;
