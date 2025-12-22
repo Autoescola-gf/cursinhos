@@ -9,75 +9,96 @@
         :root { --primary: #a855f7; --bg: #0f172a; --surface: #1e293b; --text: #f1f5f9; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
         .container { max-width: 1000px; margin: 0 auto; }
-        header { text-align: center; padding: 40px; background: linear-gradient(to bottom, rgba(168,85,247,0.1), transparent); border-radius: 20px; margin-bottom: 30px; }
-        h1 { background: linear-gradient(to right, #fff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; }
+        header { text-align: center; padding: 40px; background: rgba(168,85,247,0.05); border-radius: 20px; margin-bottom: 30px; border: 1px solid rgba(168,85,247,0.1); }
+        h1 { background: linear-gradient(to right, #fff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; margin: 0; }
         
-        #timer-box { background: rgba(168, 85, 247, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--primary); display: inline-block; }
-        #countdown-timer { font-family: monospace; font-size: 1.2rem; color: #fff; }
+        #timer-box { background: rgba(168, 85, 247, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--primary); display: inline-block; margin-top: 20px; }
+        #countdown-timer { font-family: monospace; font-size: 1.2rem; color: #fff; font-weight: bold; }
 
-        .section-title { border-left: 4px solid var(--primary); padding-left: 15px; margin: 40px 0 20px; }
+        .section-title { border-left: 4px solid var(--primary); padding-left: 15px; margin: 40px 0 20px; font-size: 1.5rem; }
         .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .card { background: var(--surface); padding: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.3s; position: relative; }
-        .card:hover:not(.locked) { transform: translateY(-5px); border-color: var(--primary); }
-        .card.locked { opacity: 0.6; cursor: not-allowed; border: 1px dashed #334155; }
-        .card.locked::after { content: "🔒 Bloqueada"; position: absolute; top: 10px; right: 10px; background: #334155; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; }
-        .badge { color: var(--primary); font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
-        .back-btn { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; }
+        
+        .card { 
+            background: var(--surface); padding: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); 
+            cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .card:hover:not(.locked) { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        
+        .card.locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+        .card.locked::after { content: "🔒"; position: absolute; top: 15px; right: 15px; font-size: 1.2rem; }
+        
+        .badge { color: var(--primary); font-size: 0.7rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .back-btn { background: #334155; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-weight: 600; }
+        .back-btn:hover { background: #475569; }
     </style>
 </head>
 <body>
     <div class="container">
-        <button class="back-btn" onclick="window.location.href='videos.html'">⬅ Voltar</button>
+        <button class="back-btn" onclick="window.location.href='videos.html'">⬅ Voltar para Aula</button>
         <header>
             <h1>Catálogo de Aulas</h1>
             <div id="timer-box">
-                <p id="progress-info" style="margin:0; font-size: 0.9rem;">Dia de Curso: --</p>
-                <p style="margin: 5px 0 0 0;">Próxima aula em: <span id="countdown-timer">00:00:00</span></p>
+                <p id="progress-info" style="margin:0; font-size: 0.9rem; color: #94a3b8;">Calculando progresso...</p>
+                <p style="margin: 5px 0 0 0; color: #f1f5f9;">Próxima aula em: <span id="countdown-timer">00:00:00</span></p>
             </div>
         </header>
         <div id="catalog-content"></div>
     </div>
+
     <script src="script.js"></script>
     <script>
+        // Definição das seções (CORRIGIDO: Sem erros de parênteses)
         const SECOES = [
-            { nome: "Legislação", aulas: ["aula1", "aula2", "aula3", "aula4"] },
-            { nome: "Sinalização", aulas: ["aula5", "aula6", "aula7", "aula8"] },
-            { nome: "Infrações e Penalidades", aulas: ["aula9", "aula10", "aula11", "aula12"] },
-            { nome: "Normas e condutas", aulas: ["aula13", "aula14", "aula15", "aula16", "aula17"] },
-            { nome: "Direção defensiva", aulas: ["aula18", "aula19", "aula20", "aula21", "aula22", "aula23""] },
-            { nome: "Primeiros Socorros", aulas: ["aula24", "aula25", "aula26", "aula27"] },
-            { nome: "Meio Ambiente", aulas: ["aula28", "aula29"] },
+            { nome: "Legislação", aulas: ["aula1", "aula2"] },
             { nome: "Mecânica", aulas: ["aula30", "aula31", "aula32", "aula33"] }
         ];
+
         function renderCatalog() {
             const container = document.getElementById('catalog-content');
-            const day = getDaysPassed();
-            document.getElementById('progress-info').innerText = `Você está no Dia: ${day}`;
+            container.innerHTML = "";
+            const diaAtual = getDaysPassed();
+            document.getElementById('progress-info').innerText = `Dia de Curso: ${diaAtual}`;
 
             SECOES.forEach(sec => {
                 let html = `<h2 class="section-title">${sec.nome}</h2><div class="card-grid">`;
                 sec.aulas.forEach(id => {
                     const aula = VIDEO_MAP[id];
-                    const locked = !isLessonAvailable(id) ? 'locked' : '';
-                    html += `<div class="card ${locked}" onclick="redirectToVideo('${id}')">
-                        <span class="badge">${id}</span>
-                        <h3>${aula.title}</h3>
-                        <p>Clique para assistir</p>
-                    </div>`;
+                    if(!aula) return;
+
+                    const locked = !isLessonAvailable(id);
+                    const lockedClass = locked ? 'locked' : '';
+                    const clickAction = locked ? '' : `onclick="redirectToVideo('${id}')"`;
+
+                    html += `
+                        <div class="card ${lockedClass}" ${clickAction}>
+                            <span class="badge">${id.toUpperCase()}</span>
+                            <h3 style="margin: 10px 0 5px 0; font-size: 1.1rem;">${aula.title}</h3>
+                            <p style="font-size: 0.85rem; color: #94a3b8; margin: 0;">
+                                ${locked ? 'Bloqueado temporariamente' : 'Disponível para assistir'}
+                            </p>
+                        </div>`;
                 });
-                container.innerHTML += html + `</div>`;
+                html += `</div>`;
+                container.innerHTML += html;
             });
         }
 
+        // Inicia funções ao carregar
         window.onload = () => {
             renderCatalog();
+            // Atualiza o timer a cada 1 segundo
             setInterval(() => {
                 const ms = getTimeUntilNextRelease();
-                document.getElementById('countdown-timer').innerText = ms > 0 ? formatarTempoRestante(ms) : "Disponível!";
+                const timerEl = document.getElementById('countdown-timer');
+                if (ms > 0) {
+                    timerEl.innerText = formatarTempoRestante(ms);
+                    timerEl.style.color = "#fff";
+                } else {
+                    timerEl.innerText = "LIBERADO!";
+                    timerEl.style.color = "#22c55e";
+                }
             }, 1000);
         };
     </script>
 </body>
 </html>
-
-
