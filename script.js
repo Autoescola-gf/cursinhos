@@ -250,12 +250,18 @@ function iniciarContadorExpiracao() {
     }, 1000);
 }
 
+// =======================================================
+// LÓGICA DE PRESENÇA COM FEEDBACK VISUAL
+// =======================================================
+
 async function marcarPresenca() {
-    const btn = document.getElementById('presencaButton');
-    const msg = document.getElementById('presencaMessage');
+    const btn = document.getElementById('presenceButton'); // Certifique-se que o ID no HTML é este
     
+    // 1. Bloqueio imediato e mudança para estado de "Processando"
     btn.disabled = true;
-    msg.textContent = 'Registrando...';
+    btn.classList.add('loading');
+    const originalText = btn.textContent;
+    btn.textContent = '⏳ Processando...';
 
     const payload = new URLSearchParams({
         token: localStorage.getItem(TOKEN_KEY),
@@ -271,25 +277,43 @@ async function marcarPresenca() {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: payload.toString()
         });
+        
         const result = await resp.json();
 
         if (result.success) {
+            // 2. Sucesso: Grava no navegador e muda para Verde Definitivo
             localStorage.setItem(PRESENCE_DATE_KEY, getCurrentDateKey());
-            verificarStatusPresenca();
-            msg.textContent = '✅ Presença confirmada!';
+            aplicarEstadoPresencaConcluida(btn);
+            alert("Presença registrada com sucesso!");
+        } else {
+            throw new Error("Erro no servidor");
         }
     } catch (e) {
-        msg.textContent = 'Erro ao registrar.';
+        // 3. Erro: Libera o botão para tentar novamente
+        console.error(e);
+        alert('Falha ao registrar presença. Tente novamente.');
         btn.disabled = false;
+        btn.classList.remove('loading');
+        btn.textContent = originalText;
     }
 }
 
+// Função auxiliar para aplicar o visual de "Check"
+function aplicarEstadoPresencaConcluida(btn) {
+    if (!btn) return;
+    btn.disabled = true;
+    btn.classList.remove('loading');
+    btn.style.backgroundColor = "#10b981"; // Força o Verde
+    btn.textContent = '✅ Presença Confirmada';
+}
+
+// Verifica se já marcou hoje ao carregar a página
 function verificarStatusPresenca() {
     const lastDate = localStorage.getItem(PRESENCE_DATE_KEY);
-    const btn = document.getElementById('presencaButton');
+    const btn = document.getElementById('presenceButton');
+    
     if (lastDate === getCurrentDateKey()) {
-        btn.disabled = true;
-        btn.textContent = 'Presença Registrada ✅';
+        aplicarEstadoPresencaConcluida(btn);
     }
 }
 
@@ -307,3 +331,4 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
