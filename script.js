@@ -158,5 +158,7 @@ function showLesson(id) {
 function redirectToVideo(id) { window.location.href = `videos.html?lesson=${id}`; }
 function logout() { localStorage.clear(); window.location.href = 'index.html'; }
 function abrirAulas() { window.location.href = 'Aulas.html'; }
+function abrirLogs() { window.location.href = 'Logs.html'; }
 
 window.onload = initializePage;
+
