@@ -3,176 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AUTO ESCOLA GUARDA | TODAS AS AULAS</title>
+    <title>Catálogo de Aulas | Auto Escola Guarda</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* Estilos básicos */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #e9ecef; /* Fundo suave */
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #901090; /* Magenta de destaque */
-            margin-bottom: 30px;
-            font-weight: 800;
-            font-size: 2.2em;
-        }
-        /* Container principal do conteúdo (cor preta/escura) */
-        .content-wrapper {
-            max-width: 900px;
-            margin: 20px auto;
-            background: #1c1c1c; /* Preto suave (Dark Theme) */
-            padding: 30px;
-            border-radius: 12px; /* MODIFICADO: Consistência */
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6); /* MODIFICADO: Sombra mais destacada */
-            color: #cccccc; /* Texto padrão cinza claro */
-        }
-        h2 {
-            color: white;
-            margin-bottom: 10px;
-            font-size: 1.6em;
-            border-bottom: 2px solid #901090; /* Separador Magenta */
-            padding-bottom: 8px;
-            margin-top: 40px;
-            font-weight: 600;
-        }
-        
-        /* Estilo dos links de aula */
-        .aula-list {
-            list-style: none;
-            padding: 0;
-        }
-        .aula-list li {
-            background-color: #2a2a2a; /* MODIFICADO: Fundo do item mais escuro para contraste */
-            margin-bottom: 10px; /* MODIFICADO: Mais espaçamento */
-            border-radius: 8px; /* MODIFICADO: Mais arredondado */
-            border-left: 5px solid transparent; /* NOVO: Barra lateral invisível */
-            transition: all 0.3s;
-        }
-        .aula-list li:hover {
-            background-color: #901090; /* Destaque Magenta no hover */
-            border-left: 5px solid white; /* NOVO: Efeito de barra lateral no hover */
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(144, 16, 144, 0.7); /* MODIFICADO: Sombra mais intensa */
-        }
-        .aula-list a {
-            display: block;
-            padding: 18px; /* MODIFICADO: Mais preenchimento */
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1em;
+        :root {
+            --primary: #a855f7;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
         }
 
-        /* Botão Voltar */
-        #backButton {
-            display: block;
-            margin: 0 auto 30px auto;
-            background-color: #dc3545; /* Vermelho */
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px 0;
+            background: linear-gradient(to bottom, rgba(168, 85, 247, 0.1), transparent);
+            border-radius: 24px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--primary);
+            text-decoration: none;
             font-weight: 600;
-            transition: background-color 0.3s;
+            transition: 0.3s;
         }
-        #backButton:hover {
-            background-color: #e44d5d; /* MODIFICADO: Cor de hover mais clara */
+
+        .back-link:hover { opacity: 0.8; }
+
+        /* Estilo das Seções */
+        section {
+            margin-bottom: 50px;
         }
-        
+
+        h2 {
+            font-size: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 15px;
+            margin-bottom: 25px;
+            color: #fff;
+        }
+
+        /* Grid de Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.3);
+        }
+
+        .card::before {
+            content: "▶";
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.05;
+        }
+
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+
+        .card p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .card .badge {
+            display: inline-block;
+            background: rgba(168, 85, 247, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .card-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
-    <button id="backButton" onclick="window.location.href='videos.html'">⬅️ Voltar para Aulas de Hoje</button>
 
-    <h1>📚 Catálogo Completo de Aulas</h1>
+    <div class="container">
+        <header>
+            <h1>Catálogo de Aulas</h1>
+            <a href="videos.html" class="back-link">← Voltar para a Aula Atual</a>
+        </header>
 
-    <div class="content-wrapper">
-        <p>Clique no título da aula para assistir. Você será redirecionado para a página principal de aulas.</p>
-        
-        <h2>🚦 Legislação de Trânsito</h2>
-        <ul class="aula-list">
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula1')">Aula 1: Infrações e Penalidades (Video 1)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula2')">Aula 2: Infrações e Penalidades (Video 2)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula3')">Aula 3: Infrações e Penalidades (Video 3)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula4')">Aula 4: Infrações e Penalidades (Video 4)</a></li>
-        </ul>
-        
-        <h2>🚦 Sinalização </h2>
-        <ul class="aula-list">
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula5')">Aula 5: Sinalização (Video 1)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula6')">Aula 6: Sinalização (Video 2)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula7')">Aula 7: Sinalização (Video 3)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula8')">Aula 8: Sinalização (Video 4)</a></li>
-        </ul>
+        <section>
+            <h2>⚖️ Legislação de Trânsito</h2>
+            <div class="card-grid">
+                <div class="card" onclick="redirectToVideo('aula1')">
+                    <div>
+                        <span class="badge">Vídeo 01</span>
+                        <h3>Introdução à Legislação</h3>
+                        <p>Conceitos básicos e normas gerais de circulação.</p>
+                    </div>
+                </div>
+                <div class="card" onclick="redirectToVideo('aula2')">
+                    <div>
+                        <span class="badge">Vídeo 02</span>
+                        <h3>Normas e Conduta</h3>
+                        <p>Regras de preferência e comportamento no trânsito.</p>
+                    </div>
+                </div>
+                </div>
+        </section>
 
-        <h2>❌ Infrações e Penalidades </h2>
-        <ul class="aula-list">
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula9')">Aula 9: Infrações e Penalidades (Video 1)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula10')">Aula 10: Infrações e Penalidades (Video 2)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula11')">Aula 11: Infrações e Penalidades (Video 3)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula12')">Aula 12: Infrações e Penalidades (Video 4)</a></li>
-        </ul>
-        
-        <h2>👍 Normas e condutas</h2>
-        <ul class="aula-list">
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula13')">Aula 13: Normas e condutas (Video 1)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula14')">Aula 14: Normas e condutas (Video 2)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula15')">Aula 15: Normas e condutas (Video 3)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula16')">Aula 16: Normas e condutas (Video 4)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula17')">Aula 17: Normas e condutas (Video 5)</a></li>
-        </ul>
+        <section>
+            <h2>🛑 Sinalização</h2>
+            <div class="card-grid">
+                <div class="card" onclick="redirectToVideo('aula10')">
+                    <div>
+                        <span class="badge">Vídeo 01</span>
+                        <h3>Placas de Regulamentação</h3>
+                        <p>Entenda o significado das placas vermelhas.</p>
+                    </div>
+                </div>
+                </div>
+        </section>
 
-        <h2>ꔮ Direção Defensiva</h2>
-        <ul class="aula-list">
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula18')">Aula 18: Direção defensiva (Video 1)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula19')">Aula 19: Direção defensiva (Video 2)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula20')">Aula 20: Direção defensiva (Video 3)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula21')">Aula 21: Direção defensiva (Video 4)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula22')">Aula 22: Direção defensiva (Video 5)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula23')">Aula 23: Direção defensiva (Video 6)</a></li>
-        </ul>
+        <section>
+            <h2>🔧 Mecânica Básica</h2>
+            <div class="card-grid">
+                <div class="card" onclick="redirectToVideo('aula30')">
+                    <div>
+                        <span class="badge">Vídeo 01</span>
+                        <h3>O Motor</h3>
+                        <p>Funcionamento interno e componentes principais.</p>
+                    </div>
+                </div>
+                <div class="card" onclick="redirectToVideo('aula31')">
+                    <div>
+                        <span class="badge">Vídeo 02</span>
+                        <h3>Sistema Elétrico</h3>
+                        <p>Bateria, alternador e manutenção preventiva.</p>
+                    </div>
+                </div>
+                <div class="card" onclick="redirectToVideo('aula32')">
+                    <div>
+                        <span class="badge">Vídeo 03</span>
+                        <h3>Pneus e Suspensão</h3>
+                        <p>Segurança e estabilidade do veículo.</p>
+                    </div>
+                </div>
+                <div class="card" onclick="redirectToVideo('aula33')">
+                    <div>
+                        <span class="badge">Vídeo 04</span>
+                        <h3>Revisão Geral</h3>
+                        <p>Checklist para evitar problemas mecânicos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <h2>🚑 Primeiros Socorros</h2>
-        <ul class="aula-list">
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula24')">Aula 24: Primeiros Socorros (Video 1)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula25')">Aula 25: Primeiros Socorros (Video 2)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula26')">Aula 26: Primeiros Socorros (Video 3)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula27')">Aula 27: Primeiros Socorros (Video 4)</a></li>
-        </ul>
-
-       <h2>♻️ Meio Ambiente</h2>
-        <ul class="aula-list">
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula28')">Aula 28: Meio Ambiente (Video 1)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula29')">Aula 29: Meio Ambiente (Video 2)</a></li>
-        </ul>
-
-        <h2>🔧 Mecânica</h2>
-        <ul class="aula-list">
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula30')">Aula 30: Mecânica (Video 1)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula31')">Aula 31: Mecânica (Video 2)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula32')">Aula 32: Mecânica (Video 3)</a></li>
-            <li><a href="javascript:void(0)" onclick="redirectToVideo('aula33')">Aula 33: Mecânica (Video 4)</a></li>
-        </ul>
-
-        
-        <p style="margin-top: 30px; text-align: center; color: #777;">**O acesso a cada aula é liberado após a conclusão e registro de presença na aula anterior, conforme a ordem do seu curso.</p>
+        <footer>
+            <p>Auto Escola Guarda &copy; 2025 - Todos os direitos reservados.</p>
+        </footer>
     </div>
-    
-    <script>
-        function redirectToVideo(lessonId) {
-            window.location.href = `videos.html?lesson=${lessonId}`;
-        }
-    </script>
+
+    <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
-
