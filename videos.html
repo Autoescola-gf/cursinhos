@@ -99,6 +99,27 @@
             font-size: 0.8rem;
         }
 
+        /* Estado padrão do botão */
+        #presenceButton {
+            background: #3b82f6; /* Azul */
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        /* Estado quando o botão está desativado (bloqueado) */
+        #presenceButton:disabled {
+            background: #10b981; /* Verde Sucesso */
+            cursor: not-allowed;
+            opacity: 1; /* Mantém a cor forte mesmo desativado */
+            transform: none;
+        }
+        
+        /* Estado de carregamento (via classe JS) */
+        #presenceButton.loading {
+            background: #64748b; /* Cinza */
+            cursor: wait;
+        }
+        
         #catalogLink { background: transparent; border: 1px dashed #475569; color: #94a3b8; margin-top: 10px; text-align: center;}
 
         .video-container {
@@ -139,10 +160,10 @@
     <div class="video-content-wrapper">
         <div class="nav-buttons">
             <p style="font-weight: bold; color: #64748b; font-size: 0.8rem; text-transform: uppercase;">Aulas do Módulo</p>
-            <button id="btn-aula30" onclick="showLesson('aula30')">Aula 30: Mecânica</button>
-            <button id="btn-aula31" onclick="showLesson('aula31')">Aula 31: Mecânica</button>
-            <button id="btn-aula32" onclick="showLesson('aula32')">Aula 32: Mecânica</button>
-            <button id="btn-aula33" onclick="showLesson('aula33')">Aula 33: Mecânica</button>
+            <button id="btn-aula30" onclick="showLesson('aula1')">Aula 1: Legislação</button>
+            <button id="btn-aula31" onclick="showLesson('aula2')">Aula 2: Legislação</button>
+            <button id="btn-aula32" onclick="showLesson('aula3')">Aula 3: Legislação</button>
+            <button id="btn-aula33" onclick="showLesson('aula4')">Aula 4: Legislação</button>
             <button id="catalogLink" onclick="abrirAulas()">Ver todas as aulas</button>
         </div>
 
@@ -171,3 +192,4 @@
     </script>
 </body>
 </html>
+
