@@ -58,6 +58,38 @@ const VIDEO_MAP = {
     'aula33': { title: 'Aula 33: Mecânica', embedUrl: 'https://www.dropbox.com/scl/fi/6121osnobovdbxbs9bx7q/33-MEC-NICA-QUEST-ES-cut.mp4?rlkey=ecr148b6dwz6dkxr2bmr0stsf&st=2c5at6xz&raw=1' },
 };
 
+
+/**
+ * Calcula quanto tempo falta para a próxima aula ser liberada.
+ * A próxima aula (dia atual + 1) libera exatamente 24h após o ciclo atual.
+ */
+function getTimeUntilNextRelease() {
+    let firstAccess = localStorage.getItem(FIRST_ACCESS_KEY);
+    if (!firstAccess) return 0;
+
+    const startDate = new Date(firstAccess);
+    const daysPassed = getDaysPassed(); // Ex: se está no dia 1, a próxima é no dia 2
+    
+    // A próxima liberação ocorre em: DataInicial + (DiasPassados * 24 horas)
+    const nextReleaseDate = new Date(startDate.getTime() + (daysPassed * 24 * 60 * 60 * 1000));
+    const now = new Date();
+    
+    const diff = nextReleaseDate - now;
+    return diff > 0 ? diff : 0;
+}
+
+/**
+ * Formata milissegundos em HH:MM:SS
+ */
+function formatarTempoRestante(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
 // =======================================================
 // 1. LÓGICA DE LIBERAÇÃO DIÁRIA (NOVO)
 // =======================================================
@@ -331,4 +363,5 @@ function initializePage() {
 }
 
 window.onload = initializePage;
+
 
