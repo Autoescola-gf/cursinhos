@@ -115,10 +115,9 @@
         <input type="text" id="cpfInput" placeholder="CPF (000.000.000-00)" maxlength="14">
         <input type="text" id="tokenInput" placeholder="Token de acesso">
         <button id="loginButton" onclick="checkToken()">Entrar na Plataforma</button>
-        
         <p id="message"></p>
+        <button id="buyButton" onclick="comprarAcesso()">💬 QUERO COMPRAR ACESSO</button>
     </div>
-    <button id="buyButton" onclick="comprarAcesso()">💬 QUERO COMPRAR ACESSO</button>
     <script>
         function comprarAcesso() {
             const mensagem = encodeURIComponent("Olá! Gostaria de comprar o acesso para as aulas da Auto Escola Guarda.");
@@ -129,4 +128,5 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 
