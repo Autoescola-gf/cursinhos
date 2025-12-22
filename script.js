@@ -1,4 +1,7 @@
-// CONFIGURAÇÕES
+// =======================================================
+// ARQUIVO: script.js (CORRIGIDO)
+// =======================================================
+
 const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5vT3lhS7QN03KJcr4weoU6NYLbbzcD17bbLiAh3C51vXoPvISeR40/exec';
 const FIRST_ACCESS_KEY = 'vimeo_first_access_date';
 const EXPIRATION_KEY = 'access_expires_at';
@@ -7,6 +10,7 @@ const CPF_KEY = 'vimeo_user_cpf';
 const TOKEN_KEY = 'vimeo_user_token';
 const NAME_KEY = 'vimeo_user_name';
 const PRESENCE_DATE_KEY = 'lastPresenceDate';
+
 
 const VIDEO_MAP = {
     // URLs de Vimeo fornecidas
@@ -160,7 +164,7 @@ const VIDEO_MAP = {
     },
 };
 
-// 1. LÓGICA DE TEMPO
+// --- LÓGICA DE TEMPO ---
 function getDaysPassed() {
     let start = localStorage.getItem(FIRST_ACCESS_KEY);
     if (!start) return 1;
@@ -176,7 +180,12 @@ function getTimeUntilNextRelease() {
 }
 
 function isLessonAvailable(id) {
-    return parseInt(id.replace('aula', '')) <= getDaysPassed();
+    const num = parseInt(id.replace('aula', ''));
+    if (num >= 30) { 
+        // Exemplo: Mecânica (30-33) libera após o dia 5
+        return getDaysPassed() >= 5; 
+    }
+    return num <= getDaysPassed();
 }
 
 function formatarTempoRestante(ms) {
@@ -187,10 +196,21 @@ function formatarTempoRestante(ms) {
     return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(seg).padStart(2,'0')}`;
 }
 
-// 2. PRESENÇA
+// --- CPF MÁSCARA ---
+function formatCPF(v) {
+    v = v.replace(/\D/g, "");
+    v = v.replace(/(\d{3})(\d)/, "$1.$2");
+    v = v.replace(/(\d{3})(\d)/, "$1.$2");
+    v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    return v;
+}
+
+// --- PRESENÇA ---
 async function marcarPresenca() {
     const btn = document.getElementById('presenceButton');
-    btn.disabled = true; btn.classList.add('loading'); btn.textContent = '⏳ Gravando...';
+    if (!btn) return;
+    btn.disabled = true;
+    btn.textContent = '⏳ Gravando...';
 
     try {
         const payload = new URLSearchParams({
@@ -200,26 +220,30 @@ async function marcarPresenca() {
             data_registro: new Date().toLocaleDateString(),
             action: 'marcar_presenca'
         });
-        const resp = await fetch(SHEETDB_API_URL, { method: 'POST', body: payload });
-        const res = await resp.json();
-        if(res.success) {
-            localStorage.setItem(PRESENCE_DATE_KEY, new Date().toLocaleDateString());
-            verificarStatusPresenca();
-        }
-    } catch (e) { btn.disabled = false; btn.textContent = 'Tentar Novamente'; }
-}
-
-function verificarStatusPresenca() {
-    if(localStorage.getItem(PRESENCE_DATE_KEY) === new Date().toLocaleDateString()) {
-        const btn = document.getElementById('presenceButton');
-        if(btn) { btn.disabled = true; btn.textContent = '✅ Presença Confirmada'; btn.style.background = '#10b981'; }
+        await fetch(SHEETDB_API_URL, { method: 'POST', body: payload });
+        localStorage.setItem(PRESENCE_DATE_KEY, new Date().toLocaleDateString());
+        verificarStatusPresenca();
+    } catch (e) { 
+        btn.disabled = false; 
+        btn.textContent = 'Tentar Novamente'; 
     }
 }
 
-// 3. LOGIN & PLAYER
+function verificarStatusPresenca() {
+    const btn = document.getElementById('presenceButton');
+    if(btn && localStorage.getItem(PRESENCE_DATE_KEY) === new Date().toLocaleDateString()) {
+        btn.disabled = true;
+        btn.textContent = '✅ Presença Confirmada';
+        btn.style.background = '#10b981';
+    }
+}
+
+// --- LOGIN ---
 async function checkToken() {
     const token = document.getElementById('tokenInput').value.trim();
     const cpf = document.getElementById('cpfInput').value.trim();
+    const msg = document.getElementById('message');
+
     try {
         const resp = await fetch(`${SHEETDB_API_URL}?token=${token}&cpf=${cpf}`);
         const data = await resp.json();
@@ -231,20 +255,19 @@ async function checkToken() {
             localStorage.setItem(EXPIRATION_KEY, Date.now() + 86400000);
             if(!localStorage.getItem(FIRST_ACCESS_KEY)) localStorage.setItem(FIRST_ACCESS_KEY, new Date().toISOString());
             window.location.href = 'videos.html';
-        } else { document.getElementById('message').innerText = "Dados inválidos."; }
-    } catch(e) { document.getElementById('message').innerText = "Erro de conexão."; }
+        } else { msg.innerText = "Token ou CPF inválidos."; }
+    } catch(e) { msg.innerText = "Erro de conexão."; }
 }
 
-function showLesson(id) {
-    if(!isLessonAvailable(id)) { alert("Bloqueado!"); return; }
-    const aula = VIDEO_MAP[id];
-    document.getElementById('lessonTitle').innerText = aula.title;
-    document.getElementById('videoPlayerContainer').innerHTML = `<video controls poster="icon.png"><source src="${aula.embedUrl}" type="video/mp4"></video>`;
-    document.querySelectorAll('.nav-buttons button').forEach(b => b.classList.remove('active'));
-    document.getElementById(`btn-${id}`)?.classList.add('active');
-}
-
+// --- INICIALIZAÇÃO ---
 function initializePage() {
+    const cpfInput = document.getElementById('cpfInput');
+    if (cpfInput) {
+        cpfInput.addEventListener('input', (e) => {
+            e.target.value = formatCPF(e.target.value);
+        });
+    }
+
     if(window.location.pathname.includes('videos.html')) {
         const urlParams = new URLSearchParams(window.location.search);
         showLesson(urlParams.get('lesson') || 'aula1');
@@ -252,7 +275,19 @@ function initializePage() {
     }
 }
 
+function showLesson(id) {
+    const aula = VIDEO_MAP[id];
+    if(!aula) return;
+    document.getElementById('lessonTitle').innerText = aula.title;
+    document.getElementById('videoPlayerContainer').innerHTML = `
+        <video controls poster="icon.png" style="width:100%; height:100%; border-radius:12px;">
+            <source src="${aula.embedUrl}" type="video/mp4">
+        </video>`;
+}
+
+window.onload = initializePage;
 function logout() { localStorage.clear(); window.location.href = 'index.html'; }
 function abrirAulas() { window.location.href = 'Aulas.html'; }
-function formatCPF(v){ v=v.replace(/\D/g,""); v=v.replace(/(\d{3})(\d)/,"$1.$2"); v=v.replace(/(\d{3})(\d)/,"$1.$2"); v=v.replace(/(\d{3})(\d{1,2})$/,"$1-$2"); return v; }
+function redirectToVideo(id) { window.location.href = `videos.html?lesson=${id}`; }(/(\d{3})(\d)/,"$1.$2"); v=v.replace(/(\d{3})(\d{1,2})$/,"$1-$2"); return v; }
+
 
