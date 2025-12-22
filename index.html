@@ -104,6 +104,21 @@
             font-size: 0.85rem;
             min-height: 20px;
         }
+        #buyButton {
+            background: transparent; /* Remove o fundo roxo */
+            border: 1px solid rgba(168, 85, 247, 0.4); /* Borda fina e semi-transparente */
+            color: #a855f7; /* Texto na cor roxa do tema */
+            box-shadow: none; /* Remove a sombra pesada */
+            margin-top: 20px;
+            font-size: 0.85rem; /* Um pouco menor que o principal */
+            opacity: 0.8;
+        }
+        #buyButton:hover {
+            background: rgba(168, 85, 247, 0.1); /* Fundo sutil ao passar o mouse */
+            border-color: var(--primary);
+            opacity: 1;
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 <body>
@@ -116,7 +131,7 @@
         <input type="text" id="tokenInput" placeholder="Token de acesso">
         <button id="loginButton" onclick="checkToken()">Entrar na Plataforma</button>
         <p id="message"></p>
-        <button id="buyButton" onclick="comprarAcesso()">💬 QUERO COMPRAR ACESSO</button>
+        <button id="buyButton" onclick="comprarAcesso()">Ainda não tem acesso? Solicite aqui</button>
     </div>
     <script>
         function comprarAcesso() {
@@ -128,5 +143,6 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
