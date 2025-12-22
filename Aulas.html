@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de Aulas | Auto Escola Guarda</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,7 +11,7 @@
             --bg: #0f172a;
             --surface: #1e293b;
             --text: #f1f5f9;
-            --text-muted: #94a3b8;
+            --locked: #334155;
         }
 
         body {
@@ -21,209 +20,125 @@
             color: var(--text);
             margin: 0;
             padding: 20px;
-            line-height: 1.6;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1000px; margin: 0 auto; }
 
         header {
             text-align: center;
-            margin-bottom: 50px;
             padding: 40px 0;
             background: linear-gradient(to bottom, rgba(168, 85, 247, 0.1), transparent);
-            border-radius: 24px;
+            border-radius: 20px;
+            margin-bottom: 30px;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin: 0;
-            background: linear-gradient(to right, #fff, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        h1 { font-weight: 800; background: linear-gradient(to right, #fff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .back-btn {
+            background: #ef4444; color: white; border: none; padding: 10px 20px;
+            border-radius: 8px; cursor: pointer; font-weight: 600; margin-bottom: 20px;
         }
 
-        .back-link {
-            display: inline-block;
-            margin-top: 15px;
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-
-        .back-link:hover { opacity: 0.8; }
-
-        /* Estilo das Seções */
-        section {
-            margin-bottom: 50px;
-        }
-
-        h2 {
-            font-size: 1.5rem;
+        .section-title {
             border-left: 4px solid var(--primary);
-            padding-left: 15px;
-            margin-bottom: 25px;
-            color: #fff;
+            padding-left: 15px; margin: 40px 0 20px; font-size: 1.4rem;
         }
 
-        /* Grid de Cards */
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
         }
 
         .card {
             background: var(--surface);
-            border-radius: 16px;
             padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            transition: 0.3s;
             position: relative;
-            overflow: hidden;
         }
 
-        .card:hover {
+        .card:hover:not(.locked) {
             transform: translateY(-5px);
             border-color: var(--primary);
-            box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.3);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
-        .card::before {
-            content: "▶";
+        .card h3 { margin: 10px 0 5px; font-size: 1rem; }
+        .card p { font-size: 0.8rem; color: #94a3b8; margin: 0; }
+        .badge { font-size: 0.7rem; font-weight: 700; color: var(--primary); text-transform: uppercase; }
+
+        /* ESTADO BLOQUEADO */
+        .card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #0f172a;
+            border: 1px dashed #334155;
+        }
+
+        .card.locked .badge { color: #64748b; }
+        .card.locked::after {
+            content: "🔒 Bloqueada";
             position: absolute;
-            right: -10px;
-            bottom: -10px;
-            font-size: 4rem;
-            color: var(--primary);
-            opacity: 0.05;
-        }
-
-        .card h3 {
-            margin: 0 0 10px 0;
-            font-size: 1.1rem;
-            color: #fff;
-        }
-
-        .card p {
-            margin: 0;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .card .badge {
-            display: inline-block;
-            background: rgba(168, 85, 247, 0.1);
-            color: var(--primary);
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 600px) {
-            h1 { font-size: 1.8rem; }
-            .card-grid { grid-template-columns: 1fr; }
+            top: 10px; right: 10px;
+            background: #334155;
+            font-size: 0.6rem;
+            padding: 4px 8px;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <button class="back-btn" onclick="window.location.href='videos.html'">⬅ Voltar</button>
         <header>
             <h1>Catálogo de Aulas</h1>
-            <a href="videos.html" class="back-link">← Voltar para a Aula Atual</a>
+            <p id="progress-info">Carregando seu progresso...</p>
         </header>
 
-        <section>
-            <h2>⚖️ Legislação de Trânsito</h2>
-            <div class="card-grid">
-                <div class="card" onclick="redirectToVideo('aula1')">
-                    <div>
-                        <span class="badge">Vídeo 01</span>
-                        <h3>Introdução à Legislação</h3>
-                        <p>Conceitos básicos e normas gerais de circulação.</p>
-                    </div>
-                </div>
-                <div class="card" onclick="redirectToVideo('aula2')">
-                    <div>
-                        <span class="badge">Vídeo 02</span>
-                        <h3>Normas e Conduta</h3>
-                        <p>Regras de preferência e comportamento no trânsito.</p>
-                    </div>
-                </div>
-                </div>
-        </section>
-
-        <section>
-            <h2>🛑 Sinalização</h2>
-            <div class="card-grid">
-                <div class="card" onclick="redirectToVideo('aula10')">
-                    <div>
-                        <span class="badge">Vídeo 01</span>
-                        <h3>Placas de Regulamentação</h3>
-                        <p>Entenda o significado das placas vermelhas.</p>
-                    </div>
-                </div>
-                </div>
-        </section>
-
-        <section>
-            <h2>🔧 Mecânica Básica</h2>
-            <div class="card-grid">
-                <div class="card" onclick="redirectToVideo('aula30')">
-                    <div>
-                        <span class="badge">Vídeo 01</span>
-                        <h3>O Motor</h3>
-                        <p>Funcionamento interno e componentes principais.</p>
-                    </div>
-                </div>
-                <div class="card" onclick="redirectToVideo('aula31')">
-                    <div>
-                        <span class="badge">Vídeo 02</span>
-                        <h3>Sistema Elétrico</h3>
-                        <p>Bateria, alternador e manutenção preventiva.</p>
-                    </div>
-                </div>
-                <div class="card" onclick="redirectToVideo('aula32')">
-                    <div>
-                        <span class="badge">Vídeo 03</span>
-                        <h3>Pneus e Suspensão</h3>
-                        <p>Segurança e estabilidade do veículo.</p>
-                    </div>
-                </div>
-                <div class="card" onclick="redirectToVideo('aula33')">
-                    <div>
-                        <span class="badge">Vídeo 04</span>
-                        <h3>Revisão Geral</h3>
-                        <p>Checklist para evitar problemas mecânicos.</p>
-                    </div>
-                </div>
+        <div id="catalog-content">
             </div>
-        </section>
-
-        <footer>
-            <p>Auto Escola Guarda &copy; 2025 - Todos os direitos reservados.</p>
-        </footer>
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // Organização das aulas para exibição
+        const SECOES = [
+            { nome: "Legislação de Trânsito", aulas: ["aula1", "aula2", "aula3", "aula4"] },
+            { nome: "Sinalização", aulas: ["aula5", "aula6", "aula7", "aula8"] },
+            { nome: "Mecânica", aulas: ["aula30", "aula31", "aula32", "aula33"] }
+        ];
+
+        function renderCatalog() {
+            const container = document.getElementById('catalog-content');
+            const daysPassed = getDaysPassed();
+            document.getElementById('progress-info').innerText = `Seu dia de curso: ${daysPassed}`;
+
+            SECOES.forEach(secao => {
+                const sectionHtml = `
+                    <h2 class="section-title">${secao.nome}</h2>
+                    <div class="card-grid">
+                        ${secao.aulas.map(id => {
+                            const aula = VIDEO_MAP[id];
+                            const locked = !isLessonAvailable(id) ? 'locked' : '';
+                            return `
+                                <div class="card ${locked}" onclick="redirectToVideo('${id}')">
+                                    <span class="badge">${id.toUpperCase()}</span>
+                                    <h3>${aula.title}</h3>
+                                    <p>Clique para assistir</p>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+                container.innerHTML += sectionHtml;
+            });
+        }
+
+        window.onload = renderCatalog;
+    </script>
 </body>
 </html>
