@@ -43,10 +43,14 @@ function getTimeUntilNextRelease() {
 }
 
 function isLessonAvailable(id) {
-    const num = parseInt(id.replace('aula', ''));
-    // Se for aula 1 ou 2, libera conforme o dia. Se for mecânica (30+), libera após dia 3 por exemplo.
-    if (num >= 30) return getDaysPassed() >= 3; 
-    return num <= getDaysPassed();
+    const num = parseInt(id.replace('aula', 'aula2'));
+    const diaAtual = getDaysPassed();
+    // Regra: Uma aula por dia (Aula 1 no dia 1, Aula 2 no dia 2...)
+    // Se for mecânica (30+), você pode decidir se libera tudo junto ou segue a contagem.
+    // Exemplo: Mecânica só libera a partir do 5º dia de curso:
+    if (num >= 30) return diaAtual >= 5; 
+    
+    return num <= diaAtual;
 }
 
 function formatarTempoRestante(ms) {
@@ -161,4 +165,5 @@ function abrirAulas() { window.location.href = 'Aulas.html'; }
 function abrirLogs() { window.location.href = 'Logs.html'; }
 
 window.onload = initializePage;
+
 
