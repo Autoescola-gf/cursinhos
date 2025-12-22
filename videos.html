@@ -6,63 +6,92 @@
     <title>Área de Estudos | Auto Escola Guarda</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #a855f7; --bg: #0f172a; --surface: #1e293b; --text: #f1f5f9; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-        .header-controls { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto 30px; gap: 15px; flex-wrap: wrap; }
-        .btn-group { display: flex; gap: 10px; }
-        
-        /* Botão Presença Dinâmico */
-        #presenceButton { background: #3b82f6; color: white; padding: 10px 20px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        #presenceButton:disabled { background: #10b981; cursor: not-allowed; }
-        #presenceButton.loading { background: #64748b; cursor: wait; }
-        
-        button.nav-btn { background: #334155; color: white; padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; }
-        #logoutButton { background: #ef4444; }
+        :root { 
+            --primary: #a855f7; 
+            --bg: #0f172a; 
+            --surface: #1e293b; 
+            --text: #f1f5f9;
+            --success: #10b981;
+            --admin: #0ea5e9;
+        }
 
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        
+        .header-controls { 
+            display: flex; justify-content: space-between; align-items: center; 
+            max-width: 1100px; margin: 0 auto 30px; gap: 15px; flex-wrap: wrap; 
+        }
+
+        /* ESTILO DOS BOTÕES E INTERAÇÕES */
+        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        button:active { transform: translateY(0); }
+
+        #presenceButton { background: #3b82f6; color: white; }
+        #presenceButton:disabled { background: var(--success); cursor: not-allowed; }
+        
+        .nav-btn { background: #334155; color: white; }
+        .log-btn { background: var(--admin); color: white; } /* Botão de Log */
+        #logoutButton { background: #ef4444; color: white; }
+
+        /* Sidebar Interativa */
         .video-content-wrapper { display: grid; grid-template-columns: 280px 1fr; gap: 30px; max-width: 1100px; margin: 0 auto; background: var(--surface); padding: 25px; border-radius: 20px; }
         .nav-buttons { display: flex; flex-direction: column; gap: 10px; }
-        .nav-buttons button { background: #334155; color: #94a3b8; padding: 12px; border-radius: 8px; border: 1px solid transparent; text-align: left; cursor: pointer; position: relative; }
-        .nav-buttons button.active { background: rgba(168, 85, 247, 0.2); color: var(--primary); border-color: var(--primary); }
-        .nav-buttons button.locked { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
-        .nav-buttons button.locked::after { content: "🔒"; position: absolute; right: 10px; }
+        
+        .nav-buttons button { 
+            background: rgba(255,255,255,0.05); color: #94a3b8; text-align: left; 
+            border: 1px solid transparent; width: 100%;
+        }
+        
+        .nav-buttons button.active { 
+            background: rgba(168, 85, 247, 0.2); color: var(--primary); border-color: var(--primary); 
+        }
 
-        .video-container { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 15px; overflow: hidden; }
+        .video-container { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 15px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
         video { width: 100%; height: 100%; }
-        #tokenExpirationDisplay { color: var(--primary); font-weight: 600; font-size: 0.9rem; }
+
         @media (max-width: 850px) { .video-content-wrapper { grid-template-columns: 1fr; } }
     </style>
 </head>
-<body onload="initializePage(); updateSidebarLocks();">
+<body onload="initializePage()">
     <div class="header-controls">
         <h1>🎓 Minhas Aulas</h1>
-        <div id="tokenExpirationDisplay"></div>
         <div class="btn-group">
-            <button id="presenceButton" onclick="marcarPresenca()">Marcar Presença</button>
-            <button class="nav-btn" onclick="abrirAulas()">Todas Aulas</button>
-            <button class="nav-btn" onclick="abrirLogs()">Acessar Logs (admin)</button>
-            <button class="nav-btn" id="logoutButton" onclick="logout()">Sair</button>
+            <button id="presenceButton" onclick="marcarPresenca()">📍 Marcar Presença</button>
+            <button class="nav-btn" onclick="abrirAulas()">📚 Todas Aulas</button>
+            <button class="log-btn" onclick="window.location.href='Log.html'">📊 Relatório Log</button>
+            <button id="logoutButton" onclick="logout()">🚪 Sair</button>
         </div>
     </div>
+
     <div class="video-content-wrapper">
         <div class="nav-buttons" id="sidebar">
-            <p style="color: #64748b; font-size: 0.8rem; font-weight: bold;">AULAS DO DIA</p>
+            <p style="color: #64748b; font-size: 0.8rem; font-weight: bold; margin-bottom: 15px;">AULAS SUGERIDAS</p>
             <button id="btn-aula1" onclick="showLesson('aula1')">Aula 1: Legislação</button>
             <button id="btn-aula2" onclick="showLesson('aula2')">Aula 2: Legislação</button>
+            <button id="btn-aula30" onclick="showLesson('aula30')">Aula 30: Mecânica</button>
+            <button id="btn-aula31" onclick="showLesson('aula31')">Aula 31: Mecânica</button>
         </div>
         <div class="main">
-            <h2 id="lessonTitle">Carregando...</h2>
-            <div id="videoPlayerContainer" class="video-container"></div>
+            <h2 id="lessonTitle" style="margin-top:0">Selecione uma aula</h2>
+            <div id="videoPlayerContainer" class="video-container">
+                <p style="text-align:center; padding-top:20%">Aguardando seleção de vídeo...</p>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
-    <script>
-        function updateSidebarLocks() {
-            document.querySelectorAll('.nav-buttons button[id^="btn-"]').forEach(btn => {
-                const id = btn.id.replace('btn-', '');
-                if (!isLessonAvailable(id)) btn.classList.add('locked');
-            });
-        }
-    </script>
 </body>
 </html>
-
