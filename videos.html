@@ -74,12 +74,29 @@
             color: #94a3b8;
             text-align: left;
             border: 1px solid transparent;
+            position: relative;
         }
 
         .nav-buttons button.active {
             background: rgba(168, 85, 247, 0.2);
             color: var(--primary);
             border-color: var(--primary);
+        }
+
+        /* ESTILO BLOQUEADO NA LATERAL */
+        .nav-buttons button.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+            background: #1e293b;
+            border: 1px dashed #475569;
+        }
+
+        .nav-buttons button.locked::after {
+            content: "🔒";
+            position: absolute;
+            right: 10px;
+            font-size: 0.8rem;
         }
 
         #catalogLink { background: transparent; border: 1px dashed #475569; color: #94a3b8; margin-top: 10px; text-align: center;}
@@ -107,7 +124,7 @@
         }
     </style>
 </head>
-<body onload="initializePage()">
+<body onload="initializePage(); updateSidebarLocks();">
 
     <div class="header-controls">
         <h1>🎓 Área do Aluno</h1>
@@ -121,24 +138,36 @@
 
     <div class="video-content-wrapper">
         <div class="nav-buttons">
-            <p style="font-weight: bold; color: #64748b; font-size: 0.8rem; text-transform: uppercase;">Aulas Recentes</p>
-            <button id="btn-aula30" onclick="showLesson('aula30')">Aula 30: Mecânica 🔧</button>
-            <button id="btn-aula31" onclick="showLesson('aula31')">Aula 31: Mecânica 🔧</button>
-            <button id="btn-aula32" onclick="showLesson('aula32')">Aula 32: Mecânica 🔧</button>
-            <button id="btn-aula33" onclick="showLesson('aula33')">Aula 33: Mecânica 🔧</button>
+            <p style="font-weight: bold; color: #64748b; font-size: 0.8rem; text-transform: uppercase;">Aulas do Módulo</p>
+            <button id="btn-aula30" onclick="showLesson('aula30')">Aula 30: Mecânica</button>
+            <button id="btn-aula31" onclick="showLesson('aula31')">Aula 31: Mecânica</button>
+            <button id="btn-aula32" onclick="showLesson('aula32')">Aula 32: Mecânica</button>
+            <button id="btn-aula33" onclick="showLesson('aula33')">Aula 33: Mecânica</button>
             <button id="catalogLink" onclick="abrirAulas()">Ver todas as aulas</button>
         </div>
 
         <div class="main-player">
             <h2 id="lessonTitle">Carregando Aula...</h2>
-            <div id="videoPlayerContainer" class="video-container">
-                </div>
+            <div id="videoPlayerContainer" class="video-container"></div>
             <p style="color: #64748b; font-size: 0.9rem; margin-top: 15px;">
-                Assista ao vídeo completo. Não esqueça de marcar sua presença ao final.
+                Assista ao vídeo completo. A próxima aula será liberada automaticamente amanhã.
             </p>
         </div>
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // Função específica para travar os botões laterais visualmente
+        function updateSidebarLocks() {
+            const buttons = document.querySelectorAll('.nav-buttons button[id^="btn-"]');
+            buttons.forEach(btn => {
+                const lessonId = btn.id.replace('btn-', '');
+                if (!isLessonAvailable(lessonId)) {
+                    btn.classList.add('locked');
+                    btn.title = "Esta aula será liberada em breve.";
+                }
+            });
+        }
+    </script>
 </body>
 </html>
