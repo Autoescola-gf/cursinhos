@@ -118,6 +118,15 @@
         
         <p id="message"></p>
     </div>
+    <button id="buyButton" onclick="comprarAcesso()">💬 QUERO COMPRAR ACESSO</button>
+    <script>
+        function comprarAcesso() {
+            const mensagem = encodeURIComponent("Olá! Gostaria de comprar o acesso para as aulas da Auto Escola Guarda.");
+            const numero = "5534936716784"; // substitua pelo seu número com DDD (ex: 5511999999999)
+            window.open(`https://wa.me/${numero}?text=${mensagem}`, '_blank');
+        }
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
+
