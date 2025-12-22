@@ -92,38 +92,49 @@
 
 <script src="script.js"></script>
     <script>
-        // Esta função varre os botões da lateral e pergunta ao script.js se estão liberados
+        // Função para aplicar os bloqueios visualmente e TRAVAR o clique
         function updateSidebarLocks() {
-            // Seleciona todos os botões que começam com "btn-aula"
-            document.querySelectorAll('.nav-buttons button[id^="btn-aula"]').forEach(btn => {
-                const id = btn.id.replace('btn-', ''); // Ex: extrai 'aula3'
-                
-                // CHAMA A FUNÇÃO QUE ESTÁ NO SCRIPT.JS
-                const liberada = isLessonAvailable(id); 
+            // Seleciona todos os botões de aula na barra lateral
+            const buttons = document.querySelectorAll('.nav-buttons button[id^="btn-aula"]');
+            
+            buttons.forEach(btn => {
+                const id = btn.id.replace('btn-', ''); // Ex: 'aula3'
+                const liberada = isLessonAvailable(id); // Função que está no script.js
 
                 if (!liberada) {
-                    btn.classList.add('locked'); // Adiciona o cadeado (CSS)
+                    // 1. Aplica o visual cinza e o cadeado
+                    btn.classList.add('locked');
+                    
+                    // 2. SUBSTITUI o clique original por um alerta de bloqueio
                     btn.onclick = function(e) {
                         e.preventDefault();
-                        alert("Esta aula ainda não está disponível para o seu progresso atual.");
+                        e.stopPropagation();
+                        alert("🔒 Esta aula ainda não foi liberada. Você pode assistir até 2 novas aulas por dia.");
+                        return false;
                     };
                 } else {
+                    // 3. Se liberada, garante que o visual esteja correto e o clique funcione
                     btn.classList.remove('locked');
-                    // Garante que o clique funcione normalmente se estiver liberada
-                    btn.onclick = () => showLesson(id);
+                    btn.onclick = function() {
+                        showLesson(id);
+                    };
                 }
             });
         }
 
-        // IMPORTANTE: Redefinir a inicialização para garantir que os cadeados rodem
+        // Redefine a inicialização para rodar os bloqueios assim que abrir
         const originalInit = initializePage;
         initializePage = function() {
             if (typeof originalInit === 'function') originalInit();
-            updateSidebarLocks(); // Aplica os bloqueios na lateral
+            updateSidebarLocks();
         };
+
+        // Chama a função imediatamente por segurança
+        window.addEventListener('load', updateSidebarLocks);
     </script>
 </body>
 </html>
+
 
 
 
