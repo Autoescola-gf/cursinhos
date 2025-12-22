@@ -12,8 +12,8 @@ const VIDEO_MAP = {
     // URLs de Vimeo fornecidas
     // LEGISLAÇÃO
     'aula1': { 
-        title: 'Aula 1: Legislação(Aula faltando)',
-        embedUrl: ''
+        title: 'Aula 1: Legislação',
+        embedUrl: 'https://www.dropbox.com/scl/fi/bwmtelaaeqio6x0rgw07y/01-LEGISLA-O.mp4?rlkey=z8kaw1fnqyed87pjnz5w1sdwe&st=02dcglya&raw=1'
     },
     'aula2': { 
         title: 'Aula 2: Legislação',
@@ -255,3 +255,4 @@ function initializePage() {
 function logout() { localStorage.clear(); window.location.href = 'index.html'; }
 function abrirAulas() { window.location.href = 'Aulas.html'; }
 function formatCPF(v){ v=v.replace(/\D/g,""); v=v.replace(/(\d{3})(\d)/,"$1.$2"); v=v.replace(/(\d{3})(\d)/,"$1.$2"); v=v.replace(/(\d{3})(\d{1,2})$/,"$1-$2"); return v; }
+
