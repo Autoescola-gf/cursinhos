@@ -3,193 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área do Aluno | Auto Escola Guarda</title>
+    <title>Área de Estudos | Auto Escola Guarda</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #a855f7;
-            --bg: #0f172a;
-            --surface: #1e293b;
-            --text: #f1f5f9;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-        }
-
-        .header-controls {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1100px;
-            margin: 0 auto 30px;
-            gap: 15px;
-        }
-
+        :root { --primary: #a855f7; --bg: #0f172a; --surface: #1e293b; --text: #f1f5f9; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .header-controls { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto 30px; gap: 15px; flex-wrap: wrap; }
         .btn-group { display: flex; gap: 10px; }
-
-        button {
-            padding: 10px 18px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
-            font-size: 0.9rem;
-        }
-
-        #presenceButton { background: #22c55e; color: white; }
-        #logButton { background: #3b82f6; color: white; }
-        #logoutButton { background: #ef4444; color: white; }
         
-        .video-content-wrapper {
-            max-width: 1100px;
-            margin: 0 auto;
-            background: var(--surface);
-            padding: 25px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 30px;
-        }
-
-        @media (max-width: 850px) {
-            .video-content-wrapper { grid-template-columns: 1fr; }
-        }
-
-        .nav-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .nav-buttons button {
-            background: #334155;
-            color: #94a3b8;
-            text-align: left;
-            border: 1px solid transparent;
-            position: relative;
-        }
-
-        .nav-buttons button.active {
-            background: rgba(168, 85, 247, 0.2);
-            color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        /* ESTILO BLOQUEADO NA LATERAL */
-        .nav-buttons button.locked {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
-            background: #1e293b;
-            border: 1px dashed #475569;
-        }
-
-        .nav-buttons button.locked::after {
-            content: "🔒";
-            position: absolute;
-            right: 10px;
-            font-size: 0.8rem;
-        }
-
-        /* Estado padrão do botão */
-        #presenceButton {
-            background: #3b82f6; /* Azul */
-            color: white;
-            transition: all 0.3s ease;
-        }
+        /* Botão Presença Dinâmico */
+        #presenceButton { background: #3b82f6; color: white; padding: 10px 20px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        #presenceButton:disabled { background: #10b981; cursor: not-allowed; }
+        #presenceButton.loading { background: #64748b; cursor: wait; }
         
-        /* Estado quando o botão está desativado (bloqueado) */
-        #presenceButton:disabled {
-            background: #10b981; /* Verde Sucesso */
-            cursor: not-allowed;
-            opacity: 1; /* Mantém a cor forte mesmo desativado */
-            transform: none;
-        }
-        
-        /* Estado de carregamento (via classe JS) */
-        #presenceButton.loading {
-            background: #64748b; /* Cinza */
-            cursor: wait;
-        }
-        
-        #catalogLink { background: transparent; border: 1px dashed #475569; color: #94a3b8; margin-top: 10px; text-align: center;}
+        button.nav-btn { background: #334155; color: white; padding: 10px 20px; border-radius: 10px; border: none; cursor: pointer; }
+        #logoutButton { background: #ef4444; }
 
-        .video-container {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: #000;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
-        }
+        .video-content-wrapper { display: grid; grid-template-columns: 280px 1fr; gap: 30px; max-width: 1100px; margin: 0 auto; background: var(--surface); padding: 25px; border-radius: 20px; }
+        .nav-buttons { display: flex; flex-direction: column; gap: 10px; }
+        .nav-buttons button { background: #334155; color: #94a3b8; padding: 12px; border-radius: 8px; border: 1px solid transparent; text-align: left; cursor: pointer; position: relative; }
+        .nav-buttons button.active { background: rgba(168, 85, 247, 0.2); color: var(--primary); border-color: var(--primary); }
+        .nav-buttons button.locked { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+        .nav-buttons button.locked::after { content: "🔒"; position: absolute; right: 10px; }
 
-        iframe, video { width: 100%; height: 100%; border: none; }
-
-        h1 { font-size: 1.5rem; margin: 0; }
-        h2#lessonTitle { font-size: 1.2rem; color: var(--primary); margin-top: 0; }
-        
-        #tokenExpirationDisplay {
-            background: rgba(168, 85, 247, 0.1);
-            padding: 10px;
-            border-radius: 10px;
-            color: var(--primary);
-            font-size: 0.9rem;
-        }
+        .video-container { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 15px; overflow: hidden; }
+        video { width: 100%; height: 100%; }
+        #tokenExpirationDisplay { color: var(--primary); font-weight: 600; font-size: 0.9rem; }
+        @media (max-width: 850px) { .video-content-wrapper { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body onload="initializePage(); updateSidebarLocks();">
-
     <div class="header-controls">
-        <h1>🎓 Área do Aluno</h1>
+        <h1>🎓 Minhas Aulas</h1>
         <div id="tokenExpirationDisplay"></div>
         <div class="btn-group">
-            <button id="presenceButton" onclick="handlePresenceClick()">Marcar Presença</button>
-            <button id="logButton" onclick="abrirLog()">Relatório</button>
-            <button id="logoutButton" onclick="logout()">Sair</button>
+            <button id="presenceButton" onclick="marcarPresenca()">Marcar Presença</button>
+            <button class="nav-btn" onclick="abrirAulas()">Ver Tudo</button>
+            <button class="nav-btn" id="logoutButton" onclick="logout()">Sair</button>
         </div>
     </div>
-
     <div class="video-content-wrapper">
-        <div class="nav-buttons">
-            <p style="font-weight: bold; color: #64748b; font-size: 0.8rem; text-transform: uppercase;">Aulas do Módulo</p>
-            <button id="btn-aula30" onclick="showLesson('aula1')">Aula 1: Legislação</button>
-            <button id="btn-aula31" onclick="showLesson('aula2')">Aula 2: Legislação</button>
-            <button id="btn-aula32" onclick="showLesson('aula3')">Aula 3: Legislação</button>
-            <button id="btn-aula33" onclick="showLesson('aula4')">Aula 4: Legislação</button>
-            <button id="catalogLink" onclick="abrirAulas()">Ver todas as aulas</button>
+        <div class="nav-buttons" id="sidebar">
+            <p style="color: #64748b; font-size: 0.8rem; font-weight: bold;">AULAS DO DIA</p>
+            <button id="btn-aula1" onclick="showLesson('aula1')">Aula 1: Mecânica</button>
+            <button id="btn-aula2" onclick="showLesson('aula2')">Aula 2: Mecânica</button>
         </div>
-
-        <div class="main-player">
-            <h2 id="lessonTitle">Carregando Aula...</h2>
+        <div class="main">
+            <h2 id="lessonTitle">Carregando...</h2>
             <div id="videoPlayerContainer" class="video-container"></div>
-            <p style="color: #64748b; font-size: 0.9rem; margin-top: 15px;">
-                Assista ao vídeo completo. A próxima aula será liberada automaticamente amanhã.
-            </p>
         </div>
     </div>
-
     <script src="script.js"></script>
     <script>
-        // Função específica para travar os botões laterais visualmente
         function updateSidebarLocks() {
-            const buttons = document.querySelectorAll('.nav-buttons button[id^="btn-"]');
-            buttons.forEach(btn => {
-                const lessonId = btn.id.replace('btn-', '');
-                if (!isLessonAvailable(lessonId)) {
-                    btn.classList.add('locked');
-                    btn.title = "Esta aula será liberada em breve.";
-                }
+            document.querySelectorAll('.nav-buttons button[id^="btn-"]').forEach(btn => {
+                const id = btn.id.replace('btn-', '');
+                if (!isLessonAvailable(id)) btn.classList.add('locked');
             });
         }
     </script>
 </body>
 </html>
-
