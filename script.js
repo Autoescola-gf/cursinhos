@@ -318,12 +318,20 @@ function updateSidebarLocks() {
     });
 }
 
+document.getElementById('waButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    const numero = "5534936716784"; // O seu número já configurado
+    const mensagem = encodeURIComponent("Olá! Gostaria de mais informações sobre o curso.");
+    window.open(`https://wa.me/${numero}?text=${mensagem}`, '_blank');
+});
+
 function redirectToVideo(id) { window.location.href = `videos.html?lesson=${id}`; }
 function logout() { localStorage.clear(); window.location.href = 'index.html'; }
 function abrirAulas() { window.location.href = 'Aulas.html'; }
 function abrirLogs() { window.location.href = 'Logs.html'; }
 
 window.onload = initializePage;
+
 
 
 
