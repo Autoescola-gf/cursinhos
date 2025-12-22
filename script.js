@@ -125,9 +125,6 @@ const VIDEO_MAP = {
         title: 'Aula 27: Primeiros Socorros',
         embedUrl: 'https://www.dropbox.com/scl/fi/uleso3vy033f6r2r86boh/27-PRIMEIROS-SOCORROS-cut.mp4?rlkey=xdrlfufqidartr4y2jmdjvdsf&st=as8gs13l&raw=1' 
     },  
-
-    
-
      // Meio Ambiente
     'aula28': {
         title: 'Aula 28: Meio Ambiente',
@@ -302,12 +299,32 @@ function showLesson(id) {
         </video>`;
 }
 
+function updateSidebarLocks() {
+    document.querySelectorAll('.nav-buttons button[id^="btn-"]').forEach(btn => {
+        const id = btn.id.replace('btn-', '');
+        const liberada = isLessonAvailable(id); // Pergunta ao script.js
+
+        if (!liberada) {
+            btn.classList.add('locked');
+            btn.onclick = function(e) { 
+                e.preventDefault();
+                alert("Esta aula será liberada nos próximos dias!"); 
+            };
+        } else {
+            btn.classList.remove('locked');
+            // Garante que o clique funcione se estiver liberada
+            btn.onclick = () => showLesson(id);
+        }
+    });
+}
+
 function redirectToVideo(id) { window.location.href = `videos.html?lesson=${id}`; }
 function logout() { localStorage.clear(); window.location.href = 'index.html'; }
 function abrirAulas() { window.location.href = 'Aulas.html'; }
 function abrirLogs() { window.location.href = 'Logs.html'; }
 
 window.onload = initializePage;
+
 
 
 
