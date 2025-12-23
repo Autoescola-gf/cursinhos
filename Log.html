@@ -177,22 +177,21 @@
             }
             
             data.forEach(record => {
-                const row = tbody.insertRow();
-                let dataF = 'N/A', horaF = 'N/A';
-
-                if (record.data_registro) {
-                    const d = new Date(record.data_registro);
-                    if (!isNaN(d.getTime())) {
-                        dataF = d.toLocaleDateString('pt-BR');
-                        horaF = d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                    }
+                let dataRegistro = new Date(record.data_registro);
+                let dataFormatada = dataRegistro.toLocaleDateString('pt-BR');
+                let horaFormatada = dataRegistro.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                
+                // GARANTIR CPF FORMATADO (Caso a planilha tenha removido os pontos)
+                let cpfFormatado = record.cpf;
+                if (!cpfFormatado.includes('.') && cpfFormatado.length === 11) {
+                    cpfFormatado = cpfFormatado.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
                 }
-
-                row.setAttribute('data-search', `${record.nome_aluno} ${record.cpf}`.toLowerCase());
-                row.insertCell().textContent = record.nome_aluno || 'N/A';
-                row.insertCell().textContent = record.cpf || 'N/A';
-                row.insertCell().textContent = dataF;
-                row.insertCell().textContent = horaF;
+                
+                // Agora você insere na tabela:
+                row.insertCell().textContent = record.nome_aluno;
+                row.insertCell().textContent = cpfFormatado;
+                row.insertCell().textContent = dataFormatada;
+                row.insertCell().textContent = horaFormatada;
             });
 
             table.style.display = 'table';
@@ -214,3 +213,4 @@
 </script>
 </body>
 </html>
+
