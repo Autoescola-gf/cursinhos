@@ -3,51 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo | Auto Escola Guarda</title>
+    <title>Catálogo de Aulas | Auto Escola Guarda</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #a855f7; --bg: #0f172a; --surface: #1e293b; --text: #f1f5f9; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        header { text-align: center; padding: 40px; background: rgba(168,85,247,0.05); border-radius: 20px; margin-bottom: 30px; border: 1px solid rgba(168,85,247,0.1); }
-        h1 { background: linear-gradient(to right, #fff, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; margin: 0; }
-        
-        #timer-box { background: rgba(168, 85, 247, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--primary); display: inline-block; margin-top: 20px; }
-        #countdown-timer { font-family: monospace; font-size: 1.2rem; color: #fff; font-weight: bold; }
-
-        .section-title { border-left: 4px solid var(--primary); padding-left: 15px; margin: 40px 0 20px; font-size: 1.5rem; }
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        
-        .card { 
-            background: var(--surface); padding: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); 
-            cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
+        :root {
+            --primary: #a855f7;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
         }
-        .card:hover:not(.locked) { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        
-        .card.locked { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
-        .card.locked::after { content: "🔒"; position: absolute; top: 15px; right: 15px; font-size: 1.2rem; }
-        
-        .badge { color: var(--primary); font-size: 0.7rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        .back-btn { background: #334155; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-weight: 600; }
-        .back-btn:hover { background: #475569; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(to bottom, rgba(168, 85, 247, 0.15), transparent);
+            border-radius: 24px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            background: linear-gradient(to right, #fff, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        /* Box do Timer */
+        #timer-box {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        #progress-info { color: var(--primary); font-weight: 600; margin-bottom: 5px; display: block; }
+        #countdown-timer { font-size: 1.5rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+        /* Grid de Aulas */
+        .section-title {
+            margin: 40px 0 20px;
+            font-size: 1.5rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .card h3 { margin: 10px 0 5px; font-size: 1.1rem; }
+        .card p { color: var(--text-muted); font-size: 0.85rem; margin: 0; }
+        .card .badge {
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Estado Bloqueado */
+        .card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(0.8);
+        }
+
+        .card.locked::after {
+            content: "🔒";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.2rem;
+        }
+
+        .card.locked:hover { transform: none; border-color: transparent; }
+
+        .btn-voltar {
+            background: #334155;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <button class="back-btn" onclick="window.location.href='videos.html'">⬅ Voltar para Aula</button>
+        <a href="videos.html" class="btn-voltar">← Voltar para Aula Atual</a>
+
         <header>
-            <h1>Catálogo de Aulas</h1>
+            <h1>Painel de Estudos</h1>
             <div id="timer-box">
-                <p id="progress-info" style="margin:0; font-size: 0.9rem; color: #94a3b8;">Calculando progresso...</p>
-                <p style="margin: 5px 0 0 0; color: #f1f5f9;">Próxima aula em: <span id="countdown-timer">00:00:00</span></p>
+                <span id="progress-info">Carregando progresso...</span>
+                <div id="countdown-timer">00:00:00</div>
+                <small style="color: var(--text-muted)">Para liberar as próximas 2 aulas</small>
             </div>
         </header>
-        <div id="catalog-content"></div>
+
+        <div id="catalog-content">
+            </div>
     </div>
 
     <script src="script.js"></script>
     <script>
-        // Definição das seções (CORRIGIDO: Sem erros de parênteses)
+        // Definição das seções e quais aulas pertencem a cada uma
         const SECOES = [
             { nome: "Legislação", aulas: ["aula1", "aula2", "aula3", "aula4"]},
             { nome: "Sinalização", aulas: ["aula5", "aula6", "aula7", "aula8"]},
@@ -61,52 +163,58 @@
 
         function renderCatalog() {
             const container = document.getElementById('catalog-content');
-            container.innerHTML = "";
+            container.innerHTML = ""; // Limpa para renderizar
+            
             const diaAtual = getDaysPassed();
-            document.getElementById('progress-info').innerText = `Dia de Curso: ${diaAtual}`;
+            document.getElementById('progress-info').innerText = `Você está no Dia ${diaAtual} do Curso`;
 
             SECOES.forEach(sec => {
                 let html = `<h2 class="section-title">${sec.nome}</h2><div class="card-grid">`;
+                
                 sec.aulas.forEach(id => {
                     const aula = VIDEO_MAP[id];
-                    if(!aula) return;
+                    if (!aula) return; // Pula se a aula não estiver no VIDEO_MAP do script.js
 
-                    const locked = !isLessonAvailable(id);
-                    const lockedClass = locked ? 'locked' : '';
-                    const clickAction = locked ? '' : `onclick="redirectToVideo('${id}')"`;
+                    const disponivel = isLessonAvailable(id);
+                    const lockedClass = !disponivel ? 'locked' : '';
+                    const clique = disponivel ? `onclick="redirectToVideo('${id}')"` : `onclick="alert('Esta aula será liberada em breve!')"`;
 
                     html += `
-                        <div class="card ${lockedClass}" ${clickAction}>
+                        <div class="card ${lockedClass}" ${clique}>
                             <span class="badge">${id.toUpperCase()}</span>
-                            <h3 style="margin: 10px 0 5px 0; font-size: 1.1rem;">${aula.title}</h3>
-                            <p style="font-size: 0.85rem; color: #94a3b8; margin: 0;">
-                                ${locked ? 'Bloqueado temporariamente' : 'Disponível para assistir'}
-                            </p>
+                            <h3>${aula.title}</h3>
+                            <p>${disponivel ? '✅ Disponível para assistir' : '🔒 Aguarde a liberação'}</p>
                         </div>`;
                 });
-                html += `</div>`;
-                container.innerHTML += html;
+                
+                container.innerHTML += html + `</div>`;
             });
         }
 
-        // Inicia funções ao carregar
-        window.onload = () => {
-            renderCatalog();
-            // Atualiza o timer a cada 1 segundo
+        // Função do Cronômetro com Desbloqueio em Tempo Real
+        function iniciarCronometro() {
+            const timerEl = document.getElementById('countdown-timer');
+
             setInterval(() => {
                 const ms = getTimeUntilNextRelease();
-                const timerEl = document.getElementById('countdown-timer');
-                if (ms > 0) {
-                    timerEl.innerText = formatarTempoRestante(ms);
-                    timerEl.style.color = "#fff";
+                
+                if (ms <= 0) {
+                    timerEl.innerText = "00:00:00";
+                    timerEl.style.color = "#10b981";
+                    // Se o tempo acabou e ainda não renderizou as novas, atualiza a tela
+                    renderCatalog(); 
                 } else {
-                    timerEl.innerText = "LIBERADO!";
-                    timerEl.style.color = "#22c55e";
+                    timerEl.innerText = formatarTempoRestante(ms);
+                    timerEl.style.color = "white";
                 }
             }, 1000);
+        }
+
+        // Inicialização
+        window.onload = () => {
+            renderCatalog();
+            iniciarCronometro();
         };
     </script>
 </body>
 </html>
-
-
