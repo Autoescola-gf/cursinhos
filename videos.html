@@ -69,7 +69,7 @@
             max-width: 1100px; margin: 0 auto 30px; gap: 15px; flex-wrap: wrap; 
         }
 
-        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn-group { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 
         button {
             padding: 10px 20px; border-radius: 10px; border: none; font-weight: 600;
@@ -92,6 +92,7 @@
         .nav-buttons button { 
             background: rgba(255,255,255,0.05); color: #94a3b8; text-align: left; 
             border: 1px solid transparent; width: 100%; position: relative;
+            justify-content: center;
         }
         
         /* ESTILO AULA BLOQUEADA */
@@ -121,14 +122,14 @@
     </a>
     <div class="header-controls">
         <h1>🎓 Minhas Aulas</h1>
-        <div style="padding: 10px; color: white;">
-        Bem-vindo(a), <span id="userNameDisplay" style="font-weight: bold; color: #a855f7;">...</span>
-        </div>
         <div class="btn-group">
             <button id="presenceButton" onclick="marcarPresenca()">📍 Marcar Presença</button>
             <button class="nav-btn" onclick="abrirAulas()">📚 Todas Aulas</button>
             <button class="log-btn" onclick="window.location.href='Log.html'">📊 Relatório Log</button>
             <button id="logoutButton" onclick="logout()">🚪 Sair</button>
+        </div>
+        <div style="padding: 10px; color: white;">
+        Bem-vindo(a) <span id="userNameDisplay" style="font-weight: bold; color: #a855f7;">...</span>
         </div>
     </div>
 
@@ -192,6 +193,7 @@
     </script>
 </body>
 </html>
+
 
 
 
