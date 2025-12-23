@@ -208,37 +208,30 @@ async function checkToken() {
     const msg = document.getElementById('message');
 
     if(!token || !cpf) { msg.innerText = "Preencha todos os campos."; return; }
-
-    if(data && data.length > 0) {
-    const aluno = data[0];
-    localStorage.setItem(NAME_KEY, aluno.nome_aluno);
-    localStorage.setItem(CPF_KEY, cpf);
-    localStorage.setItem(TOKEN_KEY, token);
-
-    // SINCRONIZAÇÃO COM A DATABASE:
-    // Se a folha de cálculo tiver a coluna 'data_inicio', usamos esse valor.
-    // Isso evita que o aluno mude de telemóvel e o timer "resete".
-    if(aluno.data_inicio) {
-        localStorage.setItem(FIRST_ACCESS_KEY, aluno.data_inicio);
-    } else if(!localStorage.getItem(FIRST_ACCESS_KEY)) {
-        // Se for um aluno novo sem data na planilha, marca o início agora
-        localStorage.setItem(FIRST_ACCESS_KEY, new Date().toISOString());
-    }
-         window.location.href = 'videos.html';
-    }
+    
     try {
         msg.innerText = "Autenticando...";
         const resp = await fetch(`${SHEETDB_API_URL}?token=${token}&cpf=${cpf}`);
         const data = await resp.json();
 
+
         if(data && data.length > 0) {
-            localStorage.setItem(TOKEN_KEY, token);
-            localStorage.setItem(CPF_KEY, cpf);
-            localStorage.setItem(NAME_KEY, data[0].nome_aluno);
-            if(!localStorage.getItem(FIRST_ACCESS_KEY)) {
-                localStorage.setItem(FIRST_ACCESS_KEY, new Date().toISOString());
-            }
-            window.location.href = 'videos.html';
+        const aluno = data[0];
+        localStorage.setItem(NAME_KEY, aluno.nome_aluno);
+        localStorage.setItem(CPF_KEY, cpf);
+        localStorage.setItem(TOKEN_KEY, token);
+    
+        // SINCRONIZAÇÃO COM A DATABASE:
+        // Se a folha de cálculo tiver a coluna 'data_inicio', usamos esse valor.
+        // Isso evita que o aluno mude de telemóvel e o timer "resete".
+        if(aluno.data_inicio) {
+            localStorage.setItem(FIRST_ACCESS_KEY, aluno.data_inicio);
+        } else if(!localStorage.getItem(FIRST_ACCESS_KEY)) {
+            // Se for um aluno novo sem data na planilha, marca o início agora
+            localStorage.setItem(FIRST_ACCESS_KEY, new Date().toISOString());
+        }
+             window.location.href = 'videos.html';
+        }
         } else {
             msg.innerText = "Dados não encontrados ou incorretos.";
         }
@@ -341,6 +334,7 @@ function abrirAulas() { window.location.href = 'Aulas.html'; }
 function abrirLogs() { window.location.href = 'Logs.html'; }
 
 window.onload = initializePage;
+
 
 
 
