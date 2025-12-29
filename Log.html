@@ -1,7 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Presença - ADMIN</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #c1c1c1;
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background: white; /* Alterado para branco para melhor leitura, mude para black se preferir */
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            display: none; 
+        }
+        h1 { color: #901090; font-weight: 600; margin-bottom: 5px; }
+        p { color: #6c757d; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 25px; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 15px 12px; text-align: left; font-size: 15px; border-bottom: 1px solid #ddd; }
+        th { background-color: #901090; color: white; text-transform: uppercase; font-weight: 700; }
+        tr:nth-child(even) { background-color: #f8f9fa; }
+        tr:nth-child(odd) { background-color: white; }
+        tr:hover { background-color: #e2e6ea; transition: background-color 0.2s ease; }
+
+        #adminLoginOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+        }
+        .login-box h2 { color: #901090; margin-bottom: 25px; font-size: 24px; }
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: #901090;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .login-box button:hover { background: #700d70; transform: scale(1.02); }
+        
+        #loading { font-size: 18px; color: #555; margin-top: 30px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="adminLoginOverlay">
+        <div class="login-box">
+            <h2>Acesso Admin 🔐</h2>
+            <input type="text" id="adminCpf" placeholder="Digite seu CPF" maxlength="14">
+            <input type="password" id="adminKey" placeholder="Chave de Acesso">
+            <button onclick="handleLogin()">Entrar no Relatório</button>
+            <p id="loginError" style="color: red; font-size: 14px; margin-top: 10px;"></p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Relatório de Presença Diária</h1>
+        <p>Dados brutos de todos os registros de presença. (Modo Administrador)</p>
+        
+        <div style="margin-bottom: 20px; text-align: right;">
+            <input type="text" id="searchInput" onkeyup="filterTable()" 
+                   placeholder="Buscar por Nome ou CPF..."
+                   style="padding: 10px; width: 300px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
+        </div>
+        
+        <div id="loading">Buscando dados na nuvem...</div>
+
+        <table id="presencaTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Nome do Aluno</th>
+                    <th>CPF do Aluno</th>
+                    <th>Data do Registro</th>
+                    <th>Hora do Registro</th>
+                </tr>
+            </thead>
+            <tbody id="presencaData"></tbody>
+        </table>
+
+        <p id="error" style="color: red; margin-top: 20px;"></p>
+    </div>
+
 <script>
+    // URL do seu Google Apps Script (Certifique-se que é a versão mais recente)
     const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbyZkAwC19qf7Lu5vT3lhS7QN03KJcr4weoU6NYLbbzcD17bbLiAh3C51vXoPvISeR40/exec';
 
-    // Máscara de CPF automática
+    // Máscara de CPF automática para o campo de Login
     document.getElementById('adminCpf').addEventListener('input', function(e) {
         let v = e.target.value.replace(/\D/g, "");
         v = v.replace(/(\d{3})(\d)/, "$1.$2");
@@ -15,15 +135,18 @@
         const key = document.getElementById('adminKey').value;
         const errorMsg = document.getElementById('loginError');
 
-        if (!cpf || !key) {
-            errorMsg.textContent = "Preencha todos os campos!";
-            return;
+        // VALIDAÇÃO LOCAL (Ajuste para seu CPF e Chave se não quiser validar no Script)
+        // Se o seu Apps Script já valida, você pode remover este IF ou ajustar os valores
+        if (cpf === "SEU_CPF_AQUI" && key === "SUA_CHAVE_AQUI") {
+             document.getElementById('adminLoginOverlay').style.display = 'none';
+             document.querySelector('.container').style.display = 'block';
+             fetchPresencaData(cpf, key);
+        } else {
+             // Se você quer que o Apps Script decida, apenas chame a função:
+             document.getElementById('adminLoginOverlay').style.display = 'none';
+             document.querySelector('.container').style.display = 'block';
+             fetchPresencaData(cpf, key);
         }
-
-        // Esconde login e mostra container
-        document.getElementById('adminLoginOverlay').style.display = 'none';
-        document.querySelector('.container').style.display = 'block';
-        fetchPresencaData(cpf, key);
     }
 
     async function fetchPresencaData(adminCpf, adminKey) {
@@ -36,7 +159,6 @@
         table.style.display = 'none';
         tbody.innerHTML = ''; 
 
-        // URL formatada para bater com o seu doGet(e)
         const url = `${SHEETDB_API_URL}?action=get_log_presenca&admin_cpf=${encodeURIComponent(adminCpf)}&admin_key=${encodeURIComponent(adminKey)}`;
         
         try {
@@ -46,48 +168,48 @@
             if (!responseData.success) {
                 document.getElementById('adminLoginOverlay').style.display = 'flex';
                 document.querySelector('.container').style.display = 'none';
-                document.getElementById('loginError').textContent = responseData.message || "Acesso negado";
+                document.getElementById('loginError').textContent = responseData.message || "Acesso negado.";
                 return;
             }
 
             const data = responseData.data;
             if (!data || data.length === 0) {
-                errorElement.textContent = 'Nenhum registro encontrado.';
+                errorElement.textContent = 'Nenhum registro encontrado na aba Log.';
                 return;
             }
             
             data.forEach(record => {
-                // CORREÇÃO: Criar a linha antes de inserir as células
                 const row = tbody.insertRow();
                 
+                // Formatação da Data e Hora (Padrão ISO -> Local)
                 let dataRegistro = new Date(record.data_registro);
-                let dataFormatada = "N/A";
-                let horaFormatada = "N/A";
+                let dataF = "N/A", horaF = "N/A";
 
                 if (!isNaN(dataRegistro.getTime())) {
-                    dataFormatada = dataRegistro.toLocaleDateString('pt-BR');
-                    horaFormatada = dataRegistro.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                    dataF = dataRegistro.toLocaleDateString('pt-BR');
+                    horaF = dataRegistro.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
                 }
                 
+                // Formatação do CPF na Tabela
                 let cpfLimpo = String(record.cpf || '').replace(/\D/g, "");
                 let cpfFormatado = cpfLimpo;
                 if (cpfLimpo.length === 11) {
                     cpfFormatado = cpfLimpo.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
                 }
                 
-                // Adiciona atributo de busca para o filtro funcionar
+                // Atributo para busca (Nome + CPF sem pontos)
                 row.setAttribute('data-search', `${record.nome_aluno} ${cpfLimpo}`.toLowerCase());
                 
                 row.insertCell().textContent = record.nome_aluno || 'N/A';
                 row.insertCell().textContent = cpfFormatado || 'N/A';
-                row.insertCell().textContent = dataFormatada;
-                row.insertCell().textContent = horaFormatada;
+                row.insertCell().textContent = dataF;
+                row.insertCell().textContent = horaF;
             });
 
             table.style.display = 'table';
         } catch (error) {
-            console.error(error);
-            errorElement.textContent = "Erro de conexão ou falha ao processar dados.";
+            console.error("Erro Fetch:", error);
+            errorElement.textContent = "Erro de conexão com o servidor. Verifique o console (F12).";
         } finally {
             loading.style.display = 'none';
         }
@@ -95,8 +217,7 @@
 
     function filterTable() {
         const filter = document.getElementById('searchInput').value.toLowerCase();
-        const tbody = document.getElementById('presencaData');
-        const rows = tbody.getElementsByTagName('tr');
+        const rows = document.getElementById('presencaData').getElementsByTagName('tr');
         
         for (let row of rows) {
             const txt = row.getAttribute('data-search') || "";
@@ -104,3 +225,5 @@
         }
     }
 </script>
+</body>
+</html>
