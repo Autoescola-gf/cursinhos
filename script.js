@@ -60,23 +60,23 @@ const VIDEO_MAP = {
     // Normas e condutas
     'aula13': {
         title: 'Aula 13: Normas e condutas',
-        embedUrl: 'https://www.dropbox.com/scl/fi/max3ghqx7vdilszdmybcr/13-NORMAS.mp4?rlkey=zm2jta931fmgqn1c94dcuw1vm&st=wdfhabtm&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/uhagyy8h8skjb1asg8kng/13-NORMAS.mp4?rlkey=y6l4eqtby3ou7nql3ds095jtw&st=9c44ewib&raw=1' 
     },
     'aula14': { 
         title: 'Aula 14: Normas e condutas',
-        embedUrl: 'https://www.dropbox.com/scl/fi/fq00c00vjkrua8u5ww0em/14-NORMAS.mp4?rlkey=nhg13uwr1ko8fmmtijp4wp02u&st=yx9dlw6j&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/pvgsqlqqniiefkdcw3lqz/14-NORMAS.mp4?rlkey=9x6nc1x0xur0hfjqq9wray905&st=o1na1fay&raw=1' 
     },
     'aula15': { 
         title: 'Aula 15: Normas e condutas',
-        embedUrl: 'https://www.dropbox.com/scl/fi/j9zrb7dw2j1ndelr4gdbq/15-NORMAS.mp4?rlkey=tdbf9pe5ocoggzb5ew2zdx766&st=gfi9wngu&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/kyiukhe0gi14cvm8eszdw/15-NORMAS.mp4?rlkey=ak3me9abl9h7jc98ppe6rre3e&st=ze8h8lau&raw=1' 
     },
     'aula16': { 
         title: 'Aula 16: Normas e condutas',
-        embedUrl: 'https://www.dropbox.com/scl/fi/1tbhtbnj6pvwholkf56y6/16-NORMAS.mp4?rlkey=9no5xathyftzfqlzh2zr6n9k9&st=npr11qrh&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/qwi1zrjjn1sh209jkmzlw/16-NORMAS.mp4?rlkey=f0ozn5z6dx5nmp8duffiv412k&st=ew0srpyq&raw=1' 
     },
     'aula17': { 
         title: 'Aula 17: Normas e condutas',
-        embedUrl: 'https://www.dropbox.com/scl/fi/fot8ymvzii7ao81uatvv6/17-NORMAS-cut.mp4?rlkey=rbck82vsudt4y4tr9e97dk2t4&st=6doacpdt&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/dfxcalvctqn9pyy5rd569/17-NORMAS-QUEST-ES-cut.com.mp4?rlkey=73lpri4slwe24s2w0r4wesp1n&st=4ycp207b&raw=1' 
     },
 
    // Direção defensiva
@@ -284,5 +284,6 @@ function abrirAulas() { window.location.href = 'Aulas.html'; }
 function abrirLogs() { window.location.href = 'Log.html'; }
 function redirectToVideo(id) { window.location.href = `videos.html?lesson=${id}`; }
 window.onload = initializePage;
+
 
 
