@@ -60,7 +60,7 @@ const VIDEO_MAP = {
     // Normas e condutas
     'aula13': {
         title: 'Aula 13: Normas e condutas',
-        embedUrl: 'hhttps://www.dropbox.com/scl/fi/uhagyy8h8skjb1asg8kng/13-NORMAS.mp4?rlkey=y6l4eqtby3ou7nql3ds095jtw&st=sasemuis&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/uhagyy8h8skjb1asg8kng/13-NORMAS.mp4?rlkey=y6l4eqtby3ou7nql3ds095jtw&st=ta33la6d&raw=1' 
     },
     'aula14': { 
         title: 'Aula 14: Normas e condutas',
@@ -284,6 +284,7 @@ function abrirAulas() { window.location.href = 'Aulas.html'; }
 function abrirLogs() { window.location.href = 'Log.html'; }
 function redirectToVideo(id) { window.location.href = `videos.html?lesson=${id}`; }
 window.onload = initializePage;
+
 
 
 
