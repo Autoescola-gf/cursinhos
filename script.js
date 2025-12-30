@@ -161,10 +161,18 @@ function isLessonAvailable(id) {
     const num = parseInt(id.replace('aula', ''));
     const diaAtual = getDaysPassed();
     
-    const limiteAulas = diaAtual * 2;
+    let limiteAulas;
+
+    if (diaAtual < 9) {
+        limiteAulas = diaAtual * 2;
+    } else if (diaAtual === 9) {
+        limiteAulas = 17; 
+    } else {
+        limiteAulas = 19 + ((diaAtual - 9) * 2);
+    }
     
     if (num >= 30 && diaAtual < 3) return false; 
-    if (diaAtual == 9) limiteAulas = limiteAulas+1;
+    
     return num <= limiteAulas;
 }
 
@@ -284,6 +292,7 @@ function abrirAulas() { window.location.href = 'Aulas.html'; }
 function abrirLogs() { window.location.href = 'Log.html'; }
 function redirectToVideo(id) { window.location.href = `videos.html?lesson=${id}`; }
 window.onload = initializePage;
+
 
 
 
