@@ -129,11 +129,11 @@ const VIDEO_MAP = {
      // Meio Ambiente
     'aula28': {
         title: 'Aula 28: Meio Ambiente',
-        embedUrl: 'https://www.dropbox.com/scl/fi/b45sf0r74ym7xh81axw0w/28-MEIO-AMBIENTE.mp4?rlkey=4ccmyv257qw25v2nq40g6efyn&st=yps7zupj&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/qm2usit08vbn754reepf0/28-MEIO-AMBIENTE.mp4?rlkey=9cy1en3ljg2vaxcoqkzwunpj8&st=q36qwtlw&raw=1' 
     },
     'aula29': { 
         title: 'Aula 29: Meio Ambiente',
-        embedUrl: 'https://www.dropbox.com/scl/fi/flouxhzn9diksebb5gik1/29-MEIO-AMBIENTE.mp4?rlkey=p3t4fsj7zxiduz3qrrov0mu2i&st=cldbz8p8&raw=1' 
+        embedUrl: 'https://www.dropbox.com/scl/fi/ze1oxs3ycax4suwnn1bum/29-MEIO-AMBIENTE.mp4?rlkey=ztuin39vu2if216tx52vqv4uz&st=29c5rsji&raw=1' 
     },
 
      // MECANICA
@@ -222,7 +222,7 @@ function initializePage() {
 
     if(window.location.pathname.includes('videos.html')) {
         const urlParams = new URLSearchParams(window.location.search);
-        showLesson(urlParams.get('lesson') || 'aula13');
+        showLesson(urlParams.get('lesson') || 'aula28');
         verificarStatusPresenca();
         if (typeof updateSidebarLocks === "function") updateSidebarLocks();
     }
@@ -292,6 +292,7 @@ function abrirAulas() { window.location.href = 'Aulas.html'; }
 function abrirLogs() { window.location.href = 'Log.html'; }
 function redirectToVideo(id) { window.location.href = `videos.html?lesson=${id}`; }
 window.onload = initializePage;
+
 
 
 
