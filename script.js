@@ -164,7 +164,7 @@ function isLessonAvailable(id) {
     let limiteAulas;
 
     if (diaAtual < 9) {
-        limiteAulas = diaAtual * 2;
+        limiteAulas = diaAtual * 3;
     } else if (diaAtual === 9) {
         limiteAulas = 17; 
     } else {
@@ -222,7 +222,7 @@ function initializePage() {
 
     if(window.location.pathname.includes('videos.html')) {
         const urlParams = new URLSearchParams(window.location.search);
-        showLesson(urlParams.get('lesson') || 'aula1');
+        showLesson(urlParams.get('lesson') || 'aula13');
         verificarStatusPresenca();
         if (typeof updateSidebarLocks === "function") updateSidebarLocks();
     }
@@ -292,6 +292,7 @@ function abrirAulas() { window.location.href = 'Aulas.html'; }
 function abrirLogs() { window.location.href = 'Log.html'; }
 function redirectToVideo(id) { window.location.href = `videos.html?lesson=${id}`; }
 window.onload = initializePage;
+
 
 
 
