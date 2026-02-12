@@ -222,7 +222,7 @@ function initializePage() {
 
     if(window.location.pathname.includes('videos.html')) {
         const urlParams = new URLSearchParams(window.location.search);
-        showLesson(urlParams.get('lesson') || 'aula18');
+        showLesson(urlParams.get('lesson') || 'aula30');
         verificarStatusPresenca();
         if (typeof updateSidebarLocks === "function") updateSidebarLocks();
     }
@@ -292,6 +292,7 @@ function abrirAulas() { window.location.href = 'Aulas.html'; }
 function abrirLogs() { window.location.href = 'Log.html'; }
 function redirectToVideo(id) { window.location.href = `videos.html?lesson=${id}`; }
 window.onload = initializePage;
+
 
 
 
