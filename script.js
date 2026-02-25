@@ -164,7 +164,7 @@ function isLessonAvailable(id) {
     let limiteAulas;
 
     if (diaAtual < 9) {
-        limiteAulas = diaAtual * 3;
+        limiteAulas = diaAtual * 2;
     } else if (diaAtual === 9) {
         limiteAulas = 17; 
     } else {
@@ -292,6 +292,7 @@ function abrirAulas() { window.location.href = 'Aulas.html'; }
 function abrirLogs() { window.location.href = 'Log.html'; }
 function redirectToVideo(id) { window.location.href = `videos.html?lesson=${id}`; }
 window.onload = initializePage;
+
 
 
 
