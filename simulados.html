@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulado Detran | Auto Escola</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary: #a855f7; 
+            --bg: #0f172a; 
+            --surface: #1e293b; 
+            --text: #f1f5f9;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin-top: 50px;
+            background: var(--surface);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            background: #334155;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        #progress-fill {
+            background: var(--primary);
+            height: 100%;
+            width: 0%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .question { font-size: 1.2rem; font-weight: 600; margin-bottom: 25px; }
+
+        .options { display: grid; gap: 12px; }
+
+        .option-btn {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+
+        .option-btn:hover { background: rgba(168, 85, 247, 0.1); border-color: var(--primary); }
+
+        .correct { background: var(--success) !important; border-color: var(--success); }
+        .wrong { background: var(--error) !important; border-color: var(--error); }
+
+        #result-screen { text-align: center; display: none; }
+        .score { font-size: 3rem; font-weight: 800; color: var(--primary); }
+
+        .back-btn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: var(--primary);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="quiz-container">
+        <header>
+            <span id="question-number">Questão 1/30</span>
+            <div id="timer">Tempo: 40:00</div>
+        </header>
+
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+
+        <div id="quiz-content">
+            <div class="question" id="question-text">Carregando questões...</div>
+            <div class="options" id="options-container">
+                </div>
+        </div>
+
+        <div id="result-screen">
+            <h2>Simulado Finalizado!</h2>
+            <div class="score" id="final-score">0</div>
+            <p id="feedback-text"></p>
+            <button class="back-btn" onclick="window.location.href='videos.html'">Voltar para Início</button>
+        </div>
+    </div>
+
+    <script>
+        // Use a mesma URL que você já tem no seu script.js
+        const API_URL = 'SUA_URL_DO_GOOGLE_APPS_SCRIPT_AQUI'; 
+        
+        let questions = [];
+        let currentIdx = 0;
+        let score = 0;
+
+        async function loadQuestions() {
+            try {
+                const response = await fetch(`${API_URL}?action=get_simulado`);
+                questions = await response.json();
+                showQuestion();
+            } catch (e) {
+                document.getElementById('question-text').innerText = "Erro ao carregar simulado.";
+            }
+        }
+
+        function showQuestion() {
+            if (currentIdx >= questions.length) return finish();
+
+            const q = questions[currentIdx];
+            document.getElementById('question-number').innerText = `Questão ${currentIdx + 1}/${questions.length}`;
+            document.getElementById('question-text').innerText = q.pergunta;
+            document.getElementById('progress-fill').style.width = `${((currentIdx) / questions.length) * 100}%`;
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            ['a', 'b', 'c', 'd'].forEach(letter => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = q[letter];
+                btn.onclick = () => checkAnswer(letter, q.correta, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, correct, btn) {
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.style.pointerEvents = 'none');
+
+            if (selected.toLowerCase() === correct.toLowerCase()) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                // Mostra a correta
+                allBtns.forEach(b => {
+                    if(b.innerText === questions[currentIdx][correct.toLowerCase()]) b.classList.add('correct');
+                });
+            }
+
+            setTimeout(() => {
+                currentIdx++;
+                showQuestion();
+            }, 1500);
+        }
+
+        function finish() {
+            document.getElementById('quiz-content').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+            document.getElementById('final-score').innerText = `${score}/${questions.length}`;
+            
+            const percent = (score / questions.length) * 100;
+            document.getElementById('feedback-text').innerText = percent >= 70 
+                ? "Parabéns! Você seria aprovado(a)!" 
+                : "Continue estudando. Você precisa de 70% de acertos.";
+        }
+
+        loadQuestions();
+    </script>
+</body>
+</html>
