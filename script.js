@@ -290,8 +290,10 @@ function verificarStatusPresenca() {
 function logout() { localStorage.clear(); window.location.href = 'index.html'; }
 function abrirAulas() { window.location.href = 'Aulas.html'; }
 function abrirLogs() { window.location.href = 'Log.html'; }
+function abrirSimulados() { window.location.href = 'simulados.html'; }
 function redirectToVideo(id) { window.location.href = `videos.html?lesson=${id}`; }
 window.onload = initializePage;
+
 
 
 
