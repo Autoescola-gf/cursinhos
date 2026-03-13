@@ -33,120 +33,107 @@
             margin-top: 50px;
             background: var(--surface);
             padding: 30px;
-            border-radius: 16px;
+            border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-
-        .progress-bar {
-            background: #334155;
-            height: 8px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-
-        #progress-fill {
-            background: var(--primary);
-            height: 100%;
-            width: 0%;
-            border-radius: 4px;
-            transition: width 0.3s;
-        }
-
-        .question { font-size: 1.2rem; font-weight: 600; margin-bottom: 25px; }
-
-        .options { display: grid; gap: 12px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        
+        .question-box h2 { font-size: 1.4rem; margin-bottom: 25px; line-height: 1.5; }
+        
+        .options-grid { display: grid; gap: 15px; }
 
         .option-btn {
             background: rgba(255,255,255,0.05);
             border: 2px solid rgba(255,255,255,0.1);
-            padding: 15px;
-            border-radius: 8px;
-            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            color: var(--text);
             text-align: left;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.3s;
             font-size: 1rem;
         }
 
-        .option-btn:hover { background: rgba(168, 85, 247, 0.1); border-color: var(--primary); }
+        .option-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--primary); }
+        .option-btn.correct { background: var(--success) !important; border-color: var(--success); color: white; }
+        .option-btn.wrong { background: var(--error) !important; border-color: var(--error); color: white; }
 
-        .correct { background: var(--success) !important; border-color: var(--success); }
-        .wrong { background: var(--error) !important; border-color: var(--error); }
+        .score-board { font-weight: bold; color: var(--primary); }
 
         #result-screen { text-align: center; display: none; }
-        .score { font-size: 3rem; font-weight: 800; color: var(--primary); }
-
-        .back-btn {
+        .btn-home {
             margin-top: 20px;
-            padding: 12px 25px;
             background: var(--primary);
-            border: none;
-            border-radius: 8px;
             color: white;
-            font-weight: bold;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
             cursor: pointer;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
     <div class="container" id="quiz-container">
-        <header>
-            <span id="question-number">Questão 1/30</span>
-            <div id="timer">Tempo: 40:00</div>
-        </header>
-
-        <div class="progress-bar"><div id="progress-fill"></div></div>
-
         <div id="quiz-content">
-            <div class="question" id="question-text">Carregando questões...</div>
-            <div class="options" id="options-container">
-                </div>
+            <div class="header">
+                <span id="progress">Questão 1/30</span>
+                <span class="score-board">Acertos: <span id="current-score">0</span></span>
+            </div>
+            
+            <div class="question-box">
+                <h2 id="question-text">Carregando questão...</h2>
+                <div class="options-grid" id="options-container"></div>
+            </div>
         </div>
 
         <div id="result-screen">
-            <h2>Simulado Finalizado!</h2>
-            <div class="score" id="final-score">0</div>
+            <h1>Simulado Finalizado!</h1>
+            <p style="font-size: 1.2rem;">Sua pontuação final foi:</p>
+            <div id="final-score" style="font-size: 3rem; font-weight: 800; color: var(--primary); margin: 20px 0;">0/30</div>
             <p id="feedback-text"></p>
-            <button class="back-btn" onclick="window.location.href='videos.html'">Voltar para Início</button>
+            <button class="btn-home" onclick="window.location.href='Aulas.html'">Voltar para Início</button>
         </div>
     </div>
 
+    <script src="script.js"></script>
+
     <script>
-        // Use a mesma URL que você já tem no seu script.js
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzDsMX4UoWyWRoQzUHhMqkhL0z9U6Ho208WuMXcmraqojsgn8vGzBEX5GVa-vq403Vy/exec'; 
-        
+        // VERIFICAÇÃO DE SEGURANÇA AO ENTRAR
+        window.onload = function() {
+            if (!podeFazerSimulado()) {
+                alert("🔒 Você já realizou um simulado hoje. O sistema libera um novo teste por dia para garantir seu aprendizado.");
+                window.location.href = 'Aulas.html';
+                return;
+            }
+            loadQuestions();
+        };
+
         let questions = [];
         let currentIdx = 0;
         let score = 0;
 
         async function loadQuestions() {
-            try {
-                const response = await fetch(`${API_URL}?action=get_simulado`);
-                questions = await response.json();
-                showQuestion();
-            } catch (e) {
-                document.getElementById('question-text').innerText = "Erro ao carregar simulado.";
-            }
+            // Simulação de carregamento (Substitua pela sua lógica de busca se necessário)
+            questions = [
+                { q: "Qual a velocidade máxima em via local onde não houver sinalização?", a: "30 km/h", b: "40 km/h", c: "60 km/h", d: "80 km/h", correta: "a" },
+                { q: "A placa R-1 indica:", a: "Siga em frente", b: "Parada Obrigatória", c: "Dê a preferência", d: "Proibido estacionar", correta: "b" }
+            ];
+            showQuestion();
         }
 
         function showQuestion() {
-            if (currentIdx >= questions.length) return finish();
+            if (currentIdx >= questions.length) {
+                finish();
+                return;
+            }
 
             const q = questions[currentIdx];
-            document.getElementById('question-number').innerText = `Questão ${currentIdx + 1}/${questions.length}`;
-            document.getElementById('question-text').innerText = q.pergunta;
-            document.getElementById('progress-fill').style.width = `${((currentIdx) / questions.length) * 100}%`;
-
+            document.getElementById('progress').innerText = `Questão ${currentIdx + 1}/${questions.length}`;
+            document.getElementById('question-text').innerText = q.q;
+            
             const container = document.getElementById('options-container');
             container.innerHTML = '';
 
@@ -166,11 +153,12 @@
             if (selected.toLowerCase() === correct.toLowerCase()) {
                 btn.classList.add('correct');
                 score++;
+                document.getElementById('current-score').innerText = score;
             } else {
                 btn.classList.add('wrong');
-                // Mostra a correta
+                // Mostra a correta para o aluno aprender
                 allBtns.forEach(b => {
-                    if(b.innerText === questions[currentIdx][correct.toLowerCase()]) b.classList.add('correct');
+                    if(b.innerText === questions[currentIdx][correct]) b.classList.add('correct');
                 });
             }
 
@@ -181,17 +169,18 @@
         }
 
         function finish() {
+            // REGISTRA QUE O ALUNO TERMINOU HOJE
+            registrarConclusaoSimulado();
+
             document.getElementById('quiz-content').style.display = 'none';
             document.getElementById('result-screen').style.display = 'block';
             document.getElementById('final-score').innerText = `${score}/${questions.length}`;
             
             const percent = (score / questions.length) * 100;
             document.getElementById('feedback-text').innerText = percent >= 70 
-                ? "Parabéns! Você seria aprovado(a)!" 
-                : "Continue estudando. Você precisa de 70% de acertos.";
+                ? "Parabéns! Você atingiu a média para aprovação!" 
+                : "Continue estudando. Você precisa de no mínimo 70% de acertos.";
         }
-
-        loadQuestions();
     </script>
 </body>
 </html>
