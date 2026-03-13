@@ -129,23 +129,25 @@
         let currentIdx = 0;
         let score = 0;
 
-        async function loadQuestions() {
-            try {
-                // Adicionado verificação inicial de segurança
-                if (typeof podeFazerSimulado === "function" && !podeFazerSimulado()) {
-                    alert("🔒 Você já realizou um simulado hoje. Tente novamente amanhã!");
-                    window.location.href = 'Aulas.html';
-                    return;
-                }
-
-                const response = await fetch(`${API_URL}?action=get_simulado`);
-                questions = await response.json();
-                showQuestion();
-            } catch (e) {
-                document.getElementById('question-text').innerText = "Erro ao carregar simulado.";
-            }
+async function loadQuestions() {
+    try {
+        document.getElementById('question-text').innerText = "Verificando permissão...";
+        const disponivel = await podeFazerSimuladoPelaDatabase();
+        
+        if (!disponivel) {
+            alert("Você já realizou o simulado de hoje.");
+            window.location.href = 'Aulas.html';
+            return;
         }
 
+        document.getElementById('question-text').innerText = "Carregando questões...";
+        const response = await fetch(`${SHEETDB_API_URL}?action=get_simulado`);
+        questions = await response.json();
+        showQuestion();
+    } catch (e) {
+        document.getElementById('question-text').innerText = "Erro ao carregar simulado.";
+    }
+}
         function showQuestion() {
             if (currentIdx >= questions.length) return finish();
 
@@ -188,20 +190,18 @@
         }
 
         function finish() {
-            // REGISTRA A CONCLUSÃO (Trava o acesso por 24h)
-            if (typeof registrarConclusaoSimulado === "function") {
-                registrarConclusaoSimulado();
-            }
+    // SALVA NA DATABASE E LOCALMENTE
+    salvarSimuladoNoBanco(score, questions.length);
 
-            document.getElementById('quiz-content').style.display = 'none';
-            document.getElementById('result-screen').style.display = 'block';
-            document.getElementById('final-score').innerText = `${score}/${questions.length}`;
-            
-            const percent = (score / questions.length) * 100;
-            document.getElementById('feedback-text').innerText = percent >= 70 
-                ? "Parabéns! Você atingiu a pontuação para aprovação!" 
-                : "Continue estudando. Você precisa de 70% de acertos para passar.";
-        }
+    document.getElementById('quiz-content').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+    document.getElementById('final-score').innerText = `${score}/${questions.length}`;
+    
+    const percent = (score / questions.length) * 100;
+    document.getElementById('feedback-text').innerText = percent >= 70 
+        ? "Parabéns! Você seria aprovado(a)!" 
+        : "Continue estudando. Você precisa de 70% de acertos.";
+}
 
         loadQuestions();
     </script>
