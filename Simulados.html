@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulado Detran | Auto Escola</title>
+    <title>Simulado | Auto Escola SG - GUARDA </title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -45,6 +45,8 @@
             padding-bottom: 20px;
             margin-bottom: 30px;
         }
+
+        #timer { font-weight: bold; color: var(--primary); font-variant-numeric: tabular-nums; }
 
         .progress-bar {
             background: #334155;
@@ -102,7 +104,7 @@
     <div class="container" id="quiz-container">
         <header>
             <span id="question-number">Questão 1/30</span>
-            <div id="timer">Tempo: 40:00</div>
+            <div id="timer">Tempo: 60:00</div>
         </header>
 
         <div class="progress-bar"><div id="progress-fill"></div></div>
@@ -116,45 +118,62 @@
             <h2>Simulado Finalizado!</h2>
             <div class="score" id="final-score">0</div>
             <p id="feedback-text"></p>
-            <button class="back-btn" onclick="window.location.href='Aulas.html'">Voltar para Início</button>
+            <button class="back-btn" onclick="window.location.href='videos.html'">Voltar para Início</button>
         </div>
     </div>
 
     <script src="script.js"></script>
     <script>
-        // Use a mesma URL que você já tem no seu script.js
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzDsMX4UoWyWRoQzUHhMqkhL0z9U6Ho208WuMXcmraqojsgn8vGzBEX5GVa-vq403Vy/exec'; 
-        
+        // 1. PROTEÇÃO DE LINK DIRETO
+        const origin = document.referrer;
+        if (!origin.includes('videos.html') && !origin.includes('Aulas.html')) {
+            alert("⚠️ Acesso negado. Use o menu do sistema para abrir o simulado.");
+            window.location.href = 'index.html';
+        }
+
         let questions = [];
         let currentIdx = 0;
         let score = 0;
+        let timeLeft = 3600; // 60 minutos
+        let timerInterval;
 
-async function loadQuestions() {
-    try {
-        document.getElementById('question-text').innerText = "Verificando permissão...";
-        const disponivel = await podeFazerSimuladoPelaDatabase();
-        
-        if (!disponivel) {
-            alert("Você já realizou o simulado de hoje.");
-            window.location.href = 'Aulas.html';
-            return;
+        // 2. LOGICA DO TIMER
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const min = Math.floor(timeLeft / 60);
+                const sec = timeLeft % 60;
+                document.getElementById('timer').innerText = `Tempo: ${min}:${sec < 10 ? '0' : ''}${sec}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Tempo esgotado!");
+                    finish();
+                }
+            }, 1000);
         }
 
-        document.getElementById('question-text').innerText = "Carregando questões...";
-        const response = await fetch(`${SHEETDB_API_URL}?action=get_simulado`);
-        questions = await response.json();
-        showQuestion();
-    } catch (e) {
-        document.getElementById('question-text').innerText = "Erro ao carregar simulado.";
-    }
-}
+        async function loadQuestions() {
+            // Verifica bloqueio de 24h (Função no script.js)
+            if (verificarBloqueioSimulado()) return;
+
+            try {
+                const response = await fetch(`${SHEETDB_API_URL}?action=get_simulado`);
+                questions = await response.json();
+                startTimer();
+                showQuestion();
+            } catch (e) {
+                document.getElementById('question-text').innerText = "Erro ao conectar com o servidor.";
+            }
+        }
+
         function showQuestion() {
             if (currentIdx >= questions.length) return finish();
 
             const q = questions[currentIdx];
             document.getElementById('question-number').innerText = `Questão ${currentIdx + 1}/${questions.length}`;
             document.getElementById('question-text').innerText = q.pergunta;
-            document.getElementById('progress-fill').style.width = `${((currentIdx) / questions.length) * 100}%`;
+            document.getElementById('progress-fill').style.width = `${(currentIdx / questions.length) * 100}%`;
 
             const container = document.getElementById('options-container');
             container.innerHTML = '';
@@ -177,7 +196,6 @@ async function loadQuestions() {
                 score++;
             } else {
                 btn.classList.add('wrong');
-                // Mostra a correta
                 allBtns.forEach(b => {
                     if(b.innerText === questions[currentIdx][correct.toLowerCase()]) b.classList.add('correct');
                 });
@@ -186,24 +204,27 @@ async function loadQuestions() {
             setTimeout(() => {
                 currentIdx++;
                 showQuestion();
-            }, 1500);
+            }, 1200);
         }
 
         function finish() {
-    // SALVA NA DATABASE E LOCALMENTE
-    salvarSimuladoNoBanco(score, questions.length);
+            clearInterval(timerInterval);
+            // Salva data para bloqueio de 24h
+            localStorage.setItem(SIMULADO_DATE_KEY, new Date().getTime());
+            
+            salvarSimuladoNoBanco(score, questions.length);
 
-    document.getElementById('quiz-content').style.display = 'none';
-    document.getElementById('result-screen').style.display = 'block';
-    document.getElementById('final-score').innerText = `${score}/${questions.length}`;
-    
-    const percent = (score / questions.length) * 100;
-    document.getElementById('feedback-text').innerText = percent >= 70 
-        ? "Parabéns! Você seria aprovado(a)!" 
-        : "Continue estudando. Você precisa de 70% de acertos.";
-}
+            document.getElementById('quiz-content').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+            document.getElementById('final-score').innerText = `${score}/${questions.length}`;
+            
+            const percent = (score / questions.length) * 100;
+            document.getElementById('feedback-text').innerText = percent >= 70 
+                ? "Parabéns! Você atingiu a pontuação necessária." 
+                : "Estude um pouco mais. O mínimo para aprovação é 70%.";
+        }
 
-        loadQuestions();
+        window.onload = loadQuestions;
     </script>
 </body>
 </html>
