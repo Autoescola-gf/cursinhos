@@ -8,7 +8,7 @@ const CPF_KEY = 'vimeo_user_cpf';
 const TOKEN_KEY = 'vimeo_user_token';
 const NAME_KEY = 'vimeo_user_name';
 const PRESENCE_DATE_KEY = 'lastPresenceDate';
-const SIMULADO_DATE_KEY = 'last_simulado_date';
+const SIMULADO_DATE_KEY = 'last_simulado_timestamp'; // Alterado para timestamp para precisão de 24h
 
 // MAPA DE AULAS (URLs do Dropbox com raw=1 para o player de vídeo)
 const VIDEO_MAP = {
@@ -48,6 +48,30 @@ const VIDEO_MAP = {
 };
 
 // =======================================================
+// NOVAS FUNÇÕES: TIMER E BLOQUEIO DE 24H
+// =======================================================
+
+function verificarBloqueioSimulado() {
+    const ultimoSimulado = localStorage.getItem(SIMULADO_DATE_KEY);
+    if (ultimoSimulado) {
+        const agora = new Date().getTime();
+        const vinteQuatroHoras = 24 * 60 * 60 * 1000;
+        const tempoPassado = agora - parseInt(ultimoSimulado);
+
+        if (tempoPassado < vinteQuatroHoras) {
+            const restanteMs = vinteQuatroHoras - tempoPassado;
+            const horas = Math.floor(restanteMs / (1000 * 60 * 60));
+            const minutos = Math.floor((restanteMs % (1000 * 60 * 60)) / (1000 * 60));
+            
+            alert(`⏳ Bloqueio de Segurança: Você já realizou um simulado recentemente.\n\nO sistema libera um novo teste a cada 24 horas. Tente novamente em ${horas}h e ${minutos}min.`);
+            window.location.href = 'videos.html';
+            return true;
+        }
+    }
+    return false;
+}
+
+// =======================================================
 // LÓGICA DE LIBERAÇÃO DE AULAS
 // =======================================================
 function getDaysPassed() {
@@ -66,7 +90,6 @@ function isLessonAvailable(id) {
     else if (diaAtual === 9) { limiteAulas = 17; } 
     else { limiteAulas = 19 + ((diaAtual - 9) * 2); }
     
-    // Trava de segurança para aulas de mecânica
     if (num >= 30 && diaAtual < 3) return false; 
     return num <= limiteAulas;
 }
@@ -183,28 +206,16 @@ function verificarStatusPresenca() {
 // =======================================================
 // LÓGICA DO SIMULADO (DATABASE + BLOQUEIO)
 // =======================================================
-async function podeFazerSimuladoPelaDatabase() {
-    const cpf = localStorage.getItem(CPF_KEY);
-    try {
-        const resp = await fetch(`${SHEETDB_API_URL}?action=verificar_disponibilidade_simulado&cpf=${cpf}`);
-        return await resp.json();
-    } catch (e) {
-        // Fallback: Se falhar a rede, usa a trava local do navegador
-        return localStorage.getItem(SIMULADO_DATE_KEY) !== new Date().toLocaleDateString();
-    }
-}
-
 async function abrirSimulados() { 
     const btn = event?.target;
     if(btn && btn.tagName === 'BUTTON') btn.innerText = "Verificando...";
 
-    const disponivel = await podeFazerSimuladoPelaDatabase();
-    
-    if (!disponivel) {
-        alert("🔒 Você já realizou um simulado hoje. O sistema libera um novo teste a cada 24 horas.");
+    // Verifica bloqueio local de 24 horas antes de tentar abrir
+    if (verificarBloqueioSimulado()) {
         if(btn && btn.tagName === 'BUTTON') btn.innerText = "Simulado";
         return;
     }
+    
     window.location.href = 'Simulados.html'; 
 }
 
@@ -217,11 +228,10 @@ async function salvarSimuladoNoBanco(acertos, total) {
         action: 'registrar_simulado'
     });
 
-    // Registra localmente para evitar entrada imediata
-    localStorage.setItem(SIMULADO_DATE_KEY, new Date().toLocaleDateString());
+    // Registra o timestamp atual para o bloqueio de 24h
+    localStorage.setItem(SIMULADO_DATE_KEY, new Date().getTime());
 
     try {
-        // Envio via POST (no-cors para evitar erros de redirecionamento do Apps Script)
         await fetch(SHEETDB_API_URL, { 
             method: 'POST', 
             body: payload, 
