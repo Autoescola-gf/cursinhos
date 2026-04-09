@@ -33,10 +33,12 @@ const VIDEO_MAP = {
     'aula19': { title: 'Aula 19: Direção Defensiva', embedUrl: 'https://www.dropbox.com/scl/fi/9ch9zi0xd2w97ybvt9uaj/19-DIRE-O-DEFENSIVA.mp4?rlkey=3n1cjfxc1r0yz1y9i8lui81jh&st=smw9o5kz&raw=1' },
     'aula20': { title: 'Aula 20: Direção Defensiva', embedUrl: 'https://www.dropbox.com/scl/fi/1nkxoifxczy0cnqe1qths/20-DIRE-O-DEFENSIVA.mp4?rlkey=j43unqxy8brwo8othv05f9xox&st=lmd5b9az&raw=1' },
     'aula21': { title: 'Aula 21: Direção Defensiva', embedUrl: 'https://www.dropbox.com/scl/fi/wb1s6sdes8h0flnywgekc/21-DIRE-O-DEFENSIVA.mp4?rlkey=whyernmrz11l3h9e488pm39nq&st=z8d2c3po&raw=1' },
-    'aula22': { title: 'Aula 22: Primeiros Socorros', embedUrl: 'https://www.dropbox.com/scl/fi/8eh70ydl7nw0b3tkj41qu/24-PRIMEIROS-SOCORROS.mp4?rlkey=4rnirtm44t99owt5rc87m513g&st=gbark4md&raw=1' },
-    'aula23': { title: 'Aula 23: Primeiros Socorros', embedUrl: 'https://www.dropbox.com/scl/fi/0v4coveq5b7h7etojsvkn/25-PRIMEIROS-SOCORROS.mp4?rlkey=os8eo3z7ansascflh29e1vh1n&st=iq7yopg1&raw=1' },
-    'aula24': { title: 'Aula 24: Primeiros Socorros', embedUrl: 'https://www.dropbox.com/scl/fi/aqmvod20rt7xhkjqvc54c/26-PRIMEIROS-SOCORROS.mp4?rlkey=jaizi1ifkkd3t3h3lmjefk42a&st=7dbyuhng&raw=1' },
-    'aula25': { title: 'Aula 25: Primeiros Socorros', embedUrl: 'https://www.dropbox.com/scl/fi/uleso3vy033f6r2r86boh/27-PRIMEIROS-SOCORROS-cut.mp4?rlkey=xdrlfufqidartr4y2jmdjvdsf&st=as8gs13l&raw=1' },  
+    
+    'aula22': { title: 'Aula 22: Primeiros Socorros', embedUrl: 'https://www.dropbox.com/scl/fi/tl2nmehycw2pno9wixar7/30-PRIMEIROS-SOCORROS.mp4?rlkey=fy12kfoa7uk1bwxnr099f1gjz&st=x3se4mg4&raw=1' },
+    'aula23': { title: 'Aula 23: Primeiros Socorros', embedUrl: 'https://www.dropbox.com/scl/fi/9l49s7w8tp1iuyb8m8vvn/31-PRIMEIROS-SOCORROS.mp4?rlkey=q68j339oxn8ggz72hvug4truh&st=0y3sbp6l&raw=1' },
+    'aula24': { title: 'Aula 24: Primeiros Socorros', embedUrl: 'https://www.dropbox.com/scl/fi/nrj88ol1dafw9ibe3bw18/32-PRIMEIROS-SOCORROS.mp4?rlkey=l6dx4tfignlpez5wz6lao32yt&st=7oxgg9y1&raw=1' },
+    'aula25': { title: 'Aula 25: Primeiros Socorros', embedUrl: 'https://www.dropbox.com/scl/fi/qrpaxb1gs421b4xys47is/33-PRIMEIROS-SOCORROS-QUEST-ES.mp4?rlkey=tdqy7pdkt7kzdqr2uv7wfeaey&st=4200jd1c&raw=1' },  
+
     'aula26': { title: 'Aula 26: Meio Ambiente', embedUrl: 'https://www.dropbox.com/scl/fi/qm2usit08vbn754reepf0/28-MEIO-AMBIENTE.mp4?rlkey=9cy1en3ljg2vaxcoqkzwunpj8&st=q36qwtlw&raw=1' },
     'aula27': { title: 'Aula 27: Meio Ambiente', embedUrl: 'https://www.dropbox.com/scl/fi/ze1oxs3ycax4suwnn1bum/29-MEIO-AMBIENTE.mp4?rlkey=ztuin39vu2if216tx52vqv4uz&st=29c5ji&raw=1' },
     'aula28': { title: 'Aula 28: Mecânica', embedUrl: 'https://www.dropbox.com/scl/fi/tkeuf9l70691ih6u0j7s7/30-MEC-NICA.mp4?rlkey=t0l7d2nnh8haaz3hvo64cxkqk&st=ll8itt8m&raw=1' },
