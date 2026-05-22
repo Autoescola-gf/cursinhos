@@ -1,7 +1,7 @@
 // =======================================================
 // CONFIGURAÇÕES GLOBAIS
 // =======================================================
-const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbzDsMX4UoWyWRoQzUHhMqkhL0z9U6Ho208WuMXcmraqojsgn8vGzBEX5GVa-vq403Vy/exec';
+const SHEETDB_API_URL = 'https://script.google.com/macros/s/AKfycbxA2_oFZjz78xEN4gyViPAeu5GhBZyC3Jb6jXjCMQwpRa9e0_ikRPGEzxpfVtgUNeGT/exec';
 
 const FIRST_ACCESS_KEY = 'vimeo_first_access_date';
 const CPF_KEY = 'vimeo_user_cpf';
